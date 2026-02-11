@@ -91,6 +91,15 @@ export default function ConditionForm({
     );
   });
 
+  // 入力された作品名がDBに存在するか判定
+  const exactMatch = keyword.trim()
+    ? allWorks.find(
+        (w) =>
+          w.title === keyword.trim() ||
+          w.title_en.toLowerCase() === keyword.trim().toLowerCase()
+      )
+    : null;
+
   const isReady =
     keyword.trim() !== "" &&
     departure.trim() !== "" &&
@@ -229,6 +238,27 @@ export default function ConditionForm({
                       </span>
                     </button>
                   ))}
+                </div>
+              )}
+
+              {/* 作品の確認ステータス */}
+              {keyword.trim() && !showSuggestions && (
+                <div className="mt-2">
+                  {exactMatch ? (
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[10px]">✓</span>
+                      <span className="text-xs text-emerald-400 font-medium">
+                        「{exactMatch.title}」（{exactMatch.genre} / {exactMatch.year}年）
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-4 h-4 rounded-full bg-yellow-500/80 flex items-center justify-center text-black text-[10px] font-bold">!</span>
+                      <span className="text-xs text-yellow-400/80">
+                        データベース未登録の作品です（AIが自動で聖地を検索します）
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

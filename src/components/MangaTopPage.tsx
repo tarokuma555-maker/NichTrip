@@ -241,12 +241,12 @@ function AboutSection() {
                   02 — Data
                 </span>
                 <h3 className="text-xl sm:text-4xl font-black mb-2">
-                  50作品
+                  15,000<span className="text-lg sm:text-2xl">+</span>作品
                   <br />
-                  168スポット
+                  5,000<span className="text-lg sm:text-2xl">+</span>スポット
                 </h3>
                 <p className="text-xs sm:text-sm text-white/70">
-                  登録済みの聖地情報からAIが最適ルートを計算。
+                  日本の全アニメ作品に対応。AIが聖地情報を自動検索しルートを計算。
                 </p>
               </div>
             </div>
