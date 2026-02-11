@@ -138,33 +138,33 @@ function HeroSection() {
           <span className="block text-red-500 manga-shadow">Trips</span>
         </h1>
 
-        <div className="hero-bubble mt-6 sm:mt-8 inline-block relative">
-          <div className="relative bg-black border-2 border-white/20 rounded-xl px-4 sm:px-6 py-3 sm:py-4 backdrop-blur-sm">
-            <p className="text-sm sm:text-lg font-bold text-white/90 leading-relaxed">
-              アニメの聖地を巡る
-              <span className="text-red-400 font-black">旅プラン</span>
-              をAIが自動生成
-            </p>
-          </div>
+        <div className="hero-bubble mt-6 sm:mt-8">
+          <p className="text-sm sm:text-lg font-bold text-white/70 leading-relaxed">
+            あの聖地へ、
+            <span className="text-red-400 font-black">物語の世界</span>
+            へ。
+            <br className="sm:hidden" />
+            AIがあなたの旅を描きます。
+          </p>
         </div>
 
-        {/* 旅をするボタン */}
-        <div className="hero-cta mt-6 sm:mt-8">
+        {/* CTAボタン */}
+        <div className="hero-cta mt-8 sm:mt-10">
           <button
             onClick={() => router.push("/plan?theme=pilgrimage")}
-            className="group inline-flex items-center gap-2 sm:gap-3
-                       bg-red-500 text-white text-sm sm:text-lg font-black
-                       px-8 sm:px-12 py-3.5 sm:py-4.5 rounded-full
-                       border-2 border-red-400/40
-                       shadow-[0_0_30px_rgba(229,62,62,0.4)]
-                       hover:shadow-[0_0_50px_rgba(229,62,62,0.6)]
-                       hover:bg-red-600 hover:-translate-y-0.5
+            className="group inline-flex items-center gap-3
+                       bg-red-500 text-white text-base sm:text-lg font-black
+                       px-10 sm:px-14 py-4 sm:py-5 rounded-full
+                       border-2 border-red-400/30
+                       shadow-[0_0_40px_rgba(229,62,62,0.3)]
+                       hover:shadow-[0_0_60px_rgba(229,62,62,0.5)]
+                       hover:bg-red-600
                        active:scale-[0.97]
                        transition-all duration-200"
           >
-            <span>旅をする</span>
+            <span>Start Your Journey</span>
             <svg
-              className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform"
+              className="w-5 h-5 group-hover:translate-x-1 transition-transform"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
