@@ -240,6 +240,7 @@ export default function PlanTimeline({
                           spot={spot}
                           index={currentIndex}
                           onLocate={() => handleLocate(currentIndex)}
+                          workTitle={keyword}
                         />
                       </div>
 

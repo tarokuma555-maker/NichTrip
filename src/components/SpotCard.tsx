@@ -2,15 +2,18 @@
 
 import { useState } from "react";
 import type { PlanSpot } from "@/lib/types";
+import UGCSection from "./UGCSection";
 
 export default function SpotCard({
   spot,
   index,
   onLocate,
+  workTitle,
 }: {
   spot: PlanSpot;
   index: number;
   onLocate?: () => void;
+  workTitle?: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -155,6 +158,17 @@ export default function SpotCard({
                 </div>
               </div>
             )}
+
+            {/* UGC: チェックイン & レビュー */}
+            <div className="border-t-2 border-white/10 pt-3">
+              <UGCSection
+                spotName={spot.name}
+                workTitle={workTitle ?? ""}
+                lat={spot.lat}
+                lng={spot.lng}
+                isExpanded={open}
+              />
+            </div>
           </div>
         </div>
       </div>

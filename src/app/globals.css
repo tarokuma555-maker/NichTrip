@@ -41,6 +41,44 @@ body {
   animation: check-pop 0.3s ease-out both;
 }
 
+/* ===== UGC Checkin Confetti ===== */
+@keyframes confetti-fall-1 {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-20px, 40px) rotate(200deg); opacity: 0; }
+}
+@keyframes confetti-fall-2 {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(15px, 35px) rotate(-180deg); opacity: 0; }
+}
+@keyframes confetti-fall-3 {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-10px, 45px) rotate(260deg); opacity: 0; }
+}
+@keyframes confetti-fall-4 {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(25px, 30px) rotate(-220deg); opacity: 0; }
+}
+@keyframes confetti-fall-5 {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-5px, 50px) rotate(300deg); opacity: 0; }
+}
+@keyframes confetti-fall-6 {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate(20px, 42px) rotate(-150deg); opacity: 0; }
+}
+.confetti-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+}
+.confetti-particle:nth-child(1) { animation: confetti-fall-1 0.7s ease-out forwards; background: #E53E3E; }
+.confetti-particle:nth-child(2) { animation: confetti-fall-2 0.7s ease-out 0.05s forwards; background: #FFD700; }
+.confetti-particle:nth-child(3) { animation: confetti-fall-3 0.7s ease-out 0.1s forwards; background: #3182CE; }
+.confetti-particle:nth-child(4) { animation: confetti-fall-4 0.7s ease-out 0.03s forwards; background: #38A169; }
+.confetti-particle:nth-child(5) { animation: confetti-fall-5 0.7s ease-out 0.08s forwards; background: #E53E3E; }
+.confetti-particle:nth-child(6) { animation: confetti-fall-6 0.7s ease-out 0.06s forwards; background: #FFD700; }
+
 /* ===== Manga Panel System ===== */
 
 /* ハーフトーン (黒ドット) */

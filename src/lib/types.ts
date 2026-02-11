@@ -72,3 +72,35 @@ export type GeneratedPlan = {
   total_budget_estimate: string;
   best_season: string;
 };
+
+// UGC: チェックイン
+export type SpotCheckin = {
+  id: string;
+  user_id: string;
+  spot_name: string;
+  work_title: string | null;
+  created_at: string;
+};
+
+// UGC: レビュー
+export type SpotReview = {
+  id: string;
+  user_id: string;
+  spot_name: string;
+  work_title: string | null;
+  rating: number;
+  comment: string | null;
+  photo_url: string | null;
+  tips: string | null;
+  best_angle: string | null;
+  visited_date: string | null;
+  created_at: string;
+};
+
+// UGC: APIレスポンス
+export type UGCData = {
+  checkinCount: number;
+  userCheckedIn: boolean;
+  reviews: SpotReview[];
+  totalReviewCount: number;
+};
