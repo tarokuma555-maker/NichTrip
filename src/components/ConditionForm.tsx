@@ -19,6 +19,7 @@ const DAYS_OPTIONS: { label: string; value: number }[] = [
   { label: "日帰り", value: 1 },
   { label: "1泊2日", value: 2 },
   { label: "2泊3日", value: 3 },
+  { label: "その他", value: -1 },
 ];
 
 const BUDGET_OPTIONS: { label: string; value: PlanRequest["budget"] }[] = [
@@ -47,8 +48,13 @@ export default function ConditionForm({
 }) {
   const [departure, setDeparture] = useState("東京");
   const [days, setDays] = useState<number | null>(null);
+  const [daysCustom, setDaysCustom] = useState("");
   const [budget, setBudget] = useState<PlanRequest["budget"] | null>(null);
+  const [budgetMin, setBudgetMin] = useState("");
+  const [budgetMax, setBudgetMax] = useState("");
   const [companions, setCompanions] = useState<PlanRequest["companions"] | null>(null);
+  const [companionsAdults, setCompanionsAdults] = useState(1);
+  const [companionsChildren, setCompanionsChildren] = useState(0);
   const [keyword, setKeyword] = useState(work ?? "");
 
   const [phase, setPhase] = useState<Phase>("form");
@@ -100,12 +106,26 @@ export default function ConditionForm({
       )
     : null;
 
+  // 実際に送信する日数
+  const effectiveDays =
+    days === -1 ? (parseInt(daysCustom) > 0 ? parseInt(daysCustom) : null) : days;
+
+  const isBudgetReady =
+    budget !== null &&
+    (budget !== "custom" ||
+      (parseInt(budgetMin) > 0 && parseInt(budgetMax) > 0));
+
+  const isCompanionsReady =
+    companions !== null &&
+    (companions !== "custom" || companionsAdults > 0);
+
   const isReady =
     keyword.trim() !== "" &&
     departure.trim() !== "" &&
-    days !== null &&
-    budget !== null &&
-    companions !== null;
+    effectiveDays !== null &&
+    effectiveDays > 0 &&
+    isBudgetReady &&
+    isCompanionsReady;
 
   async function handleSubmit() {
     if (!isReady) return;
@@ -118,9 +138,17 @@ export default function ConditionForm({
         theme,
         keyword: keyword.trim(),
         departure: departure.trim(),
-        days: days!,
+        days: effectiveDays!,
         budget: budget!,
+        ...(budget === "custom" && {
+          budgetMin: parseInt(budgetMin),
+          budgetMax: parseInt(budgetMax),
+        }),
         companions: companions!,
+        ...(companions === "custom" && {
+          companionsAdults,
+          companionsChildren,
+        }),
       };
 
       const res = await fetch("/api/generate-plan", {
@@ -289,32 +317,135 @@ export default function ConditionForm({
             selected={days !== null ? String(days) : null}
             onSelect={(key) => setDays(Number(key))}
           />
+          {days === -1 && (
+            <div className="mt-3 flex items-center gap-2">
+              <input
+                type="number"
+                min="1"
+                max="365"
+                value={daysCustom}
+                onChange={(e) => setDaysCustom(e.target.value)}
+                placeholder="日数を入力"
+                className="w-28 bg-white/5 border-2 border-white/10 rounded-xl px-3 py-2.5
+                           text-white text-sm placeholder:text-white/30
+                           focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
+                           transition-colors"
+              />
+              <span className="text-sm text-white/50">日間</span>
+            </div>
+          )}
         </FormSection>
 
         {/* 予算 */}
         <FormSection label="予算">
           <ChipGroup
-            options={BUDGET_OPTIONS.map((o) => ({
-              key: o.value,
-              label: o.label,
-            }))}
+            options={[
+              ...BUDGET_OPTIONS.map((o) => ({
+                key: o.value,
+                label: o.label,
+              })),
+              { key: "custom", label: "手動で設定" },
+            ]}
             selected={budget}
             onSelect={(key) => setBudget(key as PlanRequest["budget"])}
           />
+          {budget === "custom" && (
+            <div className="mt-3 flex items-center gap-2">
+              <input
+                type="number"
+                min="0"
+                step="1000"
+                value={budgetMin}
+                onChange={(e) => setBudgetMin(e.target.value)}
+                placeholder="下限"
+                className="w-24 bg-white/5 border-2 border-white/10 rounded-xl px-3 py-2.5
+                           text-white text-sm placeholder:text-white/30
+                           focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
+                           transition-colors"
+              />
+              <span className="text-sm text-white/40">〜</span>
+              <input
+                type="number"
+                min="0"
+                step="1000"
+                value={budgetMax}
+                onChange={(e) => setBudgetMax(e.target.value)}
+                placeholder="上限"
+                className="w-24 bg-white/5 border-2 border-white/10 rounded-xl px-3 py-2.5
+                           text-white text-sm placeholder:text-white/30
+                           focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
+                           transition-colors"
+              />
+              <span className="text-sm text-white/50">円</span>
+            </div>
+          )}
         </FormSection>
 
         {/* 同行者 */}
         <FormSection label="同行者">
           <ChipGroup
-            options={COMPANIONS_OPTIONS.map((o) => ({
-              key: o.value,
-              label: `${o.emoji} ${o.label}`,
-            }))}
+            options={[
+              ...COMPANIONS_OPTIONS.map((o) => ({
+                key: o.value,
+                label: `${o.emoji} ${o.label}`,
+              })),
+              { key: "custom", label: "人数を設定" },
+            ]}
             selected={companions}
             onSelect={(key) =>
               setCompanions(key as PlanRequest["companions"])
             }
           />
+          {companions === "custom" && (
+            <div className="mt-3 flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-white/70 w-12 shrink-0">大人</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCompanionsAdults(Math.max(1, companionsAdults - 1))}
+                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-white/70
+                               hover:border-white/30 flex items-center justify-center text-lg"
+                  >
+                    -
+                  </button>
+                  <span className="w-8 text-center text-white font-bold">{companionsAdults}</span>
+                  <button
+                    type="button"
+                    onClick={() => setCompanionsAdults(companionsAdults + 1)}
+                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-white/70
+                               hover:border-white/30 flex items-center justify-center text-lg"
+                  >
+                    +
+                  </button>
+                  <span className="text-sm text-white/40">人</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-white/70 w-12 shrink-0">子供</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setCompanionsChildren(Math.max(0, companionsChildren - 1))}
+                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-white/70
+                               hover:border-white/30 flex items-center justify-center text-lg"
+                  >
+                    -
+                  </button>
+                  <span className="w-8 text-center text-white font-bold">{companionsChildren}</span>
+                  <button
+                    type="button"
+                    onClick={() => setCompanionsChildren(companionsChildren + 1)}
+                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-white/70
+                               hover:border-white/30 flex items-center justify-center text-lg"
+                  >
+                    +
+                  </button>
+                  <span className="text-sm text-white/40">人</span>
+                </div>
+              </div>
+            </div>
+          )}
         </FormSection>
       </div>
 

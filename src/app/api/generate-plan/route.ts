@@ -12,18 +12,37 @@ function getAnthropic(): Anthropic {
   return _anthropic;
 }
 
-const BUDGET_LABEL: Record<PlanRequest['budget'], string> = {
+const BUDGET_LABEL: Record<string, string> = {
   low: '節約（1日5,000円以内）',
   medium: '標準（1日10,000〜15,000円）',
   high: 'リッチ（1日30,000円以上OK）',
 };
 
-const COMPANIONS_LABEL: Record<PlanRequest['companions'], string> = {
+const COMPANIONS_LABEL: Record<string, string> = {
   solo: 'ひとり旅',
   couple: 'カップル',
   friends: '友達グループ',
   family: 'ファミリー',
 };
+
+function getBudgetLabel(req: PlanRequest): string {
+  if (req.budget === 'custom' && req.budgetMin != null && req.budgetMax != null) {
+    return `総額 ${req.budgetMin.toLocaleString()}円〜${req.budgetMax.toLocaleString()}円`;
+  }
+  return BUDGET_LABEL[req.budget] ?? '指定なし';
+}
+
+function getCompanionsLabel(req: PlanRequest): string {
+  if (req.companions === 'custom') {
+    const adults = req.companionsAdults ?? 1;
+    const children = req.companionsChildren ?? 0;
+    const parts: string[] = [];
+    if (adults > 0) parts.push(`大人${adults}人`);
+    if (children > 0) parts.push(`子供${children}人`);
+    return parts.join('・') || '大人1人';
+  }
+  return COMPANIONS_LABEL[req.companions] ?? '指定なし';
+}
 
 const THEME_LABEL: Record<PlanRequest['theme'], string> = {
   pilgrimage: 'アニメ聖地巡礼',
@@ -55,8 +74,8 @@ function buildPrompt(
 - キーワード/作品: ${req.keyword}
 - 出発地: ${req.departure}
 - 日数: ${req.days}日間
-- 予算: ${BUDGET_LABEL[req.budget]}
-- 同行者: ${COMPANIONS_LABEL[req.companions]}
+- 予算: ${getBudgetLabel(req)}
+- 同行者: ${getCompanionsLabel(req)}
 
 ## 参考：聖地スポットデータ（${workTitle}）
 ${spotsInfo || '該当する登録スポットなし（あなたの知識で補完してください）'}

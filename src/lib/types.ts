@@ -30,8 +30,12 @@ export type PlanRequest = {
   keyword: string;
   departure: string;
   days: number;
-  budget: 'low' | 'medium' | 'high';
-  companions: 'solo' | 'couple' | 'friends' | 'family';
+  budget: 'low' | 'medium' | 'high' | 'custom';
+  budgetMin?: number;
+  budgetMax?: number;
+  companions: 'solo' | 'couple' | 'friends' | 'family' | 'custom';
+  companionsAdults?: number;
+  companionsChildren?: number;
 };
 
 // 生成されたプランのスポット
