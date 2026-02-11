@@ -636,66 +636,49 @@ function CTASection() {
   const router = useRouter();
 
   return (
-    <section className="cta-section relative min-h-[80vh] sm:min-h-screen bg-[#0a0a0a] overflow-hidden flex items-center justify-center">
-      <SpeedLinesSVG className="absolute inset-0 w-full h-full text-red-500 opacity-[0.06]" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-red-500/8 blur-[100px]" />
-      <div className="absolute inset-3 sm:inset-6 border border-white/[0.06] pointer-events-none" />
+    <section className="relative bg-black overflow-hidden flex items-center justify-center py-24 sm:py-32">
+      {/* 背景グロー */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-red-500/10 blur-[120px]" />
 
-      {/* ステンシルアート背景 */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <PosterStencil
-          src="/images/works/my-hero-academia.jpg"
-          className="absolute top-[5%] left-[0%] w-[200px] sm:w-[320px] opacity-[0.05] rotate-[10deg]"
-        />
-        <PosterStencil
-          src="/images/works/chainsaw-man.jpg"
-          className="absolute bottom-[8%] right-[0%] w-[180px] sm:w-[280px] opacity-[0.04] -rotate-[12deg]"
-        />
-        <PosterStencil
-          src="/images/works/evangelion.jpg"
-          className="absolute top-[40%] right-[-5%] w-[160px] sm:w-[240px] opacity-[0.03] rotate-[20deg]"
-        />
-      </div>
+      {/* コンテンツ */}
+      <div className="relative text-center px-6 max-w-lg w-full">
+        {/* 英語キャッチ */}
+        <p className="text-[10px] sm:text-xs font-black tracking-[0.4em] text-red-500/70 uppercase mb-4 sm:mb-5">
+          Your Story Awaits
+        </p>
 
-      {/* メインコンテンツ */}
-      <div className="cta-content relative z-10 text-center px-4 sm:px-6 max-w-2xl w-full">
-        {/* カード部分 */}
-        <div className="cta-bubble relative mb-8 sm:mb-10">
-          <div className="absolute -inset-1 bg-red-500/20 rounded-2xl blur-sm" />
-          <div className="relative bg-[#111] border-[3px] border-white/15 rounded-2xl px-6 py-10 sm:px-14 sm:py-16 shadow-[0_20px_60px_rgba(229,62,62,0.15)]">
-            <div className="absolute inset-0 stripe-diagonal opacity-10 pointer-events-none rounded-2xl overflow-hidden" />
+        {/* メイン見出し */}
+        <h2 className="text-4xl sm:text-6xl font-black text-white leading-[1.1] mb-5 sm:mb-6">
+          あの場所へ、
+          <br />
+          <span className="text-red-500">会いに行こう。</span>
+        </h2>
 
-            <h2 className="cta-heading text-3xl sm:text-6xl font-black text-white manga-shadow-sm mb-4 sm:mb-5 leading-tight relative z-10">
-              さあ、旅に
-              <br />
-              出よう<span className="text-red-500">!</span>
-            </h2>
+        {/* サブテキスト */}
+        <p className="text-sm sm:text-base text-white/40 leading-relaxed mb-8 sm:mb-10">
+          好きな作品を選ぶだけ。
+          <br />
+          AIが聖地巡礼の旅プランを
+          <br className="sm:hidden" />
+          自動で作成します。
+        </p>
 
-            <p className="text-xs sm:text-base text-white/50 leading-relaxed relative z-10">
-              テーマを選んで、条件を入力するだけ。
-              <br className="hidden sm:block" />
-              AIがあなただけの聖地巡礼プランを作成します。
-            </p>
-          </div>
-        </div>
-
-        {/* 旅に出るボタン — GSAPアニメーション対象外、常に表示 */}
+        {/* CTAボタン */}
         <button
           onClick={() => router.push("/plan?theme=pilgrimage")}
-          style={{ opacity: 1, visibility: "visible" }}
-          className="group relative z-20 inline-flex items-center gap-3
-                     bg-red-500 text-white text-base sm:text-xl font-black
+          className="group inline-flex items-center gap-3
+                     bg-red-500 text-white text-base sm:text-lg font-black
                      px-10 sm:px-14 py-4 sm:py-5 rounded-full
-                     border-2 border-red-400/40
-                     shadow-[0_0_30px_rgba(229,62,62,0.4)]
-                     hover:shadow-[0_0_50px_rgba(229,62,62,0.6)]
-                     hover:bg-red-600 hover:-translate-y-1 hover:scale-105
-                     active:translate-y-0.5 active:scale-[0.98]
+                     border-2 border-red-400/30
+                     shadow-[0_0_40px_rgba(229,62,62,0.3)]
+                     hover:shadow-[0_0_60px_rgba(229,62,62,0.5)]
+                     hover:bg-red-600
+                     active:scale-[0.97]
                      transition-all duration-200"
         >
-          <span>旅に出る</span>
+          <span>Start Your Journey</span>
           <svg
-            className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1.5 transition-transform"
+            className="w-5 h-5 group-hover:translate-x-1 transition-transform"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -709,8 +692,9 @@ function CTASection() {
           </svg>
         </button>
 
-        <p className="text-[9px] sm:text-[10px] text-white/20 font-bold tracking-[0.2em] mt-8 sm:mt-12">
-          &copy; 2025 AnimeTrips &mdash; AIがつくるアニメ聖地巡礼プラン
+        {/* フッター */}
+        <p className="text-[9px] sm:text-[10px] text-white/15 font-bold tracking-[0.2em] mt-12 sm:mt-16">
+          &copy; 2025 AnimeTrips
         </p>
       </div>
     </section>
@@ -792,27 +776,7 @@ export default function MangaTopPage({
         ease: "power2.out",
       });
 
-      // CTA
-      const ctaTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".cta-section",
-          start: "top 70%",
-          toggleActions: "play none none none",
-        },
-      });
-      ctaTl
-        .from(".cta-bubble", {
-          y: 60,
-          opacity: 0,
-          scale: 0.9,
-          duration: 0.8,
-          ease: "power2.out",
-        })
-        .from(
-          ".cta-heading",
-          { y: 30, opacity: 0, duration: 0.5 },
-          "-=0.4"
-        );
+      // CTA — no GSAP animation (always visible)
     }, containerRef);
 
     return () => ctx.revert();
