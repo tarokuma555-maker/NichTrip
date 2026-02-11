@@ -52,7 +52,7 @@ export default function ThemeSelector() {
             relative rounded-2xl p-6 text-left transition-all duration-200
             ${
               theme.active
-                ? "bg-white border-2 border-accent shadow-lg hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                ? "bg-white border-[3px] border-navy shadow-[4px_4px_0px_0px_#1A365D] hover:shadow-[6px_6px_0px_0px_#1A365D] hover:-translate-x-0.5 hover:-translate-y-1 cursor-pointer"
                 : "bg-warm-100 border-2 border-warm-200 cursor-not-allowed opacity-70"
             }
           `}
@@ -80,9 +80,9 @@ export default function ThemeSelector() {
             {theme.description}
           </p>
 
-          {/* アクティブインジケーター */}
+          {/* 吹き出しCTA */}
           {theme.active && (
-            <div className="mt-4 flex items-center gap-1.5 text-accent text-sm font-semibold">
+            <div className="mt-4 relative inline-flex items-center gap-1.5 bg-accent text-white text-sm font-bold px-4 py-1.5 rounded-full shadow-md">
               <span>プランを作る</span>
               <svg
                 className="w-4 h-4"
@@ -97,6 +97,8 @@ export default function ThemeSelector() {
                   d="M9 5l7 7-7 7"
                 />
               </svg>
+              {/* 吹き出しの尻尾 */}
+              <div className="absolute -top-1 left-5 w-2.5 h-2.5 bg-accent rotate-45" />
             </div>
           )}
         </button>

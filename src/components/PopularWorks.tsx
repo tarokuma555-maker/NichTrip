@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
+import { getWorkVisual } from "@/lib/work-visuals";
 
 type Work = {
   title: string;
@@ -10,20 +11,6 @@ type Work = {
   genre: string;
   spotCount: number;
 };
-
-// 作品ごとのアクセントカラー
-const CARD_COLORS = [
-  "from-rose-400 to-orange-300",
-  "from-sky-400 to-cyan-300",
-  "from-violet-400 to-purple-300",
-  "from-emerald-400 to-teal-300",
-  "from-pink-400 to-fuchsia-300",
-  "from-amber-400 to-yellow-300",
-  "from-blue-400 to-indigo-300",
-  "from-lime-400 to-green-300",
-  "from-red-400 to-rose-300",
-  "from-teal-400 to-emerald-300",
-];
 
 export default function PopularWorks({ works }: { works: Work[] }) {
   const router = useRouter();
@@ -69,45 +56,77 @@ export default function PopularWorks({ works }: { works: Work[] }) {
         ref={scrollRef}
         className="flex gap-4 overflow-x-auto hide-scrollbar snap-x snap-mandatory pb-2 -mx-1 px-1"
       >
-        {works.map((work, i) => (
-          <button
-            key={work.title}
-            onClick={() =>
-              router.push(
-                `/plan?theme=pilgrimage&work=${encodeURIComponent(work.title)}`
-              )
-            }
-            className="snap-start shrink-0 w-56 rounded-2xl overflow-hidden bg-white
-                       border border-warm-200 shadow-md hover:shadow-xl
-                       hover:-translate-y-1 transition-all duration-200 text-left"
-          >
-            {/* カラーヘッダー */}
-            <div
-              className={`h-28 bg-gradient-to-br ${CARD_COLORS[i % CARD_COLORS.length]}
-                          flex items-center justify-center`}
-            >
-              <span className="text-white text-2xl font-bold drop-shadow-md text-center px-3 leading-tight">
-                {work.title}
-              </span>
-            </div>
+        {works.map((work) => {
+          const visual = getWorkVisual(work.title);
 
-            {/* カード本文 */}
-            <div className="p-4">
-              <p className="text-xs text-navy/40 mb-1">
-                {work.title_en}
-              </p>
-              <div className="flex items-center gap-2 text-xs text-navy/60">
-                <span className="bg-warm-100 px-2 py-0.5 rounded-full">
-                  {work.genre}
+          return (
+            <button
+              key={work.title}
+              onClick={() =>
+                router.push(
+                  `/plan?theme=pilgrimage&work=${encodeURIComponent(work.title)}`
+                )
+              }
+              className="snap-start shrink-0 w-56 rounded-2xl overflow-hidden bg-white
+                         border-2 border-navy/15
+                         shadow-[3px_3px_0px_0px_rgba(26,54,93,0.12)]
+                         hover:shadow-[5px_5px_0px_0px_rgba(26,54,93,0.18)]
+                         hover:-translate-x-0.5 hover:-translate-y-1
+                         transition-all duration-200 text-left"
+            >
+              {/* ポスター風ヘッダー（5層構造） */}
+              <div className="relative h-36 overflow-hidden">
+                {/* Layer 1: ベースグラデーション */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${visual.gradient}`}
+                />
+
+                {/* Layer 2: SVGパターンオーバーレイ */}
+                <div
+                  className="absolute inset-0 opacity-60"
+                  style={{
+                    backgroundImage: visual.patternSvg,
+                    backgroundRepeat: "repeat",
+                  }}
+                />
+
+                {/* Layer 3: 中央アイコン（glow付き） */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span
+                    className="text-5xl drop-shadow-lg"
+                    style={{
+                      filter: `drop-shadow(0 0 20px ${visual.glowColor}) drop-shadow(0 0 40px ${visual.glowColor})`,
+                    }}
+                  >
+                    {visual.icon}
+                  </span>
+                </div>
+
+                {/* Layer 4: 下部フェード */}
+                <div className="absolute bottom-0 left-0 right-0 h-14 bg-gradient-to-t from-black/60 to-transparent" />
+
+                {/* Layer 5: 作品名テキスト */}
+                <span className="absolute bottom-2 left-3 right-3 text-white text-sm font-bold drop-shadow-md leading-tight">
+                  {work.title}
                 </span>
-                <span>{work.year}</span>
               </div>
-              <p className="mt-2 text-xs text-sub font-medium">
-                {work.spotCount} スポット収録
-              </p>
-            </div>
-          </button>
-        ))}
+
+              {/* カード本文 */}
+              <div className="p-4">
+                <p className="text-xs text-navy/40 mb-1">{work.title_en}</p>
+                <div className="flex items-center gap-2 text-xs text-navy/60">
+                  <span className="bg-warm-100 px-2 py-0.5 rounded-full">
+                    {work.genre}
+                  </span>
+                  <span>{work.year}</span>
+                </div>
+                <p className="mt-2 text-xs text-sub font-medium">
+                  {work.spotCount} スポット収録
+                </p>
+              </div>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

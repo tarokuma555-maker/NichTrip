@@ -40,3 +40,33 @@ body {
 .animate-check-pop {
   animation: check-pop 0.3s ease-out both;
 }
+
+/* ===== Manga / Anime Decorations ===== */
+
+/* ハーフトーンドットパターン */
+.manga-halftone {
+  background-image: radial-gradient(circle, #1A365D 0.5px, transparent 0.5px);
+  background-size: 8px 8px;
+}
+
+/* 横集中線 */
+.manga-speed-lines {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 4px,
+    rgba(26, 54, 93, 0.04) 4px,
+    rgba(26, 54, 93, 0.04) 5px
+  );
+}
+
+/* 斜線ハッチング */
+.manga-hatch {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 3px,
+    rgba(26, 54, 93, 0.02) 3px,
+    rgba(26, 54, 93, 0.02) 4px
+  );
+}
