@@ -16,6 +16,8 @@ type Work = {
   spotCount: number;
 };
 
+const INITIAL_SHOW_COUNT = 20;
+
 /* ================================================================
    SVG 装飾
    ================================================================ */
@@ -43,45 +45,27 @@ function SpeedLinesSVG({ className }: { className?: string }) {
   );
 }
 
-/* キャラクターシルエット（白抜き線画） */
-function CharacterSilhouettes({ className }: { className?: string }) {
+/* ポスター画像をステンシルアート風に表示 */
+function PosterStencil({
+  src,
+  className,
+}: {
+  src: string;
+  className?: string;
+}) {
   return (
-    <div className={`pointer-events-none select-none ${className}`}>
-      {/* 走る少年 */}
-      <svg className="absolute top-[8%] right-[3%] w-24 h-32 sm:w-36 sm:h-48 opacity-[0.06]" viewBox="0 0 100 130" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="55" cy="15" r="10" />
-        <path d="M55 25 L55 60 M55 35 L35 50 M55 35 L75 45 M55 60 L35 90 M55 60 L70 85" />
-        <path d="M35 90 L25 100 M70 85 L80 95" />
-      </svg>
-      {/* 剣を持つ戦士 */}
-      <svg className="absolute bottom-[15%] left-[2%] w-20 h-28 sm:w-32 sm:h-44 opacity-[0.05]" viewBox="0 0 100 140" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="50" cy="15" r="10" />
-        <path d="M50 25 L50 70 M50 40 L30 55 M50 40 L80 20 M80 20 L85 5 M80 20 L90 25 M50 70 L35 100 M50 70 L65 100" />
-        <path d="M35 100 L30 110 M65 100 L70 110" />
-      </svg>
-      {/* 魔法少女 */}
-      <svg className="absolute top-[40%] right-[1%] w-16 h-24 sm:w-28 sm:h-40 opacity-[0.04]" viewBox="0 0 100 140" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="50" cy="15" r="10" />
-        <path d="M40 10 L35 0 M60 10 L65 0" />
-        <path d="M50 25 L50 55 M50 55 L30 90 M50 55 L70 90 M30 90 Q50 95 70 90" />
-        <path d="M50 40 L25 45 M50 40 L75 45" />
-        <path d="M25 45 L15 55 M15 55 L10 50 M15 55 L10 60" />
-      </svg>
-      {/* カメラを持つ少女 */}
-      <svg className="absolute bottom-[25%] right-[5%] w-16 h-24 sm:w-24 sm:h-36 opacity-[0.04]" viewBox="0 0 100 130" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="50" cy="15" r="10" />
-        <path d="M42 8 Q50 3 58 8" />
-        <path d="M50 25 L50 65 M50 65 L35 95 M50 65 L65 95" />
-        <path d="M50 40 L70 35 M70 35 L85 30 M85 25 L90 35 M85 25 L80 20 M80 35 L90 35" />
-      </svg>
-      {/* 忍者 */}
-      <svg className="absolute top-[60%] left-[3%] w-16 h-24 sm:w-24 sm:h-36 opacity-[0.04]" viewBox="0 0 100 130" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="50" cy="15" r="10" />
-        <path d="M40 12 L20 10 M60 12 L80 10" />
-        <path d="M50 25 L50 60 M50 60 L30 80 L40 95 M50 60 L70 80 L60 95" />
-        <path d="M50 40 L30 30 M50 40 L70 30" />
-      </svg>
-    </div>
+    <img
+      src={src}
+      alt=""
+      aria-hidden
+      loading="lazy"
+      decoding="async"
+      className={`pointer-events-none select-none ${className}`}
+      style={{
+        filter: "grayscale(1) contrast(2.5)",
+        mixBlendMode: "screen",
+      }}
+    />
   );
 }
 
@@ -89,12 +73,16 @@ function CharacterSilhouettes({ className }: { className?: string }) {
    Section 1: HERO
    ================================================================ */
 function HeroSection() {
+  const router = useRouter();
+
   return (
     <section className="hero-section relative min-h-screen bg-black overflow-hidden flex items-center justify-center">
       {/* グリッド背景 */}
-      <div className="absolute inset-0 opacity-[0.06]"
+      <div
+        className="absolute inset-0 opacity-[0.06]"
         style={{
-          backgroundImage: "linear-gradient(rgba(229,62,62,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(229,62,62,0.5) 1px, transparent 1px)",
+          backgroundImage:
+            "linear-gradient(rgba(229,62,62,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(229,62,62,0.5) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
         }}
       />
@@ -118,8 +106,25 @@ function HeroSection() {
         <div className="absolute bottom-0 right-0 w-6 h-6 sm:w-8 sm:h-8 border-r-[3px] border-b-[3px] border-red-500/60" />
       </div>
 
-      {/* キャラクターシルエット */}
-      <CharacterSilhouettes className="absolute inset-0" />
+      {/* アニメポスターのステンシルアート背景 */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <PosterStencil
+          src="/images/works/demon-slayer.jpg"
+          className="absolute top-[3%] right-[-8%] w-[250px] sm:w-[380px] opacity-[0.07] -rotate-[10deg]"
+        />
+        <PosterStencil
+          src="/images/works/naruto.jpg"
+          className="absolute top-[12%] left-[-10%] w-[220px] sm:w-[340px] opacity-[0.05] rotate-[8deg]"
+        />
+        <PosterStencil
+          src="/images/works/attack-on-titan.jpg"
+          className="absolute bottom-[12%] right-[2%] w-[200px] sm:w-[300px] opacity-[0.05] rotate-[15deg]"
+        />
+        <PosterStencil
+          src="/images/works/one-piece.jpg"
+          className="absolute bottom-[18%] left-[-5%] w-[180px] sm:w-[280px] opacity-[0.04] -rotate-[5deg]"
+        />
+      </div>
 
       {/* メインコンテンツ */}
       <div className="hero-content relative z-10 text-center px-4 sm:px-6 max-w-4xl">
@@ -134,7 +139,7 @@ function HeroSection() {
           <span className="block text-red-500 manga-shadow">Trips</span>
         </h1>
 
-        <div className="hero-bubble mt-6 sm:mt-8 mb-4 sm:mb-6 inline-block relative">
+        <div className="hero-bubble mt-6 sm:mt-8 inline-block relative">
           <div className="relative bg-black border-2 border-white/20 rounded-xl px-4 sm:px-6 py-3 sm:py-4 backdrop-blur-sm">
             <p className="text-sm sm:text-lg font-bold text-white/90 leading-relaxed">
               アニメの聖地を巡る
@@ -142,6 +147,37 @@ function HeroSection() {
               をAIが自動生成
             </p>
           </div>
+        </div>
+
+        {/* 旅をするボタン */}
+        <div className="hero-cta mt-6 sm:mt-8">
+          <button
+            onClick={() => router.push("/plan?theme=pilgrimage")}
+            className="group inline-flex items-center gap-2 sm:gap-3
+                       bg-red-500 text-white text-sm sm:text-lg font-black
+                       px-8 sm:px-12 py-3.5 sm:py-4.5 rounded-full
+                       border-2 border-red-400/40
+                       shadow-[0_0_30px_rgba(229,62,62,0.4)]
+                       hover:shadow-[0_0_50px_rgba(229,62,62,0.6)]
+                       hover:bg-red-600 hover:-translate-y-0.5
+                       active:scale-[0.97]
+                       transition-all duration-200"
+          >
+            <span>旅をする</span>
+            <svg
+              className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={3}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </button>
         </div>
 
         <div className="hero-scroll mt-8 sm:mt-10 flex flex-col items-center gap-2">
@@ -235,12 +271,11 @@ function AboutSection() {
         </div>
       </div>
 
-      {/* キャラシルエット */}
-      <svg className="absolute bottom-[10%] right-[4%] w-20 h-28 sm:w-28 sm:h-40 opacity-[0.04] pointer-events-none" viewBox="0 0 100 140" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="50" cy="15" r="10" />
-        <path d="M50 25 L50 65 M50 40 L25 50 M50 40 L75 50 M50 65 L35 95 M50 65 L65 95" />
-        <path d="M75 50 L85 40 M85 35 L85 50 M80 42 L90 42" />
-      </svg>
+      {/* ステンシルアート */}
+      <PosterStencil
+        src="/images/works/jujutsu-kaisen.jpg"
+        className="absolute bottom-[5%] right-[2%] w-[180px] sm:w-[280px] opacity-[0.04] -rotate-[8deg]"
+      />
     </section>
   );
 }
@@ -251,6 +286,7 @@ function AboutSection() {
 function GallerySection({ works }: { works: Work[] }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [showAll, setShowAll] = useState(false);
 
   const filtered = works.filter((w) => {
     if (!search.trim()) return true;
@@ -262,12 +298,20 @@ function GallerySection({ works }: { works: Work[] }) {
     );
   });
 
+  // 検索中は全件表示、それ以外は20件
+  const displayed =
+    showAll || search.trim() ? filtered : filtered.slice(0, INITIAL_SHOW_COUNT);
+  const hasMore =
+    !showAll && !search.trim() && filtered.length > INITIAL_SHOW_COUNT;
+
   return (
     <section className="gallery-section relative bg-black py-20 sm:py-32 overflow-hidden">
       {/* 背景 */}
-      <div className="absolute inset-0 opacity-[0.04]"
+      <div
+        className="absolute inset-0 opacity-[0.04]"
         style={{
-          backgroundImage: "linear-gradient(rgba(229,62,62,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(229,62,62,0.6) 1px, transparent 1px)",
+          backgroundImage:
+            "linear-gradient(rgba(229,62,62,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(229,62,62,0.6) 1px, transparent 1px)",
           backgroundSize: "80px 80px",
         }}
       />
@@ -290,7 +334,13 @@ function GallerySection({ works }: { works: Work[] }) {
 
         {/* 検索バー */}
         <div className="mt-5 sm:mt-6 relative max-w-md">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
             <circle cx="11" cy="11" r="8" />
             <path d="M21 21l-4.35-4.35" />
           </svg>
@@ -309,7 +359,13 @@ function GallerySection({ works }: { works: Work[] }) {
               onClick={() => setSearch("")}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60"
             >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
                 <path d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -320,7 +376,7 @@ function GallerySection({ works }: { works: Work[] }) {
       {/* カードグリッド */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
-          {filtered.map((work, i) => {
+          {displayed.map((work, i) => {
             const visual = getWorkVisual(work.title);
             return (
               <button
@@ -346,7 +402,9 @@ function GallerySection({ works }: { works: Work[] }) {
                       loading="lazy"
                     />
                   ) : (
-                    <div className={`w-full h-full bg-gradient-to-br ${visual.gradient}`} />
+                    <div
+                      className={`w-full h-full bg-gradient-to-br ${visual.gradient}`}
+                    />
                   )}
 
                   <div className="absolute top-0 left-0 bg-red-500 text-white text-[9px] sm:text-[10px] font-black w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center">
@@ -373,9 +431,41 @@ function GallerySection({ works }: { works: Work[] }) {
             );
           })}
         </div>
+
+        {/* 検索結果なし */}
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <p className="text-white/30 text-sm">該当する作品が見つかりません</p>
+          </div>
+        )}
+
+        {/* もっと見るボタン */}
+        {hasMore && (
+          <div className="text-center mt-8 sm:mt-12">
+            <button
+              onClick={() => setShowAll(true)}
+              className="inline-flex items-center gap-2 bg-white/5 border border-white/10
+                         text-white/60 hover:text-white hover:border-white/30
+                         text-sm font-bold px-8 py-3 rounded-full
+                         transition-all duration-200"
+            >
+              <span>
+                すべての作品を表示（{filtered.length}作品）
+              </span>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
           </div>
         )}
       </div>
@@ -395,19 +485,21 @@ function CTASection() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-red-500/8 blur-[100px]" />
       <div className="absolute inset-3 sm:inset-6 border border-white/[0.06] pointer-events-none" />
 
-      {/* キャラシルエット */}
-      <svg className="absolute top-[10%] left-[5%] w-20 h-28 sm:w-28 sm:h-40 opacity-[0.04] pointer-events-none" viewBox="0 0 100 140" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="50" cy="15" r="10" />
-        <path d="M50 25 L50 65 M50 65 L30 95 M50 65 L70 95 M30 95 Q50 100 70 95" />
-        <path d="M50 40 L30 50 M50 40 L70 50" />
-        <path d="M42 10 C40 5 45 0 50 2 C55 0 60 5 58 10" />
-      </svg>
-      <svg className="absolute bottom-[12%] right-[4%] w-16 h-24 sm:w-24 sm:h-36 opacity-[0.04] pointer-events-none" viewBox="0 0 100 130" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="50" cy="15" r="10" />
-        <path d="M50 25 L50 60 M50 60 L35 85 M50 60 L65 85" />
-        <path d="M50 40 L30 35 M50 40 L70 35" />
-        <path d="M30 35 L20 30 L15 40 M70 35 L80 30 L85 40" />
-      </svg>
+      {/* ステンシルアート背景 */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <PosterStencil
+          src="/images/works/my-hero-academia.jpg"
+          className="absolute top-[5%] left-[0%] w-[200px] sm:w-[320px] opacity-[0.05] rotate-[10deg]"
+        />
+        <PosterStencil
+          src="/images/works/chainsaw-man.jpg"
+          className="absolute bottom-[8%] right-[0%] w-[180px] sm:w-[280px] opacity-[0.04] -rotate-[12deg]"
+        />
+        <PosterStencil
+          src="/images/works/evangelion.jpg"
+          className="absolute top-[40%] right-[-5%] w-[160px] sm:w-[240px] opacity-[0.03] rotate-[20deg]"
+        />
+      </div>
 
       {/* メインコンテンツ */}
       <div className="cta-content relative z-10 text-center px-4 sm:px-6 max-w-2xl w-full">
@@ -428,14 +520,14 @@ function CTASection() {
               AIがあなただけの聖地巡礼プランを作成します。
             </p>
 
-            {/* 旅に出るボタン */}
+            {/* 旅に出るボタン — 白背景で最大コントラスト */}
             <button
               onClick={() => router.push("/plan?theme=pilgrimage")}
               className="cta-button group relative inline-flex items-center gap-3
-                         bg-red-500 text-white text-base sm:text-xl font-black
-                         px-8 sm:px-10 py-4 sm:py-5 border-[3px] border-white/20
-                         shadow-[0_6px_30px_rgba(229,62,62,0.4)]
-                         hover:shadow-[0_10px_50px_rgba(229,62,62,0.6)]
+                         bg-white text-[#0a0a0a] text-base sm:text-xl font-black
+                         px-10 sm:px-14 py-4 sm:py-5 rounded-full
+                         shadow-[0_0_40px_rgba(255,255,255,0.25),0_4px_20px_rgba(0,0,0,0.3)]
+                         hover:shadow-[0_0_60px_rgba(255,255,255,0.4),0_8px_30px_rgba(0,0,0,0.3)]
                          hover:-translate-y-1
                          active:translate-y-0.5 active:scale-[0.98]
                          transition-all duration-200"
@@ -448,7 +540,11 @@ function CTASection() {
                 stroke="currentColor"
                 strokeWidth={3}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"
+                />
               </svg>
             </button>
           </div>
@@ -474,42 +570,104 @@ export default function MangaTopPage({ works }: { works: Work[] }) {
       const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
       heroTl
         .from(".hero-badge", { y: 30, opacity: 0, duration: 0.6 })
-        .from(".hero-title span", { y: 80, opacity: 0, stagger: 0.15, duration: 0.8 }, "-=0.3")
-        .from(".hero-bubble", { y: 30, opacity: 0, scale: 0.9, duration: 0.5 }, "-=0.3")
+        .from(
+          ".hero-title span",
+          { y: 80, opacity: 0, stagger: 0.15, duration: 0.8 },
+          "-=0.3"
+        )
+        .from(
+          ".hero-bubble",
+          { y: 30, opacity: 0, scale: 0.9, duration: 0.5 },
+          "-=0.3"
+        )
+        .from(
+          ".hero-cta",
+          { y: 20, opacity: 0, duration: 0.4 },
+          "-=0.2"
+        )
         .from(".hero-scroll", { opacity: 0, duration: 0.5 }, "-=0.2");
 
       // About
       gsap.from(".about-heading", {
-        scrollTrigger: { trigger: ".about-section", start: "top 80%", toggleActions: "play none none reverse" },
-        x: -80, opacity: 0, duration: 0.8, ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".about-section",
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+        x: -80,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.out",
       });
       gsap.utils.toArray<HTMLElement>(".about-card").forEach((card, i) => {
         gsap.from(card, {
-          scrollTrigger: { trigger: card, start: "top 85%", toggleActions: "play none none reverse" },
-          y: 60, opacity: 0, duration: 0.7, delay: i * 0.12, ease: "power2.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+          y: 60,
+          opacity: 0,
+          duration: 0.7,
+          delay: i * 0.12,
+          ease: "power2.out",
         });
       });
 
       // Gallery
       gsap.from(".gallery-heading", {
-        scrollTrigger: { trigger: ".gallery-section", start: "top 80%", toggleActions: "play none none reverse" },
-        x: -100, opacity: 0, duration: 0.8, ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".gallery-section",
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+        x: -100,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.out",
       });
       gsap.utils.toArray<HTMLElement>(".gallery-card").forEach((card, i) => {
         gsap.from(card, {
-          scrollTrigger: { trigger: card, start: "top 92%", toggleActions: "play none none reverse" },
-          y: 60, opacity: 0, scale: 0.9, duration: 0.5, delay: i * 0.04, ease: "power2.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 92%",
+            toggleActions: "play none none reverse",
+          },
+          y: 60,
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.5,
+          delay: i * 0.04,
+          ease: "power2.out",
         });
       });
 
       // CTA
       const ctaTl = gsap.timeline({
-        scrollTrigger: { trigger: ".cta-section", start: "top 70%", toggleActions: "play none none reverse" },
+        scrollTrigger: {
+          trigger: ".cta-section",
+          start: "top 70%",
+          toggleActions: "play none none reverse",
+        },
       });
       ctaTl
-        .from(".cta-bubble", { y: 60, opacity: 0, scale: 0.9, duration: 0.8, ease: "power2.out" })
-        .from(".cta-heading", { y: 30, opacity: 0, duration: 0.5 }, "-=0.4")
-        .from(".cta-button", { y: 20, opacity: 0, scale: 0.9, duration: 0.4 }, "-=0.2");
+        .from(".cta-bubble", {
+          y: 60,
+          opacity: 0,
+          scale: 0.9,
+          duration: 0.8,
+          ease: "power2.out",
+        })
+        .from(
+          ".cta-heading",
+          { y: 30, opacity: 0, duration: 0.5 },
+          "-=0.4"
+        )
+        .from(
+          ".cta-button",
+          { y: 20, opacity: 0, scale: 0.9, duration: 0.4 },
+          "-=0.2"
+        );
     }, containerRef);
 
     return () => ctx.revert();
