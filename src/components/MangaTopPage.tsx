@@ -523,36 +523,35 @@ function CTASection() {
           </div>
         </div>
 
-        {/* 旅に出るボタン — カードの外に配置して確実に前面表示 */}
-        <div className="relative z-20">
-          <button
-            onClick={() => router.push("/plan?theme=pilgrimage")}
-            className="cta-button group inline-flex items-center gap-3
-                       bg-white text-[#0a0a0a] text-base sm:text-xl font-black
-                       px-10 sm:px-14 py-4 sm:py-5 rounded-full
-                       border-4 border-white
-                       shadow-[0_0_40px_rgba(255,255,255,0.3),0_0_80px_rgba(255,255,255,0.15)]
-                       hover:shadow-[0_0_60px_rgba(255,255,255,0.5),0_0_120px_rgba(255,255,255,0.2)]
-                       hover:-translate-y-1 hover:scale-105
-                       active:translate-y-0.5 active:scale-[0.98]
-                       transition-all duration-200"
+        {/* 旅に出るボタン — GSAPアニメーション対象外、常に表示 */}
+        <button
+          onClick={() => router.push("/plan?theme=pilgrimage")}
+          style={{ opacity: 1, visibility: "visible" }}
+          className="group relative z-20 inline-flex items-center gap-3
+                     bg-red-500 text-white text-base sm:text-xl font-black
+                     px-10 sm:px-14 py-4 sm:py-5 rounded-full
+                     border-2 border-red-400/40
+                     shadow-[0_0_30px_rgba(229,62,62,0.4)]
+                     hover:shadow-[0_0_50px_rgba(229,62,62,0.6)]
+                     hover:bg-red-600 hover:-translate-y-1 hover:scale-105
+                     active:translate-y-0.5 active:scale-[0.98]
+                     transition-all duration-200"
+        >
+          <span>旅に出る</span>
+          <svg
+            className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1.5 transition-transform"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={3}
           >
-            <span>旅に出る</span>
-            <svg
-              className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1.5 transition-transform"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={3}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </button>
-        </div>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+            />
+          </svg>
+        </button>
 
         <p className="text-[9px] sm:text-[10px] text-white/20 font-bold tracking-[0.2em] mt-8 sm:mt-12">
           &copy; 2025 AnimeTrips &mdash; AIがつくるアニメ聖地巡礼プラン
@@ -666,11 +665,6 @@ export default function MangaTopPage({ works }: { works: Work[] }) {
           ".cta-heading",
           { y: 30, opacity: 0, duration: 0.5 },
           "-=0.4"
-        )
-        .from(
-          ".cta-button",
-          { y: 30, opacity: 0, duration: 0.6, ease: "power2.out" },
-          "-=0.1"
         );
     }, containerRef);
 

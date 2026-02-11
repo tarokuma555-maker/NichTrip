@@ -1,19 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { PlanRequest, GeneratedPlan } from "@/lib/types";
 import LoadingAnimation from "./LoadingAnimation";
 import PlanTimeline from "./PlanTimeline";
 
 type Phase = "form" | "loading" | "result" | "error";
 
-const THEME_META: Record<
-  PlanRequest["theme"],
-  { emoji: string; label: string }
-> = {
-  pilgrimage: { emoji: "🎌", label: "アニメ聖地巡礼" },
-  powerspot: { emoji: "⛩", label: "パワースポット巡り" },
-  gourmet: { emoji: "🍜", label: "B級グルメツアー" },
+type WorkItem = {
+  id: string;
+  title: string;
+  title_en: string;
+  genre: string;
+  year: number;
 };
 
 const DAYS_OPTIONS: { label: string; value: number }[] = [
@@ -56,7 +55,41 @@ export default function ConditionForm({
   const [plan, setPlan] = useState<GeneratedPlan | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const themeMeta = THEME_META[theme];
+  // 作品検索用
+  const [allWorks, setAllWorks] = useState<WorkItem[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestRef = useRef<HTMLDivElement>(null);
+
+  // 作品一覧を取得
+  useEffect(() => {
+    fetch("/api/works")
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) setAllWorks(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  // 外側クリックでサジェスト閉じる
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (suggestRef.current && !suggestRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const filteredWorks = allWorks.filter((w) => {
+    if (!keyword.trim()) return true;
+    const q = keyword.toLowerCase();
+    return (
+      w.title.toLowerCase().includes(q) ||
+      w.title_en.toLowerCase().includes(q) ||
+      w.genre.toLowerCase().includes(q)
+    );
+  });
 
   const isReady =
     keyword.trim() !== "" &&
@@ -132,37 +165,75 @@ export default function ConditionForm({
   // ---------- Form / Error ----------
   return (
     <div className="w-full max-w-md mx-auto">
-      {/* テーマ表示 */}
-      <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-6">
-        <span className="text-2xl">{themeMeta.emoji}</span>
-        <div>
-          <p className="text-xs text-white/40">選択中のテーマ</p>
-          <p className="text-sm font-bold text-white">{themeMeta.label}</p>
-        </div>
-      </div>
-
       <div className="space-y-6">
-        {/* 作品名 */}
-        {theme === "pilgrimage" && (
-          <FormSection label="作品名">
-            {work ? (
-              <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-medium">
-                {work}
+        {/* 作品名（検索付き） */}
+        <FormSection label="作品名">
+          {work ? (
+            <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-medium">
+              {work}
+            </div>
+          ) : (
+            <div ref={suggestRef} className="relative">
+              <div className="relative">
+                <svg
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21l-4.35-4.35" />
+                </svg>
+                <input
+                  type="text"
+                  value={keyword}
+                  onChange={(e) => {
+                    setKeyword(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                  onFocus={() => setShowSuggestions(true)}
+                  placeholder="作品名を検索..."
+                  className="w-full bg-white/5 border-2 border-white/10 rounded-xl pl-10 pr-4 py-3
+                             text-white placeholder:text-white/30
+                             focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
+                             transition-colors"
+                />
               </div>
-            ) : (
-              <input
-                type="text"
-                value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
-                placeholder="例: 君の名は。、ゆるキャン△"
-                className="w-full bg-white/5 border-2 border-white/10 rounded-xl px-4 py-3
-                           text-white placeholder:text-white/30
-                           focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
-                           transition-colors"
-              />
-            )}
-          </FormSection>
-        )}
+
+              {/* サジェストドロップダウン */}
+              {showSuggestions && filteredWorks.length > 0 && (
+                <div className="absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-y-auto
+                                bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl">
+                  {filteredWorks.slice(0, 10).map((w) => (
+                    <button
+                      key={w.id}
+                      type="button"
+                      onClick={() => {
+                        setKeyword(w.title);
+                        setShowSuggestions(false);
+                      }}
+                      className="w-full text-left px-4 py-3 flex items-center justify-between
+                                 hover:bg-white/5 transition-colors border-b border-white/5 last:border-b-0"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm text-white font-medium truncate">
+                          {w.title}
+                        </p>
+                        <p className="text-[11px] text-white/30 truncate">
+                          {w.title_en} / {w.genre} / {w.year}
+                        </p>
+                      </div>
+                      <span className="shrink-0 ml-2 text-[10px] text-red-400 font-bold">
+                        選択
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </FormSection>
 
         {/* 出発地 */}
         <FormSection label="出発地">
