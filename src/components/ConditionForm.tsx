@@ -2,8 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import type { PlanRequest, GeneratedPlan } from "@/lib/types";
+import { useAuth } from "@/components/AuthProvider";
 import LoadingAnimation from "./LoadingAnimation";
 import PlanTimeline from "./PlanTimeline";
+import PaywallModal from "./PaywallModal";
+import AuthModal from "./AuthModal";
 
 type Phase = "form" | "loading" | "result" | "error";
 
@@ -46,6 +49,8 @@ export default function ConditionForm({
   theme: PlanRequest["theme"];
   work?: string;
 }) {
+  const { isPro } = useAuth();
+
   const [departure, setDeparture] = useState("東京");
   const [days, setDays] = useState<number | null>(null);
   const [daysCustom, setDaysCustom] = useState("");
@@ -57,9 +62,19 @@ export default function ConditionForm({
   const [companionsChildren, setCompanionsChildren] = useState(0);
   const [keyword, setKeyword] = useState(work ?? "");
 
+  // Pro: 複数作品選択
+  const [selectedWorks, setSelectedWorks] = useState<WorkItem[]>(
+    work ? [] : []
+  );
+
   const [phase, setPhase] = useState<Phase>("form");
   const [plan, setPlan] = useState<GeneratedPlan | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Paywall / Auth modals
+  const [showPaywall, setShowPaywall] = useState(false);
+  const [paywallReason, setPaywallReason] = useState<"usage_limit" | "multi_work">("usage_limit");
+  const [showAuth, setShowAuth] = useState(false);
 
   // 作品検索用
   const [allWorks, setAllWorks] = useState<WorkItem[]>([]);
@@ -119,13 +134,38 @@ export default function ConditionForm({
     companions !== null &&
     (companions !== "custom" || companionsAdults > 0);
 
+  // 作品が選択されているか
+  const hasWork =
+    (isPro && selectedWorks.length > 0) || keyword.trim() !== "";
+
   const isReady =
-    keyword.trim() !== "" &&
+    hasWork &&
     departure.trim() !== "" &&
     effectiveDays !== null &&
     effectiveDays > 0 &&
     isBudgetReady &&
     isCompanionsReady;
+
+  // サジェストから作品を選択
+  function handleSelectWork(w: WorkItem) {
+    if (isPro && !work) {
+      // Pro: 複数作品モード
+      if (selectedWorks.some((sw) => sw.id === w.id)) return;
+      if (selectedWorks.length >= 3) return;
+      setSelectedWorks((prev) => [...prev, w]);
+      setKeyword("");
+      setShowSuggestions(false);
+    } else {
+      // Free: 単一作品
+      setKeyword(w.title);
+      setShowSuggestions(false);
+    }
+  }
+
+  // 選択済み作品を除去
+  function handleRemoveWork(id: string) {
+    setSelectedWorks((prev) => prev.filter((w) => w.id !== id));
+  }
 
   async function handleSubmit() {
     if (!isReady) return;
@@ -134,9 +174,17 @@ export default function ConditionForm({
     setErrorMsg("");
 
     try {
+      const effectiveKeyword =
+        isPro && selectedWorks.length > 0
+          ? selectedWorks[0].title
+          : keyword.trim();
+
       const body: PlanRequest = {
         theme,
-        keyword: keyword.trim(),
+        keyword: effectiveKeyword,
+        ...(isPro && selectedWorks.length > 1 && {
+          keywords: selectedWorks.map((w) => w.title),
+        }),
         departure: departure.trim(),
         days: effectiveDays!,
         budget: budget!,
@@ -159,6 +207,25 @@ export default function ConditionForm({
 
       if (res.status === 429) {
         setErrorMsg("APIのレート制限です。少し待ってからもう一度お試しください。");
+        setPhase("error");
+        return;
+      }
+
+      if (res.status === 403) {
+        const data = await res.json().catch(() => null);
+        if (data?.code === "USAGE_LIMIT_EXCEEDED") {
+          setPaywallReason("usage_limit");
+          setShowPaywall(true);
+          setPhase("form");
+          return;
+        }
+        if (data?.code === "PRO_REQUIRED") {
+          setPaywallReason("multi_work");
+          setShowPaywall(true);
+          setPhase("form");
+          return;
+        }
+        setErrorMsg(data?.error ?? "プランの生成に失敗しました。");
         setPhase("error");
         return;
       }
@@ -211,29 +278,74 @@ export default function ConditionForm({
             </div>
           ) : (
             <div ref={suggestRef} className="relative">
-              <div className="relative">
-                <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <circle cx="11" cy="11" r="8" />
-                  <path d="M21 21l-4.35-4.35" />
-                </svg>
-                <input
-                  type="text"
-                  value={keyword}
-                  onChange={(e) => {
-                    setKeyword(e.target.value);
-                    setShowSuggestions(true);
-                  }}
-                  onFocus={() => setShowSuggestions(true)}
-                  placeholder="作品名を検索..."
-                  className="manga-input w-full pl-10 pr-4 py-3"
-                />
-              </div>
+              {/* Pro: 選択済み作品チップ */}
+              {isPro && selectedWorks.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {selectedWorks.map((w) => (
+                    <span
+                      key={w.id}
+                      className="inline-flex items-center gap-1.5 bg-red-500/10 border-2 border-red-500/30 text-white text-xs font-black px-2.5 py-1"
+                    >
+                      {w.title}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveWork(w.id)}
+                        className="text-red-400 hover:text-white transition-colors"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                  {selectedWorks.length >= 3 && (
+                    <span className="text-[10px] text-white/30 font-bold self-center">
+                      最大3作品
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* 検索入力 */}
+              {(!isPro || selectedWorks.length < 3) && (
+                <div className="relative">
+                  <svg
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                  </svg>
+                  <input
+                    type="text"
+                    value={keyword}
+                    onChange={(e) => {
+                      setKeyword(e.target.value);
+                      setShowSuggestions(true);
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    placeholder={
+                      isPro && selectedWorks.length > 0
+                        ? "さらに作品を追加..."
+                        : "作品名を検索..."
+                    }
+                    className="manga-input w-full pl-10 pr-4 py-3"
+                  />
+                </div>
+              )}
+
+              {/* Pro バッジ（複数作品選択） */}
+              {!isPro && !work && (
+                <div className="mt-2 flex items-center gap-1.5">
+                  <span className="text-[10px] font-black text-red-400 border border-red-500/30 px-1.5 py-0.5">
+                    PRO
+                  </span>
+                  <span className="text-[11px] text-white/30">
+                    複数作品ミックス巡礼
+                  </span>
+                </div>
+              )}
 
               {/* サジェストドロップダウン */}
               {showSuggestions && keyword.trim() && filteredWorks.length > 0 && (
@@ -243,10 +355,7 @@ export default function ConditionForm({
                     <button
                       key={w.id}
                       type="button"
-                      onClick={() => {
-                        setKeyword(w.title);
-                        setShowSuggestions(false);
-                      }}
+                      onClick={() => handleSelectWork(w)}
                       className="w-full text-left px-4 py-3 flex items-center justify-between
                                  hover:bg-red-500/10 transition-colors border-b border-white/5 last:border-b-0"
                     >
@@ -266,8 +375,8 @@ export default function ConditionForm({
                 </div>
               )}
 
-              {/* 作品の確認ステータス */}
-              {keyword.trim() && !showSuggestions && (
+              {/* 作品の確認ステータス（単一作品モード時のみ） */}
+              {!isPro && keyword.trim() && !showSuggestions && (
                 <div className="mt-2">
                   {exactMatch ? (
                     <div className="flex items-center gap-1.5">
@@ -284,6 +393,17 @@ export default function ConditionForm({
                       </span>
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Pro: 選択済み作品がある場合のステータス */}
+              {isPro && selectedWorks.length > 0 && !showSuggestions && (
+                <div className="mt-2 flex items-center gap-1.5">
+                  <span className="w-4 h-4 bg-emerald-500 flex items-center justify-center text-white text-[10px] font-black">✓</span>
+                  <span className="text-xs text-emerald-400 font-bold">
+                    {selectedWorks.length}作品選択済み
+                    {selectedWorks.length > 1 && " — ミックス巡礼プランを生成します"}
+                  </span>
                 </div>
               )}
             </div>
@@ -428,6 +548,26 @@ export default function ConditionForm({
         <p className="mt-2 text-center text-xs text-white/30 font-bold">
           すべての項目を入力すると生成できます
         </p>
+      )}
+
+      {/* Paywall Modal */}
+      {showPaywall && (
+        <PaywallModal
+          reason={paywallReason}
+          onClose={() => setShowPaywall(false)}
+          onLogin={() => {
+            setShowPaywall(false);
+            setShowAuth(true);
+          }}
+        />
+      )}
+
+      {/* Auth Modal */}
+      {showAuth && (
+        <AuthModal
+          onClose={() => setShowAuth(false)}
+          defaultTab="signup"
+        />
       )}
     </div>
   );

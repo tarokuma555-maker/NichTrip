@@ -28,6 +28,7 @@ export type PilgrimageSpot = {
 export type PlanRequest = {
   theme: 'pilgrimage' | 'powerspot' | 'gourmet';
   keyword: string;
+  keywords?: string[]; // 複数作品（Proプラン用）
   departure: string;
   days: number;
   budget: 'low' | 'medium' | 'high' | 'custom';

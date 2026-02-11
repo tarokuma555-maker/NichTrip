@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import PlanPageContent from "./PlanPageContent";
+import PlanPageHeader from "./PlanPageHeader";
 
 export default function PlanPage() {
   return (
@@ -20,6 +21,7 @@ export default function PlanPage() {
           <span className="ml-auto text-base font-black text-white">
             AnimeTrips
           </span>
+          <PlanPageHeader />
         </div>
       </header>
 
