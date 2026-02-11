@@ -280,10 +280,69 @@ function AboutSection() {
 }
 
 /* ================================================================
+   ポスターカード（画像読み込みエラー対応付き）
+   ================================================================ */
+function PosterCard({ work }: { work: Work }) {
+  const router = useRouter();
+  const visual = getWorkVisual(work.title);
+  const [imgError, setImgError] = useState(false);
+
+  return (
+    <button
+      onClick={() =>
+        router.push(
+          `/plan?theme=pilgrimage&work=${encodeURIComponent(work.title)}`
+        )
+      }
+      className="gallery-card group relative overflow-hidden text-left
+                 border-2 sm:border-[3px] border-white/10 hover:border-red-500
+                 shadow-[0_4px_20px_rgba(0,0,0,0.5)]
+                 hover:shadow-[0_8px_40px_rgba(229,62,62,0.3)]
+                 hover:-translate-y-1.5
+                 transition-all duration-300"
+    >
+      <div className="relative aspect-[2/3] overflow-hidden">
+        {/* グラデーション背景（プレースホルダー兼フォールバック） */}
+        <div
+          className={`absolute inset-0 bg-gradient-to-br ${visual.gradient}`}
+        />
+
+        {/* ポスター画像 */}
+        {visual.image && !imgError && (
+          <img
+            src={visual.image}
+            alt={work.title}
+            className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
+            loading="lazy"
+            onError={() => setImgError(true)}
+          />
+        )}
+
+        {/* テキスト用オーバーレイ（下部のみ） */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+
+        <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3">
+          <p className="text-white text-[11px] sm:text-sm font-black drop-shadow-lg leading-tight mb-1">
+            {work.title}
+          </p>
+          <div className="flex items-center justify-between">
+            <span className="text-white/50 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider">
+              {work.genre}
+            </span>
+            <span className="text-red-400 text-[8px] sm:text-[9px] font-black">
+              {work.spotCount}spots
+            </span>
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+/* ================================================================
    Section 3: POSTER GALLERY (50 works with images, shuffled)
    ================================================================ */
 function PosterGallerySection({ works }: { works: Work[] }) {
-  const router = useRouter();
   const [search, setSearch] = useState("");
   const [shuffled, setShuffled] = useState<Work[]>(works);
 
@@ -379,56 +438,9 @@ function PosterGallerySection({ works }: { works: Work[] }) {
       {/* カードグリッド */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
-          {filtered.map((work) => {
-            const visual = getWorkVisual(work.title);
-            return (
-              <button
-                key={work.title}
-                onClick={() =>
-                  router.push(
-                    `/plan?theme=pilgrimage&work=${encodeURIComponent(work.title)}`
-                  )
-                }
-                className="gallery-card group relative overflow-hidden text-left
-                           border-2 sm:border-[3px] border-white/10 hover:border-red-500
-                           shadow-[0_4px_20px_rgba(0,0,0,0.5)]
-                           hover:shadow-[0_8px_40px_rgba(229,62,62,0.3)]
-                           hover:-translate-y-1.5
-                           transition-all duration-300"
-              >
-                <div className="relative aspect-[2/3] overflow-hidden">
-                  {visual.image ? (
-                    <img
-                      src={visual.image}
-                      alt={work.title}
-                      className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div
-                      className={`w-full h-full bg-gradient-to-br ${visual.gradient}`}
-                    />
-                  )}
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
-
-                  <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3">
-                    <p className="text-white text-[11px] sm:text-sm font-black drop-shadow-lg leading-tight mb-1">
-                      {work.title}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-white/40 text-[8px] sm:text-[9px] font-bold uppercase tracking-wider">
-                        {work.genre}
-                      </span>
-                      <span className="text-red-400 text-[8px] sm:text-[9px] font-black">
-                        {work.spotCount}spots
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+          {filtered.map((work) => (
+            <PosterCard key={work.title} work={work} />
+          ))}
         </div>
 
         {filtered.length === 0 && (
