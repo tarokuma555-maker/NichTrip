@@ -1,6 +1,19 @@
 import MangaTopPage from "@/components/MangaTopPage";
 import spotsData from "../../data/pilgrimage-spots.json";
-import { WORK_VISUALS } from "@/lib/work-visuals";
+
+// 人気Top10（ポスター付きカード表示）
+const FEATURED_TITLES = new Set([
+  "進撃の巨人",
+  "鬼滅の刃",
+  "呪術廻戦",
+  "SPY×FAMILY",
+  "葬送のフリーレン",
+  "ONE PIECE",
+  "NARUTO",
+  "推しの子",
+  "チェンソーマン",
+  "君の名は。",
+]);
 
 const allWorks = spotsData.map((w) => ({
   title: w.work_title,
@@ -10,8 +23,8 @@ const allWorks = spotsData.map((w) => ({
   spotCount: w.spots.length,
 }));
 
-const posterWorks = allWorks.filter((w) => w.title in WORK_VISUALS);
-const titleOnlyWorks = allWorks.filter((w) => !(w.title in WORK_VISUALS));
+const posterWorks = allWorks.filter((w) => FEATURED_TITLES.has(w.title));
+const titleOnlyWorks = allWorks.filter((w) => !FEATURED_TITLES.has(w.title));
 
 export default function Home() {
   return (

@@ -454,7 +454,7 @@ function TitleListSection({ works }: { works: Work[] }) {
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
     "2020s": true,
-    "2010s": true,
+    "2010s": false,
     "2000s": false,
     "1990s": false,
   });
