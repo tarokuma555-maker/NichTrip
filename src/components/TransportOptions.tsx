@@ -132,7 +132,11 @@ export default function TransportOptions({
                 チケットを見る
                 <span className="text-[10px]">&rarr;</span>
               </a>
-            ) : null}
+            ) : (
+              <p className="text-[11px] text-white/30 font-bold">
+                各交通会社のサイトで予約できます
+              </p>
+            )}
           </div>
         ))}
       </div>

@@ -236,13 +236,25 @@ export async function POST(request: NextRequest) {
       const workData = queueItem.work_data as any;
       const spotsArr = queueItem.spots_data as any[];
 
-      // 2. anime_works に INSERT
-      const workId = (workData.title_en || workData.title)
+      // 2. ID生成（works/route.tsと同じロジック: スペースをハイフンに）
+      const baseId = (workData.title_en || workData.title)
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '');
+        .replace(/\s+/g, '-');
+      let workId = baseId;
 
-      await admin.from('anime_works').insert({
+      // 重複チェック — 既存IDがあればサフィックス追加
+      const { data: existing } = await admin
+        .from('anime_works')
+        .select('id')
+        .eq('id', workId)
+        .maybeSingle();
+
+      if (existing) {
+        workId = `${baseId}-${Date.now()}`;
+      }
+
+      // 3. anime_works に INSERT
+      const { error: workError } = await admin.from('anime_works').insert({
         id: workId,
         title: workData.title,
         title_en: workData.title_en || '',
@@ -252,7 +264,15 @@ export async function POST(request: NextRequest) {
         description: workData.description || '',
       });
 
-      // 3. pilgrimage_spots に各スポットを INSERT
+      if (workError) {
+        console.error('anime_works insert error:', workError);
+        return NextResponse.json(
+          { error: '作品データの登録に失敗しました' },
+          { status: 500 }
+        );
+      }
+
+      // 4. pilgrimage_spots に各スポットを INSERT
       const spotInserts = spotsArr.map((s: any) => ({
         work_id: workId,
         name: s.name,
@@ -266,9 +286,14 @@ export async function POST(request: NextRequest) {
         tags: [workData.genre || 'TVアニメ'],
       }));
 
-      await admin.from('pilgrimage_spots').insert(spotInserts);
+      const { error: spotsError } = await admin.from('pilgrimage_spots').insert(spotInserts);
 
-      // 4. キューのステータス更新
+      if (spotsError) {
+        console.error('pilgrimage_spots insert error:', spotsError);
+        // 作品は登録済みなのでキューは承認扱いにする
+      }
+
+      // 5. キューのステータス更新
       await admin
         .from('auto_enrichment_queue')
         .update({ status: 'approved', reviewed_at: new Date().toISOString() })

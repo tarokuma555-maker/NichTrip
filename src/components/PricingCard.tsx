@@ -35,6 +35,7 @@ export default function PricingCard({
 }) {
   const { user, isPro } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleCheckout() {
     if (!user) {
@@ -43,14 +44,19 @@ export default function PricingCard({
     }
 
     setLoading(true);
+    setError("");
     try {
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
       const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "決済ページの作成に失敗しました");
+        return;
+      }
       if (data.url) {
         window.location.href = data.url;
       }
     } catch {
-      // エラーはUIで表示
+      setError("通信エラーが発生しました");
     } finally {
       setLoading(false);
     }
@@ -58,21 +64,32 @@ export default function PricingCard({
 
   async function handlePortal() {
     setLoading(true);
+    setError("");
     try {
       const res = await fetch("/api/stripe/portal", { method: "POST" });
       const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "管理ページの読み込みに失敗しました");
+        return;
+      }
       if (data.url) {
         window.location.href = data.url;
       }
     } catch {
-      // エラー
+      setError("通信エラーが発生しました");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto">
+      {error && (
+        <div className="mb-4 bg-red-500/10 border-2 border-red-500/30 px-4 py-3 text-sm text-red-400 font-bold">
+          {error}
+        </div>
+      )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* 無料プラン */}
       <TierCard
         tier="free"
@@ -104,6 +121,7 @@ export default function PricingCard({
         isCurrentPlan={isPro}
         isHighlighted
       />
+      </div>
     </div>
   );
 }

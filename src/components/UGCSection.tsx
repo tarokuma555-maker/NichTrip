@@ -6,6 +6,8 @@ import AuthModal from "@/components/AuthModal";
 import PaywallModal from "@/components/PaywallModal";
 import type { SpotReview, UGCData } from "@/lib/types";
 
+type ReviewResult = { ok: boolean };
+
 type Props = {
   spotName: string;
   workTitle: string;
@@ -99,16 +101,22 @@ export default function UGCSection({
     tips: string;
     bestAngle: string;
     visitedDate: string;
-  }) {
-    const res = await fetch("/api/ugc", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "review", spotName, workTitle, ...review }),
-    });
-    if (res.ok) {
-      setShowReviewForm(false);
-      hasFetched.current = false;
-      fetchUGC();
+  }): Promise<ReviewResult> {
+    try {
+      const res = await fetch("/api/ugc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "review", spotName, workTitle, ...review }),
+      });
+      if (res.ok) {
+        setShowReviewForm(false);
+        hasFetched.current = false;
+        fetchUGC();
+        return { ok: true };
+      }
+      return { ok: false };
+    } catch {
+      return { ok: false };
     }
   }
 
@@ -286,7 +294,7 @@ function ReviewFormModal({
     tips: string;
     bestAngle: string;
     visitedDate: string;
-  }) => Promise<void>;
+  }) => Promise<ReviewResult>;
   onClose: () => void;
 }) {
   const [rating, setRating] = useState(0);
@@ -297,6 +305,8 @@ function ReviewFormModal({
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [uploadError, setUploadError] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -308,6 +318,7 @@ function ReviewFormModal({
     }
 
     setUploading(true);
+    setUploadError(false);
     try {
       const { createSupabaseBrowser } = await import("@/lib/supabase-browser");
       const supabase = createSupabaseBrowser();
@@ -321,9 +332,11 @@ function ReviewFormModal({
           .from("review-photos")
           .getPublicUrl(path);
         setPhotoUrl(urlData.publicUrl);
+      } else {
+        setUploadError(true);
       }
     } catch {
-      // silent
+      setUploadError(true);
     }
     setUploading(false);
   }
@@ -332,7 +345,11 @@ function ReviewFormModal({
     e.preventDefault();
     if (rating === 0) return;
     setSubmitting(true);
-    await onSubmit({ rating, comment, photoUrl, tips, bestAngle, visitedDate });
+    setSubmitError(false);
+    const result = await onSubmit({ rating, comment, photoUrl, tips, bestAngle, visitedDate });
+    if (!result.ok) {
+      setSubmitError(true);
+    }
     setSubmitting(false);
   }
 
@@ -405,15 +422,22 @@ function ReviewFormModal({
                 </button>
               </div>
             ) : (
-              <label className="block w-full py-3 text-center text-xs font-bold text-white/40 border-2 border-dashed border-white/10 hover:border-white/30 cursor-pointer transition-colors">
-                {uploading ? "アップロード中..." : "写真を追加"}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoUpload}
-                  className="hidden"
-                />
-              </label>
+              <>
+                <label className="block w-full py-3 text-center text-xs font-bold text-white/40 border-2 border-dashed border-white/10 hover:border-white/30 cursor-pointer transition-colors">
+                  {uploading ? "アップロード中..." : "写真を追加"}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoUpload}
+                    className="hidden"
+                  />
+                </label>
+                {uploadError && (
+                  <p className="text-[11px] text-red-400 font-bold mt-1">
+                    写真のアップロードに失敗しました
+                  </p>
+                )}
+              </>
             )}
           </div>
 
@@ -457,6 +481,13 @@ function ReviewFormModal({
               className="manga-input w-full px-3 py-2.5"
             />
           </div>
+
+          {/* エラー */}
+          {submitError && (
+            <p className="text-xs text-red-400 font-bold bg-red-500/10 border border-red-500/30 px-3 py-2">
+              投稿に失敗しました。もう一度お試しください。
+            </p>
+          )}
 
           {/* 送信 */}
           <button

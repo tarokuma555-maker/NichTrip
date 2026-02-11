@@ -59,7 +59,7 @@ export default function HotelSuggestions({
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="w-60 shrink-0 bg-white/5 border-2 border-white/10 animate-pulse"
+              className="w-52 sm:w-60 shrink-0 bg-white/5 border-2 border-white/10 animate-pulse"
             >
               <div className="h-28 bg-white/10" />
               <div className="p-3 space-y-2">
@@ -83,7 +83,7 @@ export default function HotelSuggestions({
         {hotels.map((hotel, idx) => (
           <div
             key={idx}
-            className="w-60 shrink-0 bg-white/5 border-2 border-white/10 overflow-hidden"
+            className="w-52 sm:w-60 shrink-0 bg-white/5 border-2 border-white/10 overflow-hidden"
           >
             {/* サムネイル */}
             {hotel.imageUrl ? (
