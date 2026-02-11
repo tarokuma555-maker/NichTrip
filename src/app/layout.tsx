@@ -9,7 +9,7 @@ const geistSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "NichTrip AI - AIがつくるニッチ旅プラン",
+  title: "NichTrip - AIがつくるニッチ旅プラン",
   description:
     "アニメ聖地巡礼・パワースポット・B級グルメ。テーマを選ぶだけで、AIがあなただけのニッチ旅を作ります。",
 };

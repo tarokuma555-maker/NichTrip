@@ -1,5 +1,5 @@
 -- ============================================
--- NichTrip AI - Initial Migration
+-- NichTrip - Initial Migration
 -- ============================================
 
 -- UUID生成の有効化

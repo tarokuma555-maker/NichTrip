@@ -1,4 +1,4 @@
-# NichTrip AI
+# NichTrip
 
 テーマを選ぶだけで、AIがあなただけのニッチ旅を作る。
 

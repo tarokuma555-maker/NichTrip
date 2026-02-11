@@ -28,7 +28,7 @@ export default function PlanPage() {
             <span className="text-sm font-medium">トップへ</span>
           </Link>
           <span className="ml-auto text-base font-bold text-navy">
-            🗺️ NichTrip AI
+            🗺️ NichTrip
           </span>
         </div>
       </header>

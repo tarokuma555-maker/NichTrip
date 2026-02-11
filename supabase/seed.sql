@@ -1,5 +1,5 @@
 -- ============================================
--- NichTrip AI - Seed Data
+-- NichTrip - Seed Data
 -- data/pilgrimage-spots.json から生成
 -- ============================================
 

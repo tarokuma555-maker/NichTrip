@@ -31,22 +31,22 @@ export default function PopularWorks({ works }: { works: Work[] }) {
       <button
         onClick={() => scroll("left")}
         aria-label="左にスクロール"
-        className="hidden sm:flex absolute -left-4 top-1/2 -translate-y-1/2 z-10
-                   w-10 h-10 rounded-full bg-white border border-warm-200 shadow-lg
-                   items-center justify-center hover:bg-warm-100 transition-colors"
+        className="hidden sm:flex absolute -left-5 top-1/2 -translate-y-1/2 z-10
+                   w-11 h-11 rounded-full bg-white border-2 border-navy/20 shadow-lg
+                   items-center justify-center hover:bg-navy hover:text-white hover:border-navy transition-all duration-200"
       >
-        <svg className="w-5 h-5 text-navy" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
       <button
         onClick={() => scroll("right")}
         aria-label="右にスクロール"
-        className="hidden sm:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10
-                   w-10 h-10 rounded-full bg-white border border-warm-200 shadow-lg
-                   items-center justify-center hover:bg-warm-100 transition-colors"
+        className="hidden sm:flex absolute -right-5 top-1/2 -translate-y-1/2 z-10
+                   w-11 h-11 rounded-full bg-white border-2 border-navy/20 shadow-lg
+                   items-center justify-center hover:bg-navy hover:text-white hover:border-navy transition-all duration-200"
       >
-        <svg className="w-5 h-5 text-navy" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
         </svg>
       </button>
@@ -54,7 +54,7 @@ export default function PopularWorks({ works }: { works: Work[] }) {
       {/* カルーセル */}
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto hide-scrollbar snap-x snap-mandatory pb-2 -mx-1 px-1"
+        className="flex gap-5 overflow-x-auto hide-scrollbar snap-x snap-mandatory pb-3 -mx-1 px-1"
       >
         {works.map((work) => {
           const visual = getWorkVisual(work.title);
@@ -67,62 +67,68 @@ export default function PopularWorks({ works }: { works: Work[] }) {
                   `/plan?theme=pilgrimage&work=${encodeURIComponent(work.title)}`
                 )
               }
-              className="snap-start shrink-0 w-56 rounded-2xl overflow-hidden bg-white
-                         border-2 border-navy/15
-                         shadow-[3px_3px_0px_0px_rgba(26,54,93,0.12)]
-                         hover:shadow-[5px_5px_0px_0px_rgba(26,54,93,0.18)]
+              className="group snap-start shrink-0 w-52 rounded-xl overflow-hidden bg-white
+                         border-[3px] border-navy/20
+                         shadow-[4px_4px_0px_0px_rgba(26,54,93,0.15)]
+                         hover:shadow-[6px_6px_0px_0px_rgba(26,54,93,0.25)]
                          hover:-translate-x-0.5 hover:-translate-y-1
+                         hover:border-accent
                          transition-all duration-200 text-left"
             >
-              {/* ポスター風ヘッダー（5層構造） */}
-              <div className="relative h-36 overflow-hidden">
-                {/* Layer 1: ベースグラデーション */}
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${visual.gradient}`}
-                />
+              {/* ポスター画像ヘッダー */}
+              <div className="relative h-64 overflow-hidden">
+                {/* ポスター画像 */}
+                {visual.image ? (
+                  <img
+                    src={visual.image}
+                    alt={work.title}
+                    className="absolute inset-0 w-full h-full object-cover
+                               group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${visual.gradient}`}
+                  />
+                )}
 
-                {/* Layer 2: SVGパターンオーバーレイ */}
+                {/* SVGパターンオーバーレイ */}
                 <div
-                  className="absolute inset-0 opacity-60"
+                  className="absolute inset-0 opacity-30"
                   style={{
                     backgroundImage: visual.patternSvg,
                     backgroundRepeat: "repeat",
                   }}
                 />
 
-                {/* Layer 3: 中央アイコン（glow付き） */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span
-                    className="text-5xl drop-shadow-lg"
-                    style={{
-                      filter: `drop-shadow(0 0 20px ${visual.glowColor}) drop-shadow(0 0 40px ${visual.glowColor})`,
-                    }}
-                  >
-                    {visual.icon}
-                  </span>
+                {/* 下部グラデーションフェード */}
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+                {/* 作品名テキスト */}
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <p className="text-white text-sm font-extrabold drop-shadow-lg leading-tight">
+                    {work.title}
+                  </p>
+                  <p className="text-white/60 text-[10px] mt-0.5 drop-shadow">
+                    {work.title_en}
+                  </p>
                 </div>
 
-                {/* Layer 4: 下部フェード */}
-                <div className="absolute bottom-0 left-0 right-0 h-14 bg-gradient-to-t from-black/60 to-transparent" />
-
-                {/* Layer 5: 作品名テキスト */}
-                <span className="absolute bottom-2 left-3 right-3 text-white text-sm font-bold drop-shadow-md leading-tight">
-                  {work.title}
-                </span>
+                {/* スポット数バッジ */}
+                <div className="absolute top-2 right-2 bg-accent text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
+                  {work.spotCount} spots
+                </div>
               </div>
 
               {/* カード本文 */}
-              <div className="p-4">
-                <p className="text-xs text-navy/40 mb-1">{work.title_en}</p>
-                <div className="flex items-center gap-2 text-xs text-navy/60">
-                  <span className="bg-warm-100 px-2 py-0.5 rounded-full">
+              <div className="p-3 bg-white">
+                <div className="flex items-center justify-between">
+                  <span className="bg-navy/5 text-navy/70 text-[11px] font-semibold px-2.5 py-1 rounded-full border border-navy/10">
                     {work.genre}
                   </span>
-                  <span>{work.year}</span>
+                  <span className="text-[11px] text-navy/40 font-medium">
+                    {work.year}
+                  </span>
                 </div>
-                <p className="mt-2 text-xs text-sub font-medium">
-                  {work.spotCount} スポット収録
-                </p>
               </div>
             </button>
           );

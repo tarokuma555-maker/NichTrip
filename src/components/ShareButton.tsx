@@ -143,7 +143,7 @@ function ShareCard({
             marginBottom: 8,
           }}
         >
-          🗺️ NichTrip AI
+          🗺️ NichTrip
         </div>
         <div
           style={{
