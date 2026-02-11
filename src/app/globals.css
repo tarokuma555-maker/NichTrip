@@ -200,3 +200,11 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* フォーム入力（漫画風） */
+.manga-input {
+  @apply bg-white/5 border-2 border-white/10 text-white text-sm font-medium
+         placeholder:text-white/30
+         focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
+         transition-colors;
+}

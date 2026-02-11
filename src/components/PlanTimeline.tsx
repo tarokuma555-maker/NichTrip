@@ -93,7 +93,7 @@ function TransportConnector({
     <div className="flex items-start gap-2 py-2 pl-3">
       <span className="text-base">{info.icon}</span>
       <div className="min-w-0">
-        <span className="text-xs text-white/60 font-medium">{info.text}</span>
+        <span className="text-xs text-white/60 font-bold">{info.text}</span>
         {mode === "train" && info.detail !== info.text && (
           <p className="text-[11px] text-white/30 mt-0.5 leading-relaxed break-all">
             {info.detail}
@@ -156,10 +156,10 @@ export default function PlanTimeline({
     <div className="w-full max-w-2xl mx-auto">
       {/* ===== プランヘッダー ===== */}
       <div className="text-center mb-10">
-        <p className="inline-block bg-red-500/10 text-red-400 text-xs font-bold px-3 py-1 rounded-full mb-3">
+        <p className="inline-block bg-red-500/10 text-red-400 text-xs font-black px-3 py-1 border-2 border-red-500/30 mb-3">
           AI Generated Plan
         </p>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3 leading-tight">
+        <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 leading-tight">
           {plan.title}
         </h2>
         <p className="text-sm text-white/50 leading-relaxed max-w-md mx-auto">
@@ -175,7 +175,7 @@ export default function PlanTimeline({
 
       {/* ===== 移動手段タブ ===== */}
       <div className="mb-8">
-        <p className="text-xs text-white/40 font-bold uppercase tracking-wider mb-3">
+        <p className="text-xs text-white/40 font-black uppercase tracking-wider mb-3">
           Transport Mode
         </p>
         <div className="flex gap-2 overflow-x-auto hide-scrollbar">
@@ -183,11 +183,11 @@ export default function PlanTimeline({
             <button
               key={m.key}
               onClick={() => setTransportMode(m.key)}
-              className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-150
+              className={`shrink-0 flex items-center gap-1.5 px-4 py-2 text-sm font-bold transition-all duration-150 border-2
                 ${
                   transportMode === m.key
-                    ? "bg-red-500 text-white shadow-md shadow-red-500/20"
-                    : "bg-white/5 border border-white/10 text-white/60 hover:text-white hover:border-white/30"
+                    ? "bg-red-500 text-white border-red-400/50 shadow-[3px_3px_0_rgba(0,0,0,0.3)]"
+                    : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:border-white/30"
                 }
               `}
             >
@@ -204,16 +204,16 @@ export default function PlanTimeline({
           <div key={day.day}>
             {/* Day ヘッダー */}
             <div className="flex items-center gap-3 mb-5">
-              <div className="shrink-0 w-20 h-9 rounded-full bg-white text-[#0a0a0a] text-sm font-bold flex items-center justify-center">
+              <div className="shrink-0 px-5 h-9 bg-white text-[#0a0a0a] text-sm font-black flex items-center justify-center shadow-[3px_3px_0_rgba(229,62,62,0.4)]">
                 Day {day.day}
               </div>
-              <h3 className="text-lg font-bold text-white">{day.title}</h3>
+              <h3 className="text-lg font-black text-white">{day.title}</h3>
             </div>
 
             {/* タイムライン本体 */}
             <div className="relative ml-4 sm:ml-6">
               {/* 縦線 */}
-              <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-white/10 rounded-full" />
+              <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-white/10" />
 
               <div className="pl-8 sm:pl-10 space-y-0">
                 {day.spots.map((spot, spotIdx) => {
@@ -227,7 +227,7 @@ export default function PlanTimeline({
                       {/* ドット */}
                       <div className="relative">
                         <div
-                          className={`absolute -left-8 sm:-left-10 top-5 w-4 h-4 rounded-full border-[3px] border-[#0a0a0a] ${
+                          className={`absolute -left-8 sm:-left-10 top-5 w-4 h-4 border-[3px] border-[#0a0a0a] ${
                             spotIdx === 0 ? "bg-red-500" : "bg-white"
                           }`}
                           style={{
@@ -247,7 +247,7 @@ export default function PlanTimeline({
                       {!isLast && nextSpot && (
                         <div className="relative">
                           <div
-                            className="absolute -left-8 sm:-left-10 top-1/2 w-2 h-2 rounded-full bg-white/10"
+                            className="absolute -left-8 sm:-left-10 top-1/2 w-2 h-2 bg-white/10"
                             style={{
                               transform:
                                 "translateX(calc(-50% + 1px)) translateY(-50%)",
@@ -266,7 +266,7 @@ export default function PlanTimeline({
 
               {/* 終端ドット */}
               <div
-                className="absolute -left-0 bottom-0 w-2 h-2 rounded-full bg-white/20"
+                className="absolute -left-0 bottom-0 w-2 h-2 bg-white/20"
                 style={{ transform: "translateX(calc(-50% + 1px))" }}
               />
             </div>
@@ -274,9 +274,9 @@ export default function PlanTimeline({
             {/* Day 間の区切り */}
             {dayIdx < plan.days.length - 1 && (
               <div className="flex items-center gap-3 mt-6 ml-4 sm:ml-6 pl-8 sm:pl-10">
-                <div className="flex-1 border-t border-dashed border-white/10" />
-                <span className="text-xs text-white/30 shrink-0">🏨 宿泊</span>
-                <div className="flex-1 border-t border-dashed border-white/10" />
+                <div className="flex-1 border-t-2 border-dashed border-white/10" />
+                <span className="text-xs text-white/30 shrink-0 font-bold">🏨 宿泊</span>
+                <div className="flex-1 border-t-2 border-dashed border-white/10" />
               </div>
             )}
           </div>
@@ -285,7 +285,7 @@ export default function PlanTimeline({
 
       {/* ===== マップ ===== */}
       <div ref={mapRef} className="mt-12">
-        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
           <span>🗺️</span>
           ルートマップ
           <span className="text-xs font-normal text-white/40 ml-2">
@@ -305,7 +305,7 @@ export default function PlanTimeline({
             {dayGroups.map((_, i) => (
               <div key={i} className="flex items-center gap-1.5 text-xs text-white/50">
                 <span
-                  className="w-3 h-3 rounded-full"
+                  className="w-3 h-3"
                   style={{
                     backgroundColor: [
                       "#E53E3E",
@@ -325,7 +325,7 @@ export default function PlanTimeline({
 
       {/* ===== シェア ===== */}
       <div className="mt-12">
-        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
           <span>📤</span>
           プランを共有
         </h3>
@@ -336,8 +336,9 @@ export default function PlanTimeline({
       <div className="mt-8 space-y-3">
         <button
           onClick={onReset}
-          className="w-full py-3.5 rounded-2xl border-2 border-white/20 text-white/60 font-bold
-                     hover:bg-white/5 hover:text-white hover:border-white/40 transition-all duration-200"
+          className="w-full py-3.5 border-2 border-white/20 text-white/60 font-black
+                     hover:bg-white/5 hover:text-white hover:border-white/40 transition-all duration-200
+                     shadow-[3px_3px_0_rgba(255,255,255,0.05)]"
         >
           条件を変えてもう一度作る
         </button>
@@ -350,7 +351,7 @@ export default function PlanTimeline({
 
 function MetaBadge({ emoji, text }: { emoji: string; text: string }) {
   return (
-    <span className="inline-flex items-center gap-1.5 bg-white/5 text-white/60 text-xs font-medium px-3 py-1.5 rounded-full">
+    <span className="inline-flex items-center gap-1.5 bg-white/5 text-white/60 text-xs font-bold px-3 py-1.5 border border-white/10">
       <span>{emoji}</span>
       <span>{text}</span>
     </span>

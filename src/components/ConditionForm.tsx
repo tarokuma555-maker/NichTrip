@@ -204,9 +204,9 @@ export default function ConditionForm({
     <div className="w-full max-w-md mx-auto">
       <div className="space-y-6">
         {/* 作品名（検索付き） */}
-        <FormSection label="作品名">
+        <FormSection label="作品名" icon="🎬">
           {work ? (
-            <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-medium">
+            <div className="manga-input px-4 py-3 text-white font-bold">
               {work}
             </div>
           ) : (
@@ -231,17 +231,14 @@ export default function ConditionForm({
                   }}
                   onFocus={() => setShowSuggestions(true)}
                   placeholder="作品名を検索..."
-                  className="w-full bg-white/5 border-2 border-white/10 rounded-xl pl-10 pr-4 py-3
-                             text-white placeholder:text-white/30
-                             focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
-                             transition-colors"
+                  className="manga-input w-full pl-10 pr-4 py-3"
                 />
               </div>
 
               {/* サジェストドロップダウン */}
-              {showSuggestions && filteredWorks.length > 0 && (
+              {showSuggestions && keyword.trim() && filteredWorks.length > 0 && (
                 <div className="absolute z-50 left-0 right-0 mt-1 max-h-60 overflow-y-auto
-                                bg-[#1a1a1a] border border-white/10 rounded-xl shadow-xl">
+                                bg-[#111] border-2 border-white/20 shadow-[4px_4px_0_rgba(229,62,62,0.3)]">
                   {filteredWorks.slice(0, 10).map((w) => (
                     <button
                       key={w.id}
@@ -251,17 +248,17 @@ export default function ConditionForm({
                         setShowSuggestions(false);
                       }}
                       className="w-full text-left px-4 py-3 flex items-center justify-between
-                                 hover:bg-white/5 transition-colors border-b border-white/5 last:border-b-0"
+                                 hover:bg-red-500/10 transition-colors border-b border-white/5 last:border-b-0"
                     >
                       <div className="min-w-0">
-                        <p className="text-sm text-white font-medium truncate">
+                        <p className="text-sm text-white font-bold truncate">
                           {w.title}
                         </p>
                         <p className="text-[11px] text-white/30 truncate">
                           {w.title_en} / {w.genre} / {w.year}
                         </p>
                       </div>
-                      <span className="shrink-0 ml-2 text-[10px] text-red-400 font-bold">
+                      <span className="shrink-0 ml-2 text-[10px] text-red-400 font-black border border-red-500/30 px-2 py-0.5">
                         選択
                       </span>
                     </button>
@@ -274,16 +271,16 @@ export default function ConditionForm({
                 <div className="mt-2">
                   {exactMatch ? (
                     <div className="flex items-center gap-1.5">
-                      <span className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[10px]">✓</span>
-                      <span className="text-xs text-emerald-400 font-medium">
+                      <span className="w-4 h-4 bg-emerald-500 flex items-center justify-center text-white text-[10px] font-black">✓</span>
+                      <span className="text-xs text-emerald-400 font-bold">
                         「{exactMatch.title}」（{exactMatch.genre} / {exactMatch.year}年）
                       </span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-1.5">
-                      <span className="w-4 h-4 rounded-full bg-yellow-500/80 flex items-center justify-center text-black text-[10px] font-bold">!</span>
+                      <span className="w-4 h-4 bg-yellow-500/80 flex items-center justify-center text-black text-[10px] font-black">!</span>
                       <span className="text-xs text-yellow-400/80">
-                        データベース未登録の作品です（AIが自動で聖地を検索します）
+                        データベース未登録（AIが自動で聖地を検索します）
                       </span>
                     </div>
                   )}
@@ -294,21 +291,18 @@ export default function ConditionForm({
         </FormSection>
 
         {/* 出発地 */}
-        <FormSection label="出発地">
+        <FormSection label="出発地" icon="📍">
           <input
             type="text"
             value={departure}
             onChange={(e) => setDeparture(e.target.value)}
             placeholder="東京"
-            className="w-full bg-white/5 border-2 border-white/10 rounded-xl px-4 py-3
-                       text-white placeholder:text-white/30
-                       focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
-                       transition-colors"
+            className="manga-input w-full px-4 py-3"
           />
         </FormSection>
 
         {/* 日数 */}
-        <FormSection label="日数">
+        <FormSection label="日数" icon="📅">
           <ChipGroup
             options={DAYS_OPTIONS.map((o) => ({
               key: String(o.value),
@@ -325,19 +319,16 @@ export default function ConditionForm({
                 max="365"
                 value={daysCustom}
                 onChange={(e) => setDaysCustom(e.target.value)}
-                placeholder="日数を入力"
-                className="w-28 bg-white/5 border-2 border-white/10 rounded-xl px-3 py-2.5
-                           text-white text-sm placeholder:text-white/30
-                           focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
-                           transition-colors"
+                placeholder="日数"
+                className="manga-input w-24 px-3 py-2.5 text-center"
               />
-              <span className="text-sm text-white/50">日間</span>
+              <span className="text-sm text-white/50 font-bold">日間</span>
             </div>
           )}
         </FormSection>
 
         {/* 予算 */}
-        <FormSection label="予算">
+        <FormSection label="予算" icon="💰">
           <ChipGroup
             options={[
               ...BUDGET_OPTIONS.map((o) => ({
@@ -358,12 +349,9 @@ export default function ConditionForm({
                 value={budgetMin}
                 onChange={(e) => setBudgetMin(e.target.value)}
                 placeholder="下限"
-                className="w-24 bg-white/5 border-2 border-white/10 rounded-xl px-3 py-2.5
-                           text-white text-sm placeholder:text-white/30
-                           focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
-                           transition-colors"
+                className="manga-input w-24 px-3 py-2.5 text-center"
               />
-              <span className="text-sm text-white/40">〜</span>
+              <span className="text-sm text-white/40 font-black">〜</span>
               <input
                 type="number"
                 min="0"
@@ -371,18 +359,15 @@ export default function ConditionForm({
                 value={budgetMax}
                 onChange={(e) => setBudgetMax(e.target.value)}
                 placeholder="上限"
-                className="w-24 bg-white/5 border-2 border-white/10 rounded-xl px-3 py-2.5
-                           text-white text-sm placeholder:text-white/30
-                           focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
-                           transition-colors"
+                className="manga-input w-24 px-3 py-2.5 text-center"
               />
-              <span className="text-sm text-white/50">円</span>
+              <span className="text-sm text-white/50 font-bold">円</span>
             </div>
           )}
         </FormSection>
 
         {/* 同行者 */}
-        <FormSection label="同行者">
+        <FormSection label="同行者" icon="👥">
           <ChipGroup
             options={[
               ...COMPANIONS_OPTIONS.map((o) => ({
@@ -398,52 +383,18 @@ export default function ConditionForm({
           />
           {companions === "custom" && (
             <div className="mt-3 flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-white/70 w-12 shrink-0">大人</span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setCompanionsAdults(Math.max(1, companionsAdults - 1))}
-                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-white/70
-                               hover:border-white/30 flex items-center justify-center text-lg"
-                  >
-                    -
-                  </button>
-                  <span className="w-8 text-center text-white font-bold">{companionsAdults}</span>
-                  <button
-                    type="button"
-                    onClick={() => setCompanionsAdults(companionsAdults + 1)}
-                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-white/70
-                               hover:border-white/30 flex items-center justify-center text-lg"
-                  >
-                    +
-                  </button>
-                  <span className="text-sm text-white/40">人</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-white/70 w-12 shrink-0">子供</span>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setCompanionsChildren(Math.max(0, companionsChildren - 1))}
-                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-white/70
-                               hover:border-white/30 flex items-center justify-center text-lg"
-                  >
-                    -
-                  </button>
-                  <span className="w-8 text-center text-white font-bold">{companionsChildren}</span>
-                  <button
-                    type="button"
-                    onClick={() => setCompanionsChildren(companionsChildren + 1)}
-                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 text-white/70
-                               hover:border-white/30 flex items-center justify-center text-lg"
-                  >
-                    +
-                  </button>
-                  <span className="text-sm text-white/40">人</span>
-                </div>
-              </div>
+              <CounterRow
+                label="大人"
+                value={companionsAdults}
+                min={1}
+                onChange={setCompanionsAdults}
+              />
+              <CounterRow
+                label="子供"
+                value={companionsChildren}
+                min={0}
+                onChange={setCompanionsChildren}
+              />
             </div>
           )}
         </FormSection>
@@ -451,7 +402,7 @@ export default function ConditionForm({
 
       {/* エラーメッセージ */}
       {phase === "error" && errorMsg && (
-        <div className="mt-6 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-sm text-red-400">
+        <div className="mt-6 bg-red-500/10 border-2 border-red-500/30 px-4 py-3 text-sm text-red-400 font-bold">
           {errorMsg}
         </div>
       )}
@@ -461,11 +412,12 @@ export default function ConditionForm({
         onClick={handleSubmit}
         disabled={!isReady}
         className={`
-          mt-8 w-full py-4 rounded-2xl text-base font-bold transition-all duration-200
+          mt-8 w-full py-4 text-base font-black tracking-wider transition-all duration-200
+          border-2
           ${
             isReady
-              ? "bg-red-500 text-white shadow-lg shadow-red-500/25 hover:bg-red-600 hover:shadow-xl active:scale-[0.98]"
-              : "bg-white/10 text-white/30 cursor-not-allowed"
+              ? "bg-red-500 text-white border-red-400/50 shadow-[4px_4px_0_rgba(0,0,0,0.4)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.4)] hover:translate-x-0.5 hover:translate-y-0.5 active:shadow-none active:translate-x-1 active:translate-y-1"
+              : "bg-white/10 text-white/30 border-white/10 cursor-not-allowed"
           }
         `}
       >
@@ -473,7 +425,7 @@ export default function ConditionForm({
       </button>
 
       {!isReady && (
-        <p className="mt-2 text-center text-xs text-white/30">
+        <p className="mt-2 text-center text-xs text-white/30 font-bold">
           すべての項目を入力すると生成できます
         </p>
       )}
@@ -485,14 +437,17 @@ export default function ConditionForm({
 
 function FormSection({
   label,
+  icon,
   children,
 }: {
   label: string;
+  icon: string;
   children: React.ReactNode;
 }) {
   return (
     <div>
-      <label className="block text-sm font-semibold text-white mb-2">
+      <label className="flex items-center gap-1.5 text-sm font-black text-white mb-2 tracking-wide">
+        <span className="text-base">{icon}</span>
         {label}
       </label>
       {children}
@@ -519,11 +474,11 @@ function ChipGroup({
             type="button"
             onClick={() => onSelect(opt.key)}
             className={`
-              px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-150
+              px-4 py-2.5 text-sm font-bold transition-all duration-150 border-2
               ${
                 active
-                  ? "bg-red-500 text-white shadow-md shadow-red-500/20"
-                  : "bg-white/5 border border-white/10 text-white/70 hover:border-white/30 hover:text-white"
+                  ? "bg-red-500 text-white border-red-400/50 shadow-[3px_3px_0_rgba(0,0,0,0.3)]"
+                  : "bg-white/5 border-white/10 text-white/70 hover:border-white/30 hover:text-white"
               }
             `}
           >
@@ -531,6 +486,44 @@ function ChipGroup({
           </button>
         );
       })}
+    </div>
+  );
+}
+
+function CounterRow({
+  label,
+  value,
+  min,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="text-sm text-white/70 w-12 shrink-0 font-bold">{label}</span>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => onChange(Math.max(min, value - 1))}
+          className="w-8 h-8 bg-white/5 border-2 border-white/10 text-white/70
+                     hover:border-white/30 flex items-center justify-center text-lg font-black"
+        >
+          -
+        </button>
+        <span className="w-8 text-center text-white font-black">{value}</span>
+        <button
+          type="button"
+          onClick={() => onChange(value + 1)}
+          className="w-8 h-8 bg-white/5 border-2 border-white/10 text-white/70
+                     hover:border-white/30 flex items-center justify-center text-lg font-black"
+        >
+          +
+        </button>
+        <span className="text-sm text-white/40 font-bold">人</span>
+      </div>
     </div>
   );
 }

@@ -22,24 +22,24 @@ export default function SpotCard({
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") setOpen((v) => !v);
       }}
-      className="w-full text-left bg-white/5 rounded-2xl border border-white/10
-                 hover:bg-white/[0.07] transition-colors duration-200 cursor-pointer"
+      className="w-full text-left bg-white/5 border-2 border-white/10
+                 hover:bg-white/[0.07] hover:border-white/20 transition-all duration-200 cursor-pointer"
     >
       {/* ===== ヘッダー（常に表示） ===== */}
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-start gap-3">
-          {/* 番号バッジ */}
-          <span className="shrink-0 w-7 h-7 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">
+          {/* 番号バッジ（四角） */}
+          <span className="shrink-0 w-7 h-7 bg-red-500 text-white text-xs font-black flex items-center justify-center mt-0.5 shadow-[2px_2px_0_rgba(0,0,0,0.3)]">
             {index}
           </span>
 
           <div className="flex-1 min-w-0">
             {/* スポット名 + 滞在時間 */}
             <div className="flex items-start justify-between gap-2">
-              <h4 className="text-base font-bold text-white leading-snug">
+              <h4 className="text-base font-black text-white leading-snug">
                 {spot.name}
               </h4>
-              <span className="shrink-0 flex items-center gap-1 text-xs text-white/50 bg-white/5 px-2 py-1 rounded-full">
+              <span className="shrink-0 flex items-center gap-1 text-xs text-white/50 bg-white/5 border border-white/10 px-2 py-1 font-bold">
                 <ClockIcon />
                 {spot.stay_minutes}分
               </span>
@@ -57,7 +57,7 @@ export default function SpotCard({
                     onLocate();
                   }}
                   className="shrink-0 flex items-center gap-0.5 text-[11px] text-red-400 hover:text-red-300
-                             font-medium transition-colors"
+                             font-black transition-colors border border-red-500/30 px-1.5 py-0.5"
                   aria-label="地図で表示"
                 >
                   <PinIcon />
@@ -68,8 +68,8 @@ export default function SpotCard({
 
             {/* アニメシーン（プレビュー1行） */}
             {spot.anime_scene && !open && (
-              <p className="text-xs text-red-400/70 mt-2 truncate">
-                🎬 {spot.anime_scene}
+              <p className="text-xs text-red-400/70 mt-2 truncate font-bold">
+                {spot.anime_scene}
               </p>
             )}
           </div>
@@ -98,41 +98,54 @@ export default function SpotCard({
         <div className="overflow-hidden">
           <div className="px-4 pb-4 space-y-3">
             {/* 区切り線 */}
-            <div className="border-t border-white/10" />
+            <div className="border-t-2 border-white/10" />
 
-            {/* アニメシーン */}
+            {/* アニメシーン + 差し絵 */}
             {spot.anime_scene && (
-              <div className="bg-red-500/10 border border-red-500/10 rounded-xl p-3">
-                <div className="flex items-start gap-2">
-                  <span className="text-sm mt-px">🎬</span>
-                  <div>
-                    <p className="text-sm font-medium text-red-400 leading-relaxed">
-                      {spot.anime_scene}
-                    </p>
-                    {spot.episode && (
-                      <p className="text-xs text-white/40 mt-1">
-                        📺 {spot.episode}
+              <div className="bg-red-500/10 border-2 border-red-500/20 p-3">
+                {/* 差し絵イラスト（漫画コマ風） */}
+                <div className="relative w-full h-32 mb-3 bg-black/40 border-2 border-white/10 overflow-hidden">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {/* 集中線背景 */}
+                    <div className="absolute inset-0 speed-lines-bg opacity-20" />
+                    {/* シーン描写テキスト */}
+                    <div className="relative text-center px-4">
+                      <p className="text-xs text-white/30 font-black tracking-wider mb-1">
+                        SCENE
                       </p>
-                    )}
+                      <p className="text-sm text-white/80 font-bold leading-relaxed">
+                        {spot.anime_scene}
+                      </p>
+                      {spot.episode && (
+                        <p className="text-[11px] text-red-400/60 mt-1 font-bold">
+                          {spot.episode}
+                        </p>
+                      )}
+                    </div>
                   </div>
+                  {/* コマ枠の角装飾 */}
+                  <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-red-500/40" />
+                  <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-red-500/40" />
+                  <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-red-500/40" />
+                  <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-red-500/40" />
                 </div>
               </div>
             )}
 
             {/* アクセス */}
-            <DetailRow emoji="🚃" label="アクセス" value={spot.access} />
+            <DetailRow icon="🚃" label="アクセス" value={spot.access} />
 
             {/* ヒント */}
-            <DetailRow emoji="💡" label="ヒント" value={spot.tips} />
+            <DetailRow icon="💡" label="ヒント" value={spot.tips} />
 
             {/* グルメ */}
             {spot.nearby_food && (
-              <div className="bg-white/5 rounded-xl p-3">
+              <div className="bg-white/5 border-2 border-white/10 p-3">
                 <div className="flex items-start gap-2">
                   <span className="text-sm mt-px">🍴</span>
                   <div>
-                    <p className="text-xs text-white/40 mb-0.5">近くのグルメ</p>
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-xs text-white/40 mb-0.5 font-bold">近くのグルメ</p>
+                    <p className="text-sm font-black text-white">
                       {spot.nearby_food.name}
                     </p>
                     <p className="text-xs text-white/40 mt-0.5">
@@ -152,19 +165,19 @@ export default function SpotCard({
 /* ========== サブコンポーネント ========== */
 
 function DetailRow({
-  emoji,
+  icon,
   label,
   value,
 }: {
-  emoji: string;
+  icon: string;
   label: string;
   value: string;
 }) {
   return (
     <div className="flex items-start gap-2">
-      <span className="text-sm mt-px">{emoji}</span>
+      <span className="text-sm mt-px">{icon}</span>
       <div>
-        <p className="text-xs text-white/40">{label}</p>
+        <p className="text-xs text-white/40 font-bold">{label}</p>
         <p className="text-sm text-white/70 leading-relaxed">{value}</p>
       </div>
     </div>

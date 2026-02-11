@@ -74,9 +74,10 @@ export default function ShareButton({ plan, keyword }: Props) {
         {/* X シェア */}
         <button
           onClick={handleShareX}
-          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl
-                     bg-white/10 text-white font-bold text-sm border border-white/10
-                     hover:bg-white/15 active:scale-[0.98] transition-all"
+          className="flex-1 flex items-center justify-center gap-2 py-3
+                     bg-white/10 text-white font-black text-sm border-2 border-white/10
+                     hover:bg-white/15 active:translate-x-0.5 active:translate-y-0.5 transition-all
+                     shadow-[3px_3px_0_rgba(255,255,255,0.05)]"
         >
           <XIcon />
           Xでシェア
@@ -86,10 +87,11 @@ export default function ShareButton({ plan, keyword }: Props) {
         <button
           onClick={handleSaveImage}
           disabled={saving}
-          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl
-                     bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold text-sm
-                     hover:opacity-90 active:scale-[0.98] transition-all
-                     disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 flex items-center justify-center gap-2 py-3
+                     bg-red-500 text-white font-black text-sm border-2 border-red-400/50
+                     hover:opacity-90 active:translate-x-0.5 active:translate-y-0.5 transition-all
+                     disabled:opacity-50 disabled:cursor-not-allowed
+                     shadow-[3px_3px_0_rgba(0,0,0,0.3)]"
         >
           {saving ? (
             <>

@@ -1,29 +1,17 @@
 import { NextResponse } from 'next/server';
-import { getSupabase } from '@/lib/supabase';
+import spotsData from '../../../../data/pilgrimage-spots.json';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
 
 export async function GET() {
-  try {
-    const { data, error } = await getSupabase()
-      .from('anime_works')
-      .select('id, title, title_en, genre, year, image_url, description')
-      .order('year', { ascending: false });
+  // pilgrimage-spots.json から作品一覧を生成
+  const works = spotsData.map((w) => ({
+    id: w.work_title_en.toLowerCase().replace(/\s+/g, '-'),
+    title: w.work_title,
+    title_en: w.work_title_en,
+    genre: w.work_genre,
+    year: w.work_year,
+  }));
 
-    if (error) {
-      console.error('Failed to fetch works:', error);
-      return NextResponse.json(
-        { error: '作品一覧の取得に失敗しました。' },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json(data);
-  } catch (error) {
-    console.error('works error:', error);
-    return NextResponse.json(
-      { error: '作品一覧の取得に失敗しました。' },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json(works);
 }
