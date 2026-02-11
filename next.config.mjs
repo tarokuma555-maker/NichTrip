@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // html2canvas が使用する canvas 関連パッケージをサーバーバンドルから除外
-  serverExternalPackages: ["canvas"],
+  experimental: {
+    // html2canvas が使用する canvas 関連パッケージをサーバーバンドルから除外
+    serverComponentsExternalPackages: ["canvas"],
+  },
 
   images: {
     // 外部画像を許可する場合はここにドメインを追加
