@@ -50,14 +50,14 @@ export default function ShareButton({ plan, keyword }: Props) {
 
       const canvas = await html2canvas(cardRef.current, {
         scale: 2,
-        backgroundColor: "#FFFBF5",
+        backgroundColor: "#0a0a0a",
         useCORS: true,
         logging: false,
       });
 
       // ダウンロード
       const link = document.createElement("a");
-      link.download = `nichtrip-${plan.title.slice(0, 20)}.png`;
+      link.download = `animetrips-${plan.title.slice(0, 20)}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
     } catch (e) {
@@ -75,8 +75,8 @@ export default function ShareButton({ plan, keyword }: Props) {
         <button
           onClick={handleShareX}
           className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl
-                     bg-[#0f1419] text-white font-bold text-sm
-                     hover:bg-[#272c30] active:scale-[0.98] transition-all"
+                     bg-white/10 text-white font-bold text-sm border border-white/10
+                     hover:bg-white/15 active:scale-[0.98] transition-all"
         >
           <XIcon />
           Xでシェア
@@ -87,7 +87,7 @@ export default function ShareButton({ plan, keyword }: Props) {
           onClick={handleSaveImage}
           disabled={saving}
           className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl
-                     bg-gradient-to-r from-pink-500 to-orange-400 text-white font-bold text-sm
+                     bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold text-sm
                      hover:opacity-90 active:scale-[0.98] transition-all
                      disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -110,7 +110,7 @@ export default function ShareButton({ plan, keyword }: Props) {
         <div
           ref={cardRef}
           style={{ width: 1080, height: 1080, padding: 64, fontFamily: "sans-serif" }}
-          className="bg-warm-50 flex flex-col"
+          className="bg-[#0a0a0a] flex flex-col"
         >
           <ShareCard plan={plan} keyword={keyword} />
         </div>
@@ -138,18 +138,18 @@ function ShareCard({
         <div
           style={{
             fontSize: 20,
-            color: "#3182CE",
+            color: "#E53E3E",
             fontWeight: 700,
             marginBottom: 8,
           }}
         >
-          🗺️ NichTrip
+          AnimeTrips
         </div>
         <div
           style={{
             fontSize: 40,
             fontWeight: 800,
-            color: "#1A365D",
+            color: "#ffffff",
             lineHeight: 1.3,
             marginBottom: 12,
           }}
@@ -159,8 +159,8 @@ function ShareCard({
         <div
           style={{
             fontSize: 18,
-            color: "#1A365D",
-            opacity: 0.6,
+            color: "#ffffff",
+            opacity: 0.5,
             lineHeight: 1.6,
           }}
         >
@@ -192,7 +192,7 @@ function ShareCard({
               >
                 Day {day.day}
               </div>
-              <span style={{ fontSize: 16, fontWeight: 700, color: "#1A365D" }}>
+              <span style={{ fontSize: 16, fontWeight: 700, color: "#ffffff" }}>
                 {day.title}
               </span>
             </div>
@@ -201,12 +201,12 @@ function ShareCard({
                 <div
                   key={i}
                   style={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #FEEBD2",
+                    backgroundColor: "rgba(255,255,255,0.05)",
+                    border: "1px solid rgba(255,255,255,0.1)",
                     borderRadius: 12,
                     padding: "8px 14px",
                     fontSize: 15,
-                    color: "#1A365D",
+                    color: "#ffffff",
                     fontWeight: 500,
                   }}
                 >
@@ -223,34 +223,36 @@ function ShareCard({
         style={{
           marginTop: "auto",
           paddingTop: 24,
-          borderTop: "2px dashed #FEEBD2",
+          borderTop: "2px dashed rgba(255,255,255,0.1)",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-end",
         }}
       >
         <div>
-          <div style={{ fontSize: 14, color: "#1A365D", opacity: 0.4 }}>
-            #NichTrip #聖地巡礼 {keyword && `#${keyword.replace(/[.。！!？?\s]/g, "")}`}
+          <div style={{ fontSize: 14, color: "#ffffff", opacity: 0.3 }}>
+            #AnimeTrips #聖地巡礼 {keyword && `#${keyword.replace(/[.。！!？?\s]/g, "")}`}
           </div>
-          <div style={{ fontSize: 14, color: "#3182CE", marginTop: 4 }}>
+          <div style={{ fontSize: 14, color: "#E53E3E", marginTop: 4 }}>
             {SITE_URL}
           </div>
         </div>
-        {/* QR的なブランドマーク */}
+        {/* ブランドマーク */}
         <div
           style={{
             width: 64,
             height: 64,
             borderRadius: 16,
-            backgroundColor: "#1A365D",
+            backgroundColor: "#E53E3E",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontSize: 28,
+            color: "#ffffff",
+            fontWeight: 800,
           }}
         >
-          🗺️
+          AT
         </div>
       </div>
     </>
@@ -281,7 +283,7 @@ function buildTweetText(plan: GeneratedPlan, keyword: string): string {
     "",
     `💰 ${plan.total_budget_estimate} / 🌸 ${plan.best_season}`,
     "",
-    `#NichTrip #聖地巡礼${workTag}`,
+    `#AnimeTrips #聖地巡礼${workTag}`,
     SITE_URL,
   ]
     .filter(Boolean)
@@ -316,9 +318,9 @@ function Badge({ text }: { text: string }) {
   return (
     <span
       style={{
-        backgroundColor: "#FFF5E8",
-        color: "#1A365D",
-        opacity: 0.7,
+        backgroundColor: "rgba(255,255,255,0.05)",
+        color: "#ffffff",
+        opacity: 0.6,
         fontSize: 14,
         fontWeight: 600,
         padding: "6px 14px",

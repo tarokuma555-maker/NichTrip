@@ -1,5 +1,5 @@
 -- ============================================
--- NichTrip - Seed Data
+-- AnimeTrips - Seed Data
 -- data/pilgrimage-spots.json から生成
 -- ============================================
 

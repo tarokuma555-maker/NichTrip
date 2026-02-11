@@ -22,24 +22,24 @@ export default function SpotCard({
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") setOpen((v) => !v);
       }}
-      className="w-full text-left bg-white rounded-2xl border border-warm-200
-                 shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
+      className="w-full text-left bg-white/5 rounded-2xl border border-white/10
+                 hover:bg-white/[0.07] transition-colors duration-200 cursor-pointer"
     >
       {/* ===== ヘッダー（常に表示） ===== */}
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-start gap-3">
           {/* 番号バッジ */}
-          <span className="shrink-0 w-7 h-7 rounded-full bg-sub text-white text-xs font-bold flex items-center justify-center mt-0.5">
+          <span className="shrink-0 w-7 h-7 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center mt-0.5">
             {index}
           </span>
 
           <div className="flex-1 min-w-0">
             {/* スポット名 + 滞在時間 */}
             <div className="flex items-start justify-between gap-2">
-              <h4 className="text-base font-bold text-navy leading-snug">
+              <h4 className="text-base font-bold text-white leading-snug">
                 {spot.name}
               </h4>
-              <span className="shrink-0 flex items-center gap-1 text-xs text-navy/50 bg-warm-100 px-2 py-1 rounded-full">
+              <span className="shrink-0 flex items-center gap-1 text-xs text-white/50 bg-white/5 px-2 py-1 rounded-full">
                 <ClockIcon />
                 {spot.stay_minutes}分
               </span>
@@ -47,7 +47,7 @@ export default function SpotCard({
 
             {/* 住所 + 地図ボタン */}
             <div className="flex items-center gap-1.5 mt-0.5">
-              <p className="text-xs text-navy/40 truncate">{spot.address}</p>
+              <p className="text-xs text-white/30 truncate">{spot.address}</p>
 
               {onLocate && (
                 <button
@@ -56,7 +56,7 @@ export default function SpotCard({
                     e.stopPropagation();
                     onLocate();
                   }}
-                  className="shrink-0 flex items-center gap-0.5 text-[11px] text-sub hover:text-sub-dark
+                  className="shrink-0 flex items-center gap-0.5 text-[11px] text-red-400 hover:text-red-300
                              font-medium transition-colors"
                   aria-label="地図で表示"
                 >
@@ -68,7 +68,7 @@ export default function SpotCard({
 
             {/* アニメシーン（プレビュー1行） */}
             {spot.anime_scene && !open && (
-              <p className="text-xs text-accent/70 mt-2 truncate">
+              <p className="text-xs text-red-400/70 mt-2 truncate">
                 🎬 {spot.anime_scene}
               </p>
             )}
@@ -76,7 +76,7 @@ export default function SpotCard({
 
           {/* 開閉シェブロン */}
           <svg
-            className={`shrink-0 w-5 h-5 text-navy/30 mt-1 transition-transform duration-200 ${
+            className={`shrink-0 w-5 h-5 text-white/30 mt-1 transition-transform duration-200 ${
               open ? "rotate-180" : ""
             }`}
             fill="none"
@@ -98,19 +98,19 @@ export default function SpotCard({
         <div className="overflow-hidden">
           <div className="px-4 pb-4 space-y-3">
             {/* 区切り線 */}
-            <div className="border-t border-warm-200" />
+            <div className="border-t border-white/10" />
 
             {/* アニメシーン */}
             {spot.anime_scene && (
-              <div className="bg-accent/5 border border-accent/10 rounded-xl p-3">
+              <div className="bg-red-500/10 border border-red-500/10 rounded-xl p-3">
                 <div className="flex items-start gap-2">
                   <span className="text-sm mt-px">🎬</span>
                   <div>
-                    <p className="text-sm font-medium text-accent leading-relaxed">
+                    <p className="text-sm font-medium text-red-400 leading-relaxed">
                       {spot.anime_scene}
                     </p>
                     {spot.episode && (
-                      <p className="text-xs text-navy/40 mt-1">
+                      <p className="text-xs text-white/40 mt-1">
                         📺 {spot.episode}
                       </p>
                     )}
@@ -127,15 +127,15 @@ export default function SpotCard({
 
             {/* グルメ */}
             {spot.nearby_food && (
-              <div className="bg-warm-100 rounded-xl p-3">
+              <div className="bg-white/5 rounded-xl p-3">
                 <div className="flex items-start gap-2">
                   <span className="text-sm mt-px">🍴</span>
                   <div>
-                    <p className="text-xs text-navy/50 mb-0.5">近くのグルメ</p>
-                    <p className="text-sm font-medium text-navy">
+                    <p className="text-xs text-white/40 mb-0.5">近くのグルメ</p>
+                    <p className="text-sm font-medium text-white">
                       {spot.nearby_food.name}
                     </p>
-                    <p className="text-xs text-navy/50 mt-0.5">
+                    <p className="text-xs text-white/40 mt-0.5">
                       {spot.nearby_food.genre} / {spot.nearby_food.budget}
                     </p>
                   </div>
@@ -164,8 +164,8 @@ function DetailRow({
     <div className="flex items-start gap-2">
       <span className="text-sm mt-px">{emoji}</span>
       <div>
-        <p className="text-xs text-navy/40">{label}</p>
-        <p className="text-sm text-navy/80 leading-relaxed">{value}</p>
+        <p className="text-xs text-white/40">{label}</p>
+        <p className="text-sm text-white/70 leading-relaxed">{value}</p>
       </div>
     </div>
   );

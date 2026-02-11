@@ -1,5 +1,5 @@
 -- ============================================
--- NichTrip - Initial Migration
+-- AnimeTrips - Initial Migration
 -- ============================================
 
 -- UUID生成の有効化

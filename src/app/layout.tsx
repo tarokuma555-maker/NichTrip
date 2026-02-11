@@ -9,9 +9,9 @@ const geistSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "NichTrip - AIがつくるニッチ旅プラン",
+  title: "AnimeTrips - AIがつくるアニメ聖地巡礼プラン",
   description:
-    "アニメ聖地巡礼・パワースポット・B級グルメ。テーマを選ぶだけで、AIがあなただけのニッチ旅を作ります。",
+    "アニメ聖地巡礼・パワースポット・B級グルメ。テーマを選ぶだけで、AIがあなただけの旅を作ります。",
 };
 
 export default function RootLayout({

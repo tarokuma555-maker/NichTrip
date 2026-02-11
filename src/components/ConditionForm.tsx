@@ -133,11 +133,11 @@ export default function ConditionForm({
   return (
     <div className="w-full max-w-md mx-auto">
       {/* テーマ表示 */}
-      <div className="flex items-center gap-2 bg-warm-100 rounded-xl px-4 py-3 mb-6">
+      <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3 mb-6">
         <span className="text-2xl">{themeMeta.emoji}</span>
         <div>
-          <p className="text-xs text-navy/50">選択中のテーマ</p>
-          <p className="text-sm font-bold text-navy">{themeMeta.label}</p>
+          <p className="text-xs text-white/40">選択中のテーマ</p>
+          <p className="text-sm font-bold text-white">{themeMeta.label}</p>
         </div>
       </div>
 
@@ -146,7 +146,7 @@ export default function ConditionForm({
         {theme === "pilgrimage" && (
           <FormSection label="作品名">
             {work ? (
-              <div className="bg-white border border-warm-200 rounded-xl px-4 py-3 text-navy font-medium">
+              <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white font-medium">
                 {work}
               </div>
             ) : (
@@ -155,9 +155,9 @@ export default function ConditionForm({
                 value={keyword}
                 onChange={(e) => setKeyword(e.target.value)}
                 placeholder="例: 君の名は。、ゆるキャン△"
-                className="w-full bg-white border-2 border-warm-200 rounded-xl px-4 py-3
-                           text-navy placeholder:text-navy/30
-                           focus:outline-none focus:border-sub focus:ring-2 focus:ring-sub/20
+                className="w-full bg-white/5 border-2 border-white/10 rounded-xl px-4 py-3
+                           text-white placeholder:text-white/30
+                           focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
                            transition-colors"
               />
             )}
@@ -171,9 +171,9 @@ export default function ConditionForm({
             value={departure}
             onChange={(e) => setDeparture(e.target.value)}
             placeholder="東京"
-            className="w-full bg-white border-2 border-warm-200 rounded-xl px-4 py-3
-                       text-navy placeholder:text-navy/30
-                       focus:outline-none focus:border-sub focus:ring-2 focus:ring-sub/20
+            className="w-full bg-white/5 border-2 border-white/10 rounded-xl px-4 py-3
+                       text-white placeholder:text-white/30
+                       focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20
                        transition-colors"
           />
         </FormSection>
@@ -219,7 +219,7 @@ export default function ConditionForm({
 
       {/* エラーメッセージ */}
       {phase === "error" && errorMsg && (
-        <div className="mt-6 bg-accent/5 border border-accent/20 rounded-xl px-4 py-3 text-sm text-accent">
+        <div className="mt-6 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-sm text-red-400">
           {errorMsg}
         </div>
       )}
@@ -232,16 +232,16 @@ export default function ConditionForm({
           mt-8 w-full py-4 rounded-2xl text-base font-bold transition-all duration-200
           ${
             isReady
-              ? "bg-accent text-white shadow-lg shadow-accent/25 hover:bg-accent-dark hover:shadow-xl active:scale-[0.98]"
-              : "bg-warm-200 text-navy/30 cursor-not-allowed"
+              ? "bg-red-500 text-white shadow-lg shadow-red-500/25 hover:bg-red-600 hover:shadow-xl active:scale-[0.98]"
+              : "bg-white/10 text-white/30 cursor-not-allowed"
           }
         `}
       >
-        ✨ AIでプランを作る！
+        プランを作成する
       </button>
 
       {!isReady && (
-        <p className="mt-2 text-center text-xs text-navy/30">
+        <p className="mt-2 text-center text-xs text-white/30">
           すべての項目を入力すると生成できます
         </p>
       )}
@@ -260,7 +260,7 @@ function FormSection({
 }) {
   return (
     <div>
-      <label className="block text-sm font-semibold text-navy mb-2">
+      <label className="block text-sm font-semibold text-white mb-2">
         {label}
       </label>
       {children}
@@ -290,8 +290,8 @@ function ChipGroup({
               px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-150
               ${
                 active
-                  ? "bg-accent text-white shadow-md shadow-accent/20"
-                  : "bg-white border border-warm-200 text-navy/70 hover:border-sub/40 hover:text-navy"
+                  ? "bg-red-500 text-white shadow-md shadow-red-500/20"
+                  : "bg-white/5 border border-white/10 text-white/70 hover:border-white/30 hover:text-white"
               }
             `}
           >

@@ -25,16 +25,27 @@ const DAY_COLORS = [
   "#805AD5", // Day 5 purple
 ];
 
+const DARK_MAP_STYLES: google.maps.MapTypeStyle[] = [
+  { elementType: "geometry", stylers: [{ color: "#1a1a2e" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#1a1a2e" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#8a8a8a" }] },
+  { featureType: "road", elementType: "geometry", stylers: [{ color: "#2a2a3e" }] },
+  { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#1a1a2e" }] },
+  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#3a3a4e" }] },
+  { featureType: "water", elementType: "geometry", stylers: [{ color: "#0e1626" }] },
+  { featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] },
+  { featureType: "transit", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+  { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#1a2e1a" }] },
+  { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#2a2a3e" }] },
+];
+
 const MAP_OPTIONS: google.maps.MapOptions = {
   disableDefaultUI: true,
   zoomControl: true,
   mapTypeControl: false,
   streetViewControl: false,
   fullscreenControl: true,
-  styles: [
-    { featureType: "poi", elementType: "labels", stylers: [{ visibility: "off" }] },
-    { featureType: "transit", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-  ],
+  styles: DARK_MAP_STYLES,
 };
 
 /** ピン型 SVG マーカーを生成 */
@@ -51,10 +62,12 @@ export default function MapView({
   spots,
   dayGroups,
   focusIndex,
+  transportMode = "train",
 }: {
   spots: MapSpot[];
   dayGroups: MapSpot[][];
   focusIndex: number | null;
+  transportMode?: string;
 }) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
 
@@ -89,6 +102,35 @@ export default function MapView({
     setActiveIdx(focusIndex);
   }, [focusIndex, spots]);
 
+  /** 交通モードに応じたポリラインオプション */
+  function getPolylineOptions(color: string) {
+    if (transportMode === "walk") {
+      return {
+        strokeColor: color,
+        strokeWeight: 2,
+        strokeOpacity: 0,
+        icons: [
+          {
+            icon: {
+              path: "M 0,-1 0,1",
+              strokeOpacity: 0.7,
+              scale: 3,
+            },
+            offset: "0",
+            repeat: "16px",
+          },
+        ],
+        geodesic: true,
+      };
+    }
+    return {
+      strokeColor: color,
+      strokeWeight: transportMode === "car" ? 4 : 3,
+      strokeOpacity: 0.65,
+      geodesic: true,
+    };
+  }
+
   /* ---- 未設定 / エラー / 読み込み中 ---- */
   if (!apiKey || apiKey === "your_key_here") {
     return <Fallback message="Google Maps APIキーを .env.local に設定してください" />;
@@ -98,29 +140,24 @@ export default function MapView({
   }
   if (!isLoaded) {
     return (
-      <div className="w-full h-80 rounded-2xl bg-warm-100 animate-pulse flex items-center justify-center">
-        <span className="text-navy/30 text-sm">地図を読み込み中...</span>
+      <div className="w-full h-80 rounded-2xl bg-white/5 animate-pulse flex items-center justify-center">
+        <span className="text-white/30 text-sm">地図を読み込み中...</span>
       </div>
     );
   }
 
   return (
     <GoogleMap
-      mapContainerClassName="w-full h-80 sm:h-[420px] rounded-2xl border border-warm-200 shadow-md"
+      mapContainerClassName="w-full h-80 sm:h-[420px] rounded-2xl border border-white/10"
       onLoad={onMapLoad}
       options={MAP_OPTIONS}
     >
       {/* ===== 日ごとのポリライン ===== */}
       {dayGroups.map((group, i) => (
         <PolylineF
-          key={i}
+          key={`${i}-${transportMode}`}
           path={group.map((s) => ({ lat: s.lat, lng: s.lng }))}
-          options={{
-            strokeColor: DAY_COLORS[i % DAY_COLORS.length],
-            strokeWeight: 3,
-            strokeOpacity: 0.65,
-            geodesic: true,
-          }}
+          options={getPolylineOptions(DAY_COLORS[i % DAY_COLORS.length])}
         />
       ))}
 
@@ -166,9 +203,9 @@ export default function MapView({
 
 function Fallback({ message }: { message: string }) {
   return (
-    <div className="w-full h-80 rounded-2xl bg-warm-100 border-2 border-dashed border-warm-300 flex flex-col items-center justify-center gap-2 px-4">
+    <div className="w-full h-80 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-2 px-4">
       <span className="text-3xl">🗺️</span>
-      <p className="text-sm text-navy/50 text-center">{message}</p>
+      <p className="text-sm text-white/50 text-center">{message}</p>
     </div>
   );
 }
