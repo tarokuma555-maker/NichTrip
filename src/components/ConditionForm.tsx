@@ -263,7 +263,16 @@ export default function ConditionForm({
 
   // ---------- Result ----------
   if (phase === "result" && plan) {
-    return <PlanTimeline plan={plan} keyword={keyword} onReset={handleReset} />;
+    return (
+      <PlanTimeline
+        plan={plan}
+        keyword={keyword}
+        onReset={handleReset}
+        departure={departure}
+        budget={budget ?? undefined}
+        companions={companions ?? undefined}
+      />
+    );
   }
 
   // ---------- Form / Error ----------

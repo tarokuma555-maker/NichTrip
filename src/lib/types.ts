@@ -104,3 +104,28 @@ export type UGCData = {
   reviews: SpotReview[];
   totalReviewCount: number;
 };
+
+// アフィリエイト: 交通手段
+export type TransportOption = {
+  type: 'flight' | 'shinkansen' | 'train' | 'bus' | 'car' | 'taxi';
+  icon: string;
+  name: string;
+  duration: string;
+  price: string;
+  transfers: number;
+  recommendation: string;
+  bookingUrl: string | null;
+  source: string;
+};
+
+// アフィリエイト: 宿泊施設
+export type HotelItem = {
+  name: string;
+  price: number;
+  priceDisplay: string;
+  rating: number | null;
+  imageUrl: string | null;
+  features: string[];
+  bookingUrl: string;
+  source: 'rakuten' | 'fallback';
+};

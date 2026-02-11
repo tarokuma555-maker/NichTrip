@@ -5,6 +5,8 @@ import type { GeneratedPlan, PlanSpot } from "@/lib/types";
 import SpotCard from "./SpotCard";
 import MapView, { type MapSpot } from "./MapView";
 import ShareButton from "./ShareButton";
+import TransportOptions from "./TransportOptions";
+import HotelSuggestions from "./HotelSuggestions";
 
 type TransportMode = "train" | "car" | "walk" | "taxi";
 
@@ -111,10 +113,16 @@ export default function PlanTimeline({
   plan,
   keyword,
   onReset,
+  departure,
+  budget,
+  companions,
 }: {
   plan: GeneratedPlan;
   keyword: string;
   onReset: () => void;
+  departure?: string;
+  budget?: string;
+  companions?: string;
 }) {
   const [focusIndex, setFocusIndex] = useState<number | null>(null);
   const [transportMode, setTransportMode] = useState<TransportMode>("train");
@@ -198,6 +206,17 @@ export default function PlanTimeline({
         </div>
       </div>
 
+      {/* ===== アフィリエイト: 行き方 ===== */}
+      {departure && (
+        <div className="mb-8">
+          <TransportOptions
+            from={departure}
+            to={plan.days[0]?.spots[0]?.address?.split(/[都道府県市区町村]/)?.[0] ?? keyword}
+            companions={companions}
+          />
+        </div>
+      )}
+
       {/* ===== 日程タイムライン ===== */}
       <div className="space-y-10">
         {plan.days.map((day, dayIdx) => (
@@ -274,11 +293,21 @@ export default function PlanTimeline({
 
             {/* Day 間の区切り */}
             {dayIdx < plan.days.length - 1 && (
-              <div className="flex items-center gap-3 mt-6 ml-4 sm:ml-6 pl-8 sm:pl-10">
-                <div className="flex-1 border-t-2 border-dashed border-white/10" />
-                <span className="text-xs text-white/30 shrink-0 font-bold">🏨 宿泊</span>
-                <div className="flex-1 border-t-2 border-dashed border-white/10" />
-              </div>
+              <>
+                <div className="flex items-center gap-3 mt-6 ml-4 sm:ml-6 pl-8 sm:pl-10">
+                  <div className="flex-1 border-t-2 border-dashed border-white/10" />
+                  <span className="text-xs text-white/30 shrink-0 font-bold">🏨 宿泊</span>
+                  <div className="flex-1 border-t-2 border-dashed border-white/10" />
+                </div>
+                <div className="mt-4 ml-4 sm:ml-6 pl-8 sm:pl-10">
+                  <HotelSuggestions
+                    keyword={day.title}
+                    lat={day.spots[day.spots.length - 1]?.lat}
+                    lng={day.spots[day.spots.length - 1]?.lng}
+                    budget={budget}
+                  />
+                </div>
+              </>
             )}
           </div>
         ))}
