@@ -16,7 +16,6 @@ type Work = {
   spotCount: number;
 };
 
-const INITIAL_SHOW_COUNT = 20;
 
 /* ================================================================
    SVG 装飾
@@ -241,9 +240,9 @@ function AboutSection() {
                   02 — Data
                 </span>
                 <h3 className="text-xl sm:text-4xl font-black mb-2">
-                  550<span className="text-lg sm:text-2xl">+</span>作品
+                  500<span className="text-lg sm:text-2xl">+</span>作品
                   <br />
-                  2,000<span className="text-lg sm:text-2xl">+</span>スポット
+                  1,900<span className="text-lg sm:text-2xl">+</span>スポット
                 </h3>
                 <p className="text-xs sm:text-sm text-white/70">
                   日本の全アニメ作品に対応。AIが聖地情報を自動検索しルートを計算。
@@ -281,14 +280,24 @@ function AboutSection() {
 }
 
 /* ================================================================
-   Section 3: GALLERY / WORKS
+   Section 3: POSTER GALLERY (50 works with images, shuffled)
    ================================================================ */
-function GallerySection({ works }: { works: Work[] }) {
+function PosterGallerySection({ works }: { works: Work[] }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
-  const [showAll, setShowAll] = useState(false);
+  const [shuffled, setShuffled] = useState<Work[]>(works);
 
-  const filtered = works.filter((w) => {
+  // Fisher-Yates shuffle on client mount
+  useEffect(() => {
+    const arr = [...works];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    setShuffled(arr);
+  }, [works]);
+
+  const filtered = shuffled.filter((w) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
     return (
@@ -297,12 +306,6 @@ function GallerySection({ works }: { works: Work[] }) {
       w.genre.toLowerCase().includes(q)
     );
   });
-
-  // 検索中は全件表示、それ以外は20件
-  const displayed =
-    showAll || search.trim() ? filtered : filtered.slice(0, INITIAL_SHOW_COUNT);
-  const hasMore =
-    !showAll && !search.trim() && filtered.length > INITIAL_SHOW_COUNT;
 
   return (
     <section className="gallery-section relative bg-black py-20 sm:py-32 overflow-hidden">
@@ -324,12 +327,12 @@ function GallerySection({ works }: { works: Work[] }) {
             WORKS
           </h2>
           <span className="text-red-500 text-lg sm:text-3xl font-black mb-1 sm:mb-2">
-            {works.length}
+            PICK UP
           </span>
         </div>
         <div className="h-1 w-24 sm:w-32 bg-red-500" />
         <p className="mt-3 text-white/40 text-xs sm:text-sm font-medium tracking-wider">
-          対応作品一覧 — タップしてプランを作成
+          人気作品 — タップしてプランを作成
         </p>
 
         {/* 検索バー */}
@@ -376,7 +379,7 @@ function GallerySection({ works }: { works: Work[] }) {
       {/* カードグリッド */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
-          {displayed.map((work, i) => {
+          {filtered.map((work) => {
             const visual = getWorkVisual(work.title);
             return (
               <button
@@ -407,10 +410,6 @@ function GallerySection({ works }: { works: Work[] }) {
                     />
                   )}
 
-                  <div className="absolute top-0 left-0 bg-red-500 text-white text-[9px] sm:text-[10px] font-black w-6 h-6 sm:w-7 sm:h-7 flex items-center justify-center">
-                    {String(i + 1).padStart(2, "0")}
-                  </div>
-
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80" />
 
                   <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3">
@@ -432,40 +431,199 @@ function GallerySection({ works }: { works: Work[] }) {
           })}
         </div>
 
-        {/* 検索結果なし */}
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <p className="text-white/30 text-sm">該当する作品が見つかりません</p>
           </div>
         )}
+      </div>
+    </section>
+  );
+}
 
-        {/* もっと見るボタン */}
-        {hasMore && (
-          <div className="text-center mt-8 sm:mt-12">
-            <button
-              onClick={() => setShowAll(true)}
-              className="inline-flex items-center gap-2 bg-white/5 border border-white/10
-                         text-white/60 hover:text-white hover:border-white/30
-                         text-sm font-bold px-8 py-3 rounded-full
-                         transition-all duration-200"
+/* ================================================================
+   Section 3b: ALL WORKS (title-only list, grouped by decade)
+   ================================================================ */
+const DECADES = [
+  { label: "2020s", min: 2020, max: 2029 },
+  { label: "2010s", min: 2010, max: 2019 },
+  { label: "2000s", min: 2000, max: 2009 },
+  { label: "1990s", min: 1995, max: 1999 },
+] as const;
+
+function TitleListSection({ works }: { works: Work[] }) {
+  const router = useRouter();
+  const [search, setSearch] = useState("");
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({
+    "2020s": true,
+    "2010s": true,
+    "2000s": false,
+    "1990s": false,
+  });
+
+  const filtered = works.filter((w) => {
+    if (!search.trim()) return true;
+    const q = search.toLowerCase();
+    return (
+      w.title.toLowerCase().includes(q) ||
+      w.title_en.toLowerCase().includes(q) ||
+      w.genre.toLowerCase().includes(q)
+    );
+  });
+
+  const grouped = DECADES.map((d) => ({
+    ...d,
+    works: filtered
+      .filter((w) => w.year >= d.min && w.year <= d.max)
+      .sort((a, b) => b.year - a.year || a.title.localeCompare(b.title)),
+  })).filter((g) => g.works.length > 0);
+
+  // 検索中は全て展開
+  const isSearching = search.trim().length > 0;
+
+  return (
+    <section className="allworks-section relative bg-[#0a0a0a] py-20 sm:py-32 overflow-hidden">
+      <div className="absolute inset-0 halftone opacity-[0.02]" />
+
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
+        {/* ヘッダー */}
+        <div className="mb-8 sm:mb-12">
+          <div className="flex items-end gap-4 mb-2">
+            <h2 className="allworks-heading text-4xl sm:text-8xl font-black text-white manga-shadow-red leading-none">
+              ALL
+            </h2>
+            <span className="text-red-500 text-lg sm:text-3xl font-black mb-1 sm:mb-2">
+              {works.length}+
+            </span>
+          </div>
+          <div className="h-1 w-24 sm:w-32 bg-red-500" />
+          <p className="mt-3 text-white/40 text-xs sm:text-sm font-medium tracking-wider">
+            対応作品一覧 — タップしてプランを作成
+          </p>
+
+          {/* 検索バー */}
+          <div className="mt-5 sm:mt-6 relative max-w-md">
+            <svg
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
             >
-              <span>
-                すべての作品を表示（{filtered.length}作品）
-              </span>
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="作品名で検索..."
+              className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2.5
+                         text-sm text-white placeholder:text-white/30
+                         focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20
+                         transition-colors"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 年代別グループ */}
+        <div className="space-y-6">
+          {grouped.map((group) => {
+            const isOpen = isSearching || expanded[group.label];
+            return (
+              <div key={group.label}>
+                <button
+                  onClick={() =>
+                    !isSearching &&
+                    setExpanded((prev) => ({
+                      ...prev,
+                      [group.label]: !prev[group.label],
+                    }))
+                  }
+                  className="w-full flex items-center gap-3 mb-3 group"
+                >
+                  <span className="text-red-500 text-sm sm:text-lg font-black tracking-wider">
+                    {group.label}
+                  </span>
+                  <span className="text-white/30 text-xs font-bold">
+                    {group.works.length}作品
+                  </span>
+                  <div className="flex-1 h-px bg-white/10" />
+                  <svg
+                    className={`w-4 h-4 text-white/30 transition-transform duration-200 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isOpen && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
+                    {group.works.map((work) => (
+                      <button
+                        key={work.title}
+                        onClick={() =>
+                          router.push(
+                            `/plan?theme=pilgrimage&work=${encodeURIComponent(work.title)}`
+                          )
+                        }
+                        className="allworks-item group flex items-center gap-3 px-3 py-2.5
+                                   bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-red-500/30
+                                   rounded-lg transition-all duration-200 text-left"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className="text-white/80 text-xs sm:text-sm font-bold truncate group-hover:text-white transition-colors">
+                            {work.title}
+                          </p>
+                        </div>
+                        <span className="text-white/20 text-[10px] font-bold shrink-0">
+                          {work.year}
+                        </span>
+                        <span className="text-red-500/50 text-[10px] font-bold shrink-0">
+                          {work.spotCount}spots
+                        </span>
+                        <svg
+                          className="w-3 h-3 text-white/15 group-hover:text-red-500/60 shrink-0 transition-colors"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={3}
+                        >
+                          <path d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {filtered.length === 0 && (
+          <div className="text-center py-16">
+            <p className="text-white/30 text-sm">該当する作品が見つかりません</p>
           </div>
         )}
       </div>
@@ -564,7 +722,13 @@ function CTASection() {
 /* ================================================================
    メインコンポーネント
    ================================================================ */
-export default function MangaTopPage({ works }: { works: Work[] }) {
+export default function MangaTopPage({
+  posterWorks,
+  titleOnlyWorks,
+}: {
+  posterWorks: Work[];
+  titleOnlyWorks: Work[];
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -617,7 +781,7 @@ export default function MangaTopPage({ works }: { works: Work[] }) {
         });
       });
 
-      // Gallery
+      // Poster Gallery
       gsap.from(".gallery-heading", {
         scrollTrigger: {
           trigger: ".gallery-section",
@@ -643,6 +807,19 @@ export default function MangaTopPage({ works }: { works: Work[] }) {
           delay: i * 0.04,
           ease: "power2.out",
         });
+      });
+
+      // All Works list
+      gsap.from(".allworks-heading", {
+        scrollTrigger: {
+          trigger: ".allworks-section",
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+        x: -100,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.out",
       });
 
       // CTA
@@ -675,7 +852,8 @@ export default function MangaTopPage({ works }: { works: Work[] }) {
     <div ref={containerRef}>
       <HeroSection />
       <AboutSection />
-      <GallerySection works={works} />
+      <PosterGallerySection works={posterWorks} />
+      <TitleListSection works={titleOnlyWorks} />
       <CTASection />
     </div>
   );

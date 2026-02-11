@@ -42,36 +42,6 @@ const doorFrames = svg(
   `%3Crect x='8' y='2' width='16' height='28' rx='2' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='1'/%3E%3Cline x1='16' y1='2' x2='16' y2='30' stroke='rgba(255,255,255,0.04)' stroke-width='0.5'/%3E`
 );
 
-const tentTriangles = svg(
-  36,
-  36,
-  `%3Cpolygon points='18,4 32,32 4,32' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='1'/%3E`
-);
-
-const treadPattern = svg(
-  20,
-  10,
-  `%3Crect x='1' y='2' width='8' height='6' rx='1' fill='rgba(255,255,255,0.06)'/%3E%3Crect x='11' y='2' width='8' height='6' rx='1' fill='rgba(255,255,255,0.06)'/%3E`
-);
-
-const petals = svg(
-  40,
-  40,
-  `%3Ccircle cx='10' cy='10' r='3' fill='rgba(255,255,255,0.08)'/%3E%3Ccircle cx='30' cy='28' r='2' fill='rgba(255,255,255,0.06)'/%3E%3Ccircle cx='22' cy='8' r='1.5' fill='rgba(255,255,255,0.05)'/%3E%3Ccircle cx='8' cy='32' r='2.5' fill='rgba(255,255,255,0.07)'/%3E`
-);
-
-const stars = svg(
-  30,
-  30,
-  `%3Cpolygon points='15,2 18,11 27,11 20,17 22,27 15,21 8,27 10,17 3,11 12,11' fill='rgba(255,255,255,0.06)'/%3E`
-);
-
-const basketLines = svg(
-  28,
-  28,
-  `%3Ccircle cx='14' cy='14' r='10' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='1'/%3E%3Cline x1='4' y1='14' x2='24' y2='14' stroke='rgba(255,255,255,0.06)' stroke-width='0.8'/%3E%3Cpath d='M10,4 Q14,14 10,24' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='0.8'/%3E%3Cpath d='M18,4 Q14,14 18,24' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='0.8'/%3E`
-);
-
 const crosshatch = svg(
   16,
   16,
@@ -102,27 +72,56 @@ const spirals = svg(
   `%3Cpath d='M15,15 Q15,5 25,15 Q25,25 15,25 Q5,25 5,15 Q5,10 15,10' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='0.5'/%3E`
 );
 
+const stars = svg(
+  30,
+  30,
+  `%3Cpolygon points='15,2 18,11 27,11 20,17 22,27 15,21 8,27 10,17 3,11 12,11' fill='rgba(255,255,255,0.06)'/%3E`
+);
+
+const petals = svg(
+  40,
+  40,
+  `%3Ccircle cx='10' cy='10' r='3' fill='rgba(255,255,255,0.08)'/%3E%3Ccircle cx='30' cy='28' r='2' fill='rgba(255,255,255,0.06)'/%3E%3Ccircle cx='22' cy='8' r='1.5' fill='rgba(255,255,255,0.05)'/%3E%3Ccircle cx='8' cy='32' r='2.5' fill='rgba(255,255,255,0.07)'/%3E`
+);
+
+const basketLines = svg(
+  28,
+  28,
+  `%3Ccircle cx='14' cy='14' r='10' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='1'/%3E%3Cline x1='4' y1='14' x2='24' y2='14' stroke='rgba(255,255,255,0.06)' stroke-width='0.8'/%3E%3Cpath d='M10,4 Q14,14 10,24' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='0.8'/%3E%3Cpath d='M18,4 Q14,14 18,24' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='0.8'/%3E`
+);
+
+// ============================================================
+// Top 50 anime by popularity (MAL International + Japanese Domestic)
+// ============================================================
 export const WORK_VISUALS: Record<string, WorkVisual> = {
-  "君の名は。": {
-    gradient: "from-indigo-600 via-purple-500 to-pink-400",
-    patternSvg: cometDots,
-    icon: "☄️",
-    glowColor: "#a78bfa",
-    image: "/images/works/your-name.jpg",
+  // --- MAL Popularity Top 40 (International) ---
+  "進撃の巨人": {
+    gradient: "from-stone-800 via-red-900 to-stone-900",
+    patternSvg: crosshatch,
+    icon: "🗡️",
+    glowColor: "#dc2626",
+    image: "/images/works/attack-on-titan.jpg",
   },
-  "スラムダンク": {
-    gradient: "from-orange-500 via-red-500 to-red-700",
-    patternSvg: basketLines,
-    icon: "🏀",
-    glowColor: "#fb923c",
-    image: "/images/works/slam-dunk.jpg",
+  "DEATH NOTE": {
+    gradient: "from-black via-red-900 to-black",
+    patternSvg: crosshatch,
+    icon: "📓",
+    glowColor: "#991b1b",
+    image: "/images/works/death-note.jpg",
   },
-  "呪術廻戦": {
-    gradient: "from-slate-900 via-indigo-900 to-purple-900",
-    patternSvg: ripples,
-    icon: "👁️",
-    glowColor: "#7c3aed",
-    image: "/images/works/jujutsu-kaisen.jpg",
+  "鋼の錬金術師 BROTHERHOOD": {
+    gradient: "from-red-700 via-amber-500 to-red-800",
+    patternSvg: hexagons,
+    icon: "⚗️",
+    glowColor: "#f59e0b",
+    image: "/images/works/fma-brotherhood.jpg",
+  },
+  "ワンパンマン": {
+    gradient: "from-yellow-400 via-red-500 to-yellow-500",
+    patternSvg: crosshatch,
+    icon: "👊",
+    glowColor: "#eab308",
+    image: "/images/works/one-punch-man.jpg",
   },
   "鬼滅の刃": {
     gradient: "from-emerald-700 via-teal-600 to-slate-900",
@@ -131,215 +130,12 @@ export const WORK_VISUALS: Record<string, WorkVisual> = {
     glowColor: "#10b981",
     image: "/images/works/demon-slayer.jpg",
   },
-  "ぼっち・ざ・ろっく！": {
-    gradient: "from-pink-400 via-rose-300 to-blue-300",
-    patternSvg: musicLines,
-    icon: "🎸",
-    glowColor: "#f472b6",
-    image: "/images/works/bocchi.jpg",
-  },
-  "すずめの戸締まり": {
-    gradient: "from-sky-400 via-cyan-300 to-amber-200",
-    patternSvg: doorFrames,
-    icon: "🚪",
-    glowColor: "#38bdf8",
-    image: "/images/works/suzume.jpg",
-  },
-  "ゆるキャン△": {
-    gradient: "from-sky-300 via-blue-200 to-orange-200",
-    patternSvg: tentTriangles,
-    icon: "⛺",
-    glowColor: "#7dd3fc",
-    image: "/images/works/yurucamp.jpg",
-  },
-  "ガールズ＆パンツァー": {
-    gradient: "from-green-700 via-green-600 to-amber-600",
-    patternSvg: treadPattern,
-    icon: "🎖️",
-    glowColor: "#a3e635",
-    image: "/images/works/garupan.jpg",
-  },
-  "あの日見た花の名前を僕達はまだ知らない。": {
-    gradient: "from-blue-300 via-sky-100 to-green-100",
-    patternSvg: petals,
-    icon: "🌸",
-    glowColor: "#93c5fd",
-    image: "/images/works/anohana.jpg",
-  },
-  "ラブライブ!": {
-    gradient: "from-pink-400 via-orange-300 to-yellow-200",
-    patternSvg: stars,
-    icon: "⭐",
-    glowColor: "#f9a8d4",
-    image: "/images/works/lovelive.jpg",
-  },
-  "進撃の巨人": {
-    gradient: "from-stone-800 via-red-900 to-stone-900",
-    patternSvg: crosshatch,
-    icon: "🗡️",
-    glowColor: "#dc2626",
-    image: "/images/works/attack-on-titan.jpg",
-  },
-  "ワンピース": {
-    gradient: "from-red-500 via-yellow-400 to-blue-500",
-    patternSvg: waves,
-    icon: "🏴‍☠️",
-    glowColor: "#ef4444",
-    image: "/images/works/one-piece.jpg",
-  },
-  "NARUTO": {
-    gradient: "from-orange-500 via-orange-400 to-blue-600",
-    patternSvg: spirals,
-    icon: "🍥",
-    glowColor: "#f97316",
-    image: "/images/works/naruto.jpg",
-  },
-  "新世紀エヴァンゲリオン": {
-    gradient: "from-purple-900 via-green-500 to-orange-500",
+  "ソードアート・オンライン": {
+    gradient: "from-blue-600 via-cyan-400 to-blue-800",
     patternSvg: hexagons,
-    icon: "🤖",
-    glowColor: "#22c55e",
-    image: "/images/works/evangelion.jpg",
-  },
-  "天気の子": {
-    gradient: "from-blue-400 via-sky-300 to-amber-300",
-    patternSvg: cometDots,
-    icon: "🌤️",
-    glowColor: "#60a5fa",
-    image: "/images/works/weathering-with-you.jpg",
-  },
-  "千と千尋の神隠し": {
-    gradient: "from-red-600 via-amber-500 to-blue-700",
-    patternSvg: doorFrames,
-    icon: "🏯",
-    glowColor: "#f59e0b",
-    image: "/images/works/spirited-away.jpg",
-  },
-  "ハイキュー!!": {
-    gradient: "from-orange-500 via-black to-orange-500",
-    patternSvg: crosshatch,
-    icon: "🏐",
-    glowColor: "#f97316",
-    image: "/images/works/haikyu.jpg",
-  },
-  "らき☆すた": {
-    gradient: "from-blue-400 via-blue-300 to-pink-300",
-    patternSvg: stars,
-    icon: "⭐",
-    glowColor: "#60a5fa",
-    image: "/images/works/lucky-star.jpg",
-  },
-  "けいおん!": {
-    gradient: "from-amber-400 via-pink-300 to-sky-300",
-    patternSvg: musicLines,
-    icon: "🎵",
-    glowColor: "#fbbf24",
-    image: "/images/works/k-on.jpg",
-  },
-  "涼宮ハルヒの憂鬱": {
-    gradient: "from-yellow-400 via-orange-300 to-blue-400",
-    patternSvg: stars,
-    icon: "🎀",
-    glowColor: "#facc15",
-    image: "/images/works/haruhi.jpg",
-  },
-  "CLANNAD": {
-    gradient: "from-amber-200 via-green-200 to-blue-200",
-    patternSvg: petals,
-    icon: "🌻",
-    glowColor: "#86efac",
-    image: "/images/works/clannad.jpg",
-  },
-  "氷菓": {
-    gradient: "from-amber-600 via-green-500 to-emerald-400",
-    patternSvg: diamonds,
-    icon: "🔍",
-    glowColor: "#34d399",
-    image: "/images/works/hyouka.jpg",
-  },
-  "たまゆら": {
-    gradient: "from-pink-300 via-amber-200 to-sky-200",
-    patternSvg: cometDots,
-    icon: "📷",
-    glowColor: "#f9a8d4",
-    image: "/images/works/tamayura.jpg",
-  },
-  "花咲くいろは": {
-    gradient: "from-green-400 via-teal-300 to-pink-300",
-    patternSvg: petals,
-    icon: "🌺",
-    glowColor: "#4ade80",
-    image: "/images/works/hanasaku-iroha.jpg",
-  },
-  "秒速5センチメートル": {
-    gradient: "from-pink-400 via-rose-300 to-purple-400",
-    patternSvg: petals,
-    icon: "🌸",
-    glowColor: "#fb7185",
-    image: "/images/works/5cm-per-second.jpg",
-  },
-  "言の葉の庭": {
-    gradient: "from-green-500 via-emerald-400 to-teal-300",
-    patternSvg: waves,
-    icon: "🌿",
-    glowColor: "#34d399",
-    image: "/images/works/garden-of-words.jpg",
-  },
-  "サマーウォーズ": {
-    gradient: "from-blue-500 via-cyan-400 to-red-400",
-    patternSvg: hexagons,
-    icon: "🎮",
+    icon: "⚔️",
     glowColor: "#3b82f6",
-    image: "/images/works/summer-wars.jpg",
-  },
-  "時をかける少女": {
-    gradient: "from-sky-400 via-blue-300 to-pink-300",
-    patternSvg: ripples,
-    icon: "⏰",
-    glowColor: "#38bdf8",
-    image: "/images/works/girl-leapt-through-time.jpg",
-  },
-  "東京リベンジャーズ": {
-    gradient: "from-black via-red-800 to-black",
-    patternSvg: crosshatch,
-    icon: "🏍️",
-    glowColor: "#dc2626",
-    image: "/images/works/tokyo-revengers.jpg",
-  },
-  "推しの子": {
-    gradient: "from-pink-500 via-purple-400 to-blue-500",
-    patternSvg: stars,
-    icon: "⭐",
-    glowColor: "#ec4899",
-    image: "/images/works/oshi-no-ko.jpg",
-  },
-  "SPY×FAMILY": {
-    gradient: "from-red-500 via-black to-green-500",
-    patternSvg: diamonds,
-    icon: "🕵️",
-    glowColor: "#ef4444",
-    image: "/images/works/spy-family.jpg",
-  },
-  "チェンソーマン": {
-    gradient: "from-red-700 via-orange-600 to-yellow-500",
-    patternSvg: crosshatch,
-    icon: "🪚",
-    glowColor: "#ef4444",
-    image: "/images/works/chainsaw-man.jpg",
-  },
-  "葬送のフリーレン": {
-    gradient: "from-purple-400 via-blue-300 to-green-300",
-    patternSvg: cometDots,
-    icon: "🧙‍♀️",
-    glowColor: "#a78bfa",
-    image: "/images/works/frieren.jpg",
-  },
-  "薬屋のひとりごと": {
-    gradient: "from-red-600 via-amber-500 to-emerald-500",
-    patternSvg: diamonds,
-    icon: "💊",
-    glowColor: "#f59e0b",
-    image: "/images/works/apothecary-diaries.jpg",
+    image: "/images/works/sword-art-online.jpg",
   },
   "僕のヒーローアカデミア": {
     gradient: "from-green-500 via-yellow-400 to-red-500",
@@ -348,47 +144,40 @@ export const WORK_VISUALS: Record<string, WorkVisual> = {
     glowColor: "#22c55e",
     image: "/images/works/my-hero-academia.jpg",
   },
-  "転生したらスライムだった件": {
-    gradient: "from-blue-400 via-cyan-300 to-green-300",
-    patternSvg: ripples,
-    icon: "🫧",
-    glowColor: "#22d3ee",
-    image: "/images/works/reincarnated-slime.jpg",
-  },
-  "Re:ゼロから始める異世界生活": {
-    gradient: "from-blue-800 via-purple-700 to-black",
-    patternSvg: spirals,
-    icon: "🔄",
-    glowColor: "#7c3aed",
-    image: "/images/works/re-zero.jpg",
-  },
-  "この素晴らしい世界に祝福を!": {
-    gradient: "from-yellow-400 via-green-400 to-blue-400",
-    patternSvg: stars,
-    icon: "✨",
-    glowColor: "#facc15",
-    image: "/images/works/konosuba.jpg",
-  },
-  "ソードアート・オンライン": {
-    gradient: "from-blue-600 via-cyan-400 to-blue-800",
-    patternSvg: hexagons,
-    icon: "⚔️",
-    glowColor: "#3b82f6",
-    image: "/images/works/sword-art-online.jpg",
-  },
-  "魔法少女まどか☆マギカ": {
-    gradient: "from-pink-500 via-purple-500 to-black",
+  "HUNTER×HUNTER": {
+    gradient: "from-green-600 via-green-400 to-yellow-400",
     patternSvg: diamonds,
-    icon: "💫",
-    glowColor: "#ec4899",
-    image: "/images/works/madoka-magica.jpg",
+    icon: "🃏",
+    glowColor: "#22c55e",
+    image: "/images/works/hunter-x-hunter.jpg",
   },
-  "物語シリーズ": {
-    gradient: "from-red-600 via-black to-purple-600",
+  "NARUTO": {
+    gradient: "from-orange-500 via-orange-400 to-blue-600",
+    patternSvg: spirals,
+    icon: "🍥",
+    glowColor: "#f97316",
+    image: "/images/works/naruto.jpg",
+  },
+  "東京喰種": {
+    gradient: "from-black via-purple-900 to-red-900",
     patternSvg: crosshatch,
-    icon: "📖",
-    glowColor: "#dc2626",
-    image: "/images/works/bakemonogatari.jpg",
+    icon: "🎭",
+    glowColor: "#7c3aed",
+    image: "/images/works/tokyo-ghoul.jpg",
+  },
+  "君の名は。": {
+    gradient: "from-indigo-600 via-purple-500 to-pink-400",
+    patternSvg: cometDots,
+    icon: "☄️",
+    glowColor: "#a78bfa",
+    image: "/images/works/your-name.jpg",
+  },
+  "呪術廻戦": {
+    gradient: "from-slate-900 via-indigo-900 to-purple-900",
+    patternSvg: ripples,
+    icon: "👁️",
+    glowColor: "#7c3aed",
+    image: "/images/works/jujutsu-kaisen.jpg",
   },
   "STEINS;GATE": {
     gradient: "from-green-600 via-amber-400 to-green-800",
@@ -397,6 +186,27 @@ export const WORK_VISUALS: Record<string, WorkVisual> = {
     glowColor: "#16a34a",
     image: "/images/works/steins-gate.jpg",
   },
+  "ONE PIECE": {
+    gradient: "from-red-500 via-yellow-400 to-blue-500",
+    patternSvg: waves,
+    icon: "🏴‍☠️",
+    glowColor: "#ef4444",
+    image: "/images/works/one-piece.jpg",
+  },
+  "聲の形": {
+    gradient: "from-sky-300 via-pink-200 to-amber-200",
+    patternSvg: petals,
+    icon: "🤟",
+    glowColor: "#38bdf8",
+    image: "/images/works/a-silent-voice.jpg",
+  },
+  "ノーゲーム・ノーライフ": {
+    gradient: "from-red-500 via-yellow-400 to-purple-500",
+    patternSvg: hexagons,
+    icon: "🎮",
+    glowColor: "#ef4444",
+    image: "/images/works/no-game-no-life.jpg",
+  },
   "コードギアス": {
     gradient: "from-red-600 via-purple-700 to-black",
     patternSvg: hexagons,
@@ -404,33 +214,96 @@ export const WORK_VISUALS: Record<string, WorkVisual> = {
     glowColor: "#dc2626",
     image: "/images/works/code-geass.jpg",
   },
-  "機動戦士ガンダム": {
-    gradient: "from-blue-600 via-red-500 to-yellow-400",
-    patternSvg: treadPattern,
-    icon: "🤖",
-    glowColor: "#3b82f6",
-    image: "/images/works/gundam.jpg",
+  "Re:ゼロから始める異世界生活": {
+    gradient: "from-blue-800 via-purple-700 to-black",
+    patternSvg: spirals,
+    icon: "🔄",
+    glowColor: "#7c3aed",
+    image: "/images/works/re-zero.jpg",
   },
-  "かぐや様は告らせたい": {
-    gradient: "from-red-400 via-pink-300 to-blue-300",
+  "四月は君の嘘": {
+    gradient: "from-pink-300 via-blue-200 to-yellow-200",
+    patternSvg: musicLines,
+    icon: "🎹",
+    glowColor: "#f9a8d4",
+    image: "/images/works/your-lie-in-april.jpg",
+  },
+  "とらドラ！": {
+    gradient: "from-orange-400 via-pink-400 to-blue-400",
     patternSvg: stars,
-    icon: "💕",
-    glowColor: "#f87171",
-    image: "/images/works/kaguya-sama.jpg",
+    icon: "🐯",
+    glowColor: "#fb923c",
+    image: "/images/works/toradora.jpg",
   },
-  "五等分の花嫁": {
-    gradient: "from-pink-400 via-orange-300 to-blue-400",
-    patternSvg: petals,
-    icon: "🎀",
-    glowColor: "#f472b6",
-    image: "/images/works/quintessential-quintuplets.jpg",
+  "モブサイコ100": {
+    gradient: "from-purple-500 via-pink-400 to-red-400",
+    patternSvg: ripples,
+    icon: "💯",
+    glowColor: "#a855f7",
+    image: "/images/works/mob-psycho-100.jpg",
   },
-  "青春ブタ野郎はバニーガール先輩の夢を見ない": {
-    gradient: "from-sky-400 via-blue-300 to-purple-400",
-    patternSvg: waves,
-    icon: "🐰",
+  "僕だけがいない街": {
+    gradient: "from-blue-800 via-blue-600 to-red-500",
+    patternSvg: spirals,
+    icon: "🦋",
+    glowColor: "#2563eb",
+    image: "/images/works/erased.jpg",
+  },
+  "暗殺教室": {
+    gradient: "from-yellow-400 via-green-400 to-yellow-300",
+    patternSvg: crosshatch,
+    icon: "🔫",
+    glowColor: "#facc15",
+    image: "/images/works/assassination-classroom.jpg",
+  },
+  "Angel Beats!": {
+    gradient: "from-sky-400 via-white to-sky-400",
+    patternSvg: musicLines,
+    icon: "👼",
     glowColor: "#38bdf8",
-    image: "/images/works/bunny-girl-senpai.jpg",
+    image: "/images/works/angel-beats.jpg",
+  },
+  "BLEACH": {
+    gradient: "from-black via-orange-500 to-black",
+    patternSvg: crosshatch,
+    icon: "💀",
+    glowColor: "#f97316",
+    image: "/images/works/bleach.jpg",
+  },
+  "ハイキュー!!": {
+    gradient: "from-orange-500 via-black to-orange-500",
+    patternSvg: crosshatch,
+    icon: "🏐",
+    glowColor: "#f97316",
+    image: "/images/works/haikyu.jpg",
+  },
+  "約束のネバーランド": {
+    gradient: "from-green-800 via-emerald-600 to-black",
+    patternSvg: diamonds,
+    icon: "🌿",
+    glowColor: "#059669",
+    image: "/images/works/promised-neverland.jpg",
+  },
+  "この素晴らしい世界に祝福を!": {
+    gradient: "from-yellow-400 via-green-400 to-blue-400",
+    patternSvg: stars,
+    icon: "✨",
+    glowColor: "#facc15",
+    image: "/images/works/konosuba.jpg",
+  },
+  "千と千尋の神隠し": {
+    gradient: "from-red-600 via-amber-500 to-blue-700",
+    patternSvg: doorFrames,
+    icon: "🏯",
+    glowColor: "#f59e0b",
+    image: "/images/works/spirited-away.jpg",
+  },
+  "新世紀エヴァンゲリオン": {
+    gradient: "from-purple-900 via-green-500 to-orange-500",
+    patternSvg: hexagons,
+    icon: "🤖",
+    glowColor: "#22c55e",
+    image: "/images/works/evangelion.jpg",
   },
   "ヴァイオレット・エヴァーガーデン": {
     gradient: "from-blue-400 via-indigo-300 to-purple-300",
@@ -439,19 +312,139 @@ export const WORK_VISUALS: Record<string, WorkVisual> = {
     glowColor: "#818cf8",
     image: "/images/works/violet-evergarden.jpg",
   },
-  "響け！ユーフォニアム": {
-    gradient: "from-amber-400 via-yellow-300 to-blue-400",
-    patternSvg: musicLines,
-    icon: "🎺",
-    glowColor: "#fbbf24",
-    image: "/images/works/sound-euphonium.jpg",
+  "青春ブタ野郎はバニーガール先輩の夢を見ない": {
+    gradient: "from-sky-400 via-blue-300 to-purple-400",
+    patternSvg: waves,
+    icon: "🐰",
+    glowColor: "#38bdf8",
+    image: "/images/works/bunny-girl-senpai.jpg",
   },
-  "夏目友人帳": {
-    gradient: "from-green-300 via-sky-200 to-amber-200",
+  "Dr.STONE": {
+    gradient: "from-green-500 via-lime-400 to-emerald-600",
+    patternSvg: hexagons,
+    icon: "🧪",
+    glowColor: "#22c55e",
+    image: "/images/works/dr-stone.jpg",
+  },
+  "かぐや様は告らせたい": {
+    gradient: "from-red-400 via-pink-300 to-blue-300",
+    patternSvg: stars,
+    icon: "💕",
+    glowColor: "#f87171",
+    image: "/images/works/kaguya-sama.jpg",
+  },
+  "チェンソーマン": {
+    gradient: "from-red-700 via-orange-600 to-yellow-500",
+    patternSvg: crosshatch,
+    icon: "🪚",
+    glowColor: "#ef4444",
+    image: "/images/works/chainsaw-man.jpg",
+  },
+  "SPY×FAMILY": {
+    gradient: "from-red-500 via-black to-green-500",
+    patternSvg: diamonds,
+    icon: "🕵️",
+    glowColor: "#ef4444",
+    image: "/images/works/spy-family.jpg",
+  },
+  "ヴィンランド・サガ": {
+    gradient: "from-amber-700 via-stone-600 to-blue-800",
+    patternSvg: waves,
+    icon: "⚓",
+    glowColor: "#d97706",
+    image: "/images/works/vinland-saga.jpg",
+  },
+  "PSYCHO-PASS": {
+    gradient: "from-blue-900 via-cyan-600 to-blue-900",
+    patternSvg: hexagons,
+    icon: "🔍",
+    glowColor: "#0891b2",
+    image: "/images/works/psycho-pass.jpg",
+  },
+  "あの日見た花の名前を僕達はまだ知らない。": {
+    gradient: "from-blue-300 via-sky-100 to-green-100",
     patternSvg: petals,
-    icon: "🐱",
-    glowColor: "#86efac",
-    image: "/images/works/natsume-yuujinchou.jpg",
+    icon: "🌸",
+    glowColor: "#93c5fd",
+    image: "/images/works/anohana.jpg",
+  },
+  "転生したらスライムだった件": {
+    gradient: "from-blue-400 via-cyan-300 to-green-300",
+    patternSvg: ripples,
+    icon: "🫧",
+    glowColor: "#22d3ee",
+    image: "/images/works/reincarnated-slime.jpg",
+  },
+  // --- Japanese Domestic Popularity Top 10 ---
+  "葬送のフリーレン": {
+    gradient: "from-purple-400 via-blue-300 to-green-300",
+    patternSvg: cometDots,
+    icon: "🧙‍♀️",
+    glowColor: "#a78bfa",
+    image: "/images/works/frieren.jpg",
+  },
+  "推しの子": {
+    gradient: "from-pink-500 via-purple-400 to-blue-500",
+    patternSvg: stars,
+    icon: "⭐",
+    glowColor: "#ec4899",
+    image: "/images/works/oshi-no-ko.jpg",
+  },
+  "スラムダンク": {
+    gradient: "from-orange-500 via-red-500 to-red-700",
+    patternSvg: basketLines,
+    icon: "🏀",
+    glowColor: "#fb923c",
+    image: "/images/works/slam-dunk.jpg",
+  },
+  "魔法少女まどか☆マギカ": {
+    gradient: "from-pink-500 via-purple-500 to-black",
+    patternSvg: diamonds,
+    icon: "💫",
+    glowColor: "#ec4899",
+    image: "/images/works/madoka-magica.jpg",
+  },
+  "涼宮ハルヒの憂鬱": {
+    gradient: "from-yellow-400 via-orange-300 to-blue-400",
+    patternSvg: stars,
+    icon: "🎀",
+    glowColor: "#facc15",
+    image: "/images/works/haruhi.jpg",
+  },
+  "けいおん!": {
+    gradient: "from-amber-400 via-pink-300 to-sky-300",
+    patternSvg: musicLines,
+    icon: "🎵",
+    glowColor: "#fbbf24",
+    image: "/images/works/k-on.jpg",
+  },
+  "ラブライブ!": {
+    gradient: "from-pink-400 via-orange-300 to-yellow-200",
+    patternSvg: stars,
+    icon: "⭐",
+    glowColor: "#f9a8d4",
+    image: "/images/works/lovelive.jpg",
+  },
+  "薬屋のひとりごと": {
+    gradient: "from-red-600 via-amber-500 to-emerald-500",
+    patternSvg: diamonds,
+    icon: "💊",
+    glowColor: "#f59e0b",
+    image: "/images/works/apothecary-diaries.jpg",
+  },
+  "天気の子": {
+    gradient: "from-blue-400 via-sky-300 to-amber-300",
+    patternSvg: cometDots,
+    icon: "🌤️",
+    glowColor: "#60a5fa",
+    image: "/images/works/weathering-with-you.jpg",
+  },
+  "すずめの戸締まり": {
+    gradient: "from-sky-400 via-cyan-300 to-amber-200",
+    patternSvg: doorFrames,
+    icon: "🚪",
+    glowColor: "#38bdf8",
+    image: "/images/works/suzume.jpg",
   },
 };
 
@@ -462,6 +455,12 @@ const DEFAULT_VISUAL: WorkVisual = {
   glowColor: "#9ca3af",
   image: "",
 };
+
+export const POSTER_TITLES = new Set(Object.keys(WORK_VISUALS));
+
+export function hasPoster(title: string): boolean {
+  return POSTER_TITLES.has(title);
+}
 
 export function getWorkVisual(title: string): WorkVisual {
   return WORK_VISUALS[title] ?? DEFAULT_VISUAL;
