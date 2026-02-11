@@ -294,14 +294,11 @@ function PosterCard({ work }: { work: Work }) {
           `/plan?theme=pilgrimage&work=${encodeURIComponent(work.title)}`
         )
       }
-      className="gallery-card group relative overflow-hidden text-left
-                 border-2 sm:border-[3px] border-white/10 hover:border-red-500
-                 shadow-[0_4px_20px_rgba(0,0,0,0.5)]
-                 hover:shadow-[0_8px_40px_rgba(229,62,62,0.3)]
-                 hover:-translate-y-1.5
-                 transition-all duration-300"
+      className="group relative overflow-hidden text-left rounded-lg
+                 border border-white/10 hover:border-red-500/60
+                 transition-colors duration-200"
     >
-      <div className="relative aspect-[2/3] overflow-hidden">
+      <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
         {/* グラデーション背景（プレースホルダー兼フォールバック） */}
         <div
           className={`absolute inset-0 bg-gradient-to-br ${visual.gradient}`}
@@ -312,14 +309,14 @@ function PosterCard({ work }: { work: Work }) {
           <img
             src={visual.image}
             alt={work.title}
-            className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
+            className="absolute inset-0 w-full h-full object-cover object-center"
             loading="lazy"
             onError={() => setImgError(true)}
           />
         )}
 
-        {/* テキスト用オーバーレイ（下部のみ） */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+        {/* テキスト用オーバーレイ（下部のみ、軽め） */}
+        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
 
         <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3">
           <p className="text-white text-[11px] sm:text-sm font-black drop-shadow-lg leading-tight mb-1">
@@ -367,22 +364,11 @@ function PosterGallerySection({ works }: { works: Work[] }) {
   });
 
   return (
-    <section className="gallery-section relative bg-black py-20 sm:py-32 overflow-hidden">
-      {/* 背景 */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(229,62,62,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(229,62,62,0.6) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-        }}
-      />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-red-500/5 blur-[100px] rounded-full" />
-
+    <section className="relative bg-[#0a0a0a] py-20 sm:py-32">
       {/* ヘッダー */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 mb-8 sm:mb-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 mb-8 sm:mb-12">
         <div className="flex items-end gap-4 mb-2">
-          <h2 className="gallery-heading text-4xl sm:text-8xl font-black text-white manga-shadow-red leading-none">
+          <h2 className="text-4xl sm:text-8xl font-black text-white manga-shadow-red leading-none">
             WORKS
           </h2>
           <span className="text-red-500 text-lg sm:text-3xl font-black mb-1 sm:mb-2">
@@ -436,7 +422,7 @@ function PosterGallerySection({ works }: { works: Work[] }) {
       </div>
 
       {/* カードグリッド */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-5">
           {filtered.map((work) => (
             <PosterCard key={work.title} work={work} />
@@ -789,34 +775,6 @@ export default function MangaTopPage({
           opacity: 0,
           duration: 0.7,
           delay: i * 0.12,
-          ease: "power2.out",
-        });
-      });
-
-      // Poster Gallery
-      gsap.from(".gallery-heading", {
-        scrollTrigger: {
-          trigger: ".gallery-section",
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-        x: -100,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-      gsap.utils.toArray<HTMLElement>(".gallery-card").forEach((card, i) => {
-        gsap.from(card, {
-          scrollTrigger: {
-            trigger: card,
-            start: "top 92%",
-            toggleActions: "play none none reverse",
-          },
-          y: 60,
-          opacity: 0,
-          scale: 0.9,
-          duration: 0.5,
-          delay: i * 0.04,
           ease: "power2.out",
         });
       });
