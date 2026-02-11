@@ -503,51 +503,55 @@ function CTASection() {
 
       {/* メインコンテンツ */}
       <div className="cta-content relative z-10 text-center px-4 sm:px-6 max-w-2xl w-full">
-        <div className="cta-bubble relative mb-6 sm:mb-8">
+        {/* カード部分 */}
+        <div className="cta-bubble relative mb-8 sm:mb-10">
           <div className="absolute -inset-1 bg-red-500/20 rounded-2xl blur-sm" />
           <div className="relative bg-[#111] border-[3px] border-white/15 rounded-2xl px-6 py-10 sm:px-14 sm:py-16 shadow-[0_20px_60px_rgba(229,62,62,0.15)]">
             <div className="absolute inset-0 stripe-diagonal opacity-10 pointer-events-none rounded-2xl overflow-hidden" />
 
-            <h2 className="cta-heading text-3xl sm:text-6xl font-black text-white manga-shadow-sm mb-4 sm:mb-5 leading-tight relative">
+            <h2 className="cta-heading text-3xl sm:text-6xl font-black text-white manga-shadow-sm mb-4 sm:mb-5 leading-tight relative z-10">
               さあ、旅に
               <br />
               出よう<span className="text-red-500">!</span>
             </h2>
 
-            <p className="text-xs sm:text-base text-white/50 mb-8 sm:mb-10 leading-relaxed relative">
+            <p className="text-xs sm:text-base text-white/50 leading-relaxed relative z-10">
               テーマを選んで、条件を入力するだけ。
               <br className="hidden sm:block" />
               AIがあなただけの聖地巡礼プランを作成します。
             </p>
-
-            {/* 旅に出るボタン — 白背景で最大コントラスト */}
-            <button
-              onClick={() => router.push("/plan?theme=pilgrimage")}
-              className="cta-button group relative inline-flex items-center gap-3
-                         bg-white text-[#0a0a0a] text-base sm:text-xl font-black
-                         px-10 sm:px-14 py-4 sm:py-5 rounded-full
-                         shadow-[0_0_40px_rgba(255,255,255,0.25),0_4px_20px_rgba(0,0,0,0.3)]
-                         hover:shadow-[0_0_60px_rgba(255,255,255,0.4),0_8px_30px_rgba(0,0,0,0.3)]
-                         hover:-translate-y-1
-                         active:translate-y-0.5 active:scale-[0.98]
-                         transition-all duration-200"
-            >
-              <span>旅に出る</span>
-              <svg
-                className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1.5 transition-transform"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={3}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"
-                />
-              </svg>
-            </button>
           </div>
+        </div>
+
+        {/* 旅に出るボタン — カードの外に配置して確実に前面表示 */}
+        <div className="relative z-20">
+          <button
+            onClick={() => router.push("/plan?theme=pilgrimage")}
+            className="cta-button group inline-flex items-center gap-3
+                       bg-white text-[#0a0a0a] text-base sm:text-xl font-black
+                       px-10 sm:px-14 py-4 sm:py-5 rounded-full
+                       border-4 border-white
+                       shadow-[0_0_40px_rgba(255,255,255,0.3),0_0_80px_rgba(255,255,255,0.15)]
+                       hover:shadow-[0_0_60px_rgba(255,255,255,0.5),0_0_120px_rgba(255,255,255,0.2)]
+                       hover:-translate-y-1 hover:scale-105
+                       active:translate-y-0.5 active:scale-[0.98]
+                       transition-all duration-200"
+          >
+            <span>旅に出る</span>
+            <svg
+              className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1.5 transition-transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={3}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </button>
         </div>
 
         <p className="text-[9px] sm:text-[10px] text-white/20 font-bold tracking-[0.2em] mt-8 sm:mt-12">
@@ -647,7 +651,7 @@ export default function MangaTopPage({ works }: { works: Work[] }) {
         scrollTrigger: {
           trigger: ".cta-section",
           start: "top 70%",
-          toggleActions: "play none none reverse",
+          toggleActions: "play none none none",
         },
       });
       ctaTl
@@ -665,8 +669,8 @@ export default function MangaTopPage({ works }: { works: Work[] }) {
         )
         .from(
           ".cta-button",
-          { y: 20, opacity: 0, scale: 0.9, duration: 0.4 },
-          "-=0.2"
+          { y: 30, opacity: 0, duration: 0.6, ease: "power2.out" },
+          "-=0.1"
         );
     }, containerRef);
 
