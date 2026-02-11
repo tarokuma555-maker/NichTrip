@@ -1,36 +1,167 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NichTrip AI
 
-## Getting Started
+テーマを選ぶだけで、AIがあなただけのニッチ旅を作る。
 
-First, run the development server:
+アニメ聖地巡礼をはじめとした「ニッチな旅」の旅程を、Claude AI が自動生成するWebアプリケーションです。
+
+## 主な機能
+
+- **AI旅程生成** — 作品名・出発地・日数・予算・同行者を入力すると、Claude が最適な旅程を作成
+- **聖地データベース** — 10作品・45スポットの聖地情報を収録
+- **ルートマップ** — Google Maps 上にスポットとルートを表示
+- **シェア** — X（Twitter）投稿 / 画像保存 でプランを共有
+
+## 技術スタック
+
+| カテゴリ | 技術 |
+|---------|------|
+| フレームワーク | Next.js 14 (App Router) + TypeScript |
+| スタイリング | Tailwind CSS |
+| AI | Claude API (@anthropic-ai/sdk) |
+| データベース | Supabase (PostgreSQL) |
+| 地図 | Google Maps (@react-google-maps/api) |
+| 画像生成 | html2canvas |
+
+## ディレクトリ構成
+
+```
+nichtrip/
+├── data/
+│   └── pilgrimage-spots.json   # 聖地スポットの静的データ
+├── supabase/
+│   ├── migrations/
+│   │   └── 001_initial.sql     # テーブル定義
+│   └── seed.sql                # 初期データ
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── generate-plan/route.ts  # AI プラン生成
+│   │   │   ├── works/route.ts          # 作品一覧
+│   │   │   └── spots/route.ts          # スポット一覧
+│   │   ├── plan/
+│   │   │   ├── page.tsx                # プラン作成ページ
+│   │   │   └── PlanPageContent.tsx
+│   │   ├── layout.tsx
+│   │   ├── page.tsx                    # トップページ
+│   │   └── globals.css
+│   ├── components/
+│   │   ├── ConditionForm.tsx    # 条件入力フォーム
+│   │   ├── LoadingAnimation.tsx # AI生成中アニメーション
+│   │   ├── MapView.tsx          # Google Maps 表示
+│   │   ├── PlanTimeline.tsx     # 旅程タイムライン
+│   │   ├── PopularWorks.tsx     # 作品カルーセル
+│   │   ├── ShareButton.tsx      # X シェア / 画像保存
+│   │   ├── SpotCard.tsx         # スポット詳細カード
+│   │   ├── ThemeSelector.tsx    # テーマ選択カード
+│   │   └── WorkSearch.tsx       # 作品検索バー
+│   └── lib/
+│       ├── supabase.ts          # Supabase クライアント
+│       └── types.ts             # 型定義
+├── next.config.mjs
+├── tailwind.config.ts
+└── package.json
+```
+
+## セットアップ
+
+### 1. リポジトリのクローンと依存関係のインストール
+
+```bash
+git clone <your-repo-url>
+cd nichtrip
+npm install
+```
+
+### 2. 環境変数の設定
+
+`.env.local` を作成し、以下の4つの環境変数を設定してください。
+
+```bash
+cp .env.local.example .env.local  # もしくは手動作成
+```
+
+```env
+# Claude API（必須：プラン生成に使用）
+ANTHROPIC_API_KEY=sk-ant-xxxxx
+
+# Supabase（必須：データベース）
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxxxx
+
+# Google Maps（任意：地図表示に使用。未設定でもプラン生成は動作）
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaxxxxx
+```
+
+#### 各サービスのキー取得方法
+
+| キー | 取得元 |
+|------|--------|
+| `ANTHROPIC_API_KEY` | [Anthropic Console](https://console.anthropic.com/) → API Keys |
+| `NEXT_PUBLIC_SUPABASE_URL` | [Supabase Dashboard](https://supabase.com/dashboard) → Settings → API → Project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 同上 → `anon` `public` キー |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | [Google Cloud Console](https://console.cloud.google.com/) → Maps JavaScript API を有効化 |
+
+### 3. Supabase のセットアップ
+
+Supabase プロジェクトを作成したら、SQL Editor で以下を順に実行してください。
+
+```bash
+# 1. テーブル作成
+supabase/migrations/001_initial.sql
+
+# 2. 初期データ投入
+supabase/seed.sql
+```
+
+### 4. ローカル開発サーバーの起動
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+http://localhost:3000 でアプリが起動します。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Vercel へのデプロイ
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. GitHub にプッシュ
 
-## Learn More
+```bash
+git add .
+git commit -m "Initial commit"
+git push origin main
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Vercel でプロジェクトをインポート
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. [vercel.com/new](https://vercel.com/new) にアクセス
+2. GitHub リポジトリを選択
+3. Framework Preset が **Next.js** になっていることを確認
+4. **Environment Variables** に以下を追加:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Name | Value |
+|------|-------|
+| `ANTHROPIC_API_KEY` | `sk-ant-xxxxx` |
+| `NEXT_PUBLIC_SUPABASE_URL` | `https://xxxxx.supabase.co` |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJxxxxx` |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | `AIzaxxxxx` |
 
-## Deploy on Vercel
+5. **Deploy** をクリック
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 注意事項
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `NEXT_PUBLIC_` プレフィックスの環境変数はクライアントに露出します。秘密にすべきキー（`ANTHROPIC_API_KEY`）にはプレフィックスを付けていません。
+- Google Maps API キーは HTTP リファラー制限を設定してください（本番ドメインのみ許可）。
+- Supabase の RLS ポリシーにより、`anime_works` と `pilgrimage_spots` は読み取り専用、`generated_plans` は読み書き可能です。
+
+## npm scripts
+
+| コマンド | 説明 |
+|---------|------|
+| `npm run dev` | 開発サーバー起動 (http://localhost:3000) |
+| `npm run build` | プロダクションビルド |
+| `npm run start` | プロダクションサーバー起動 |
+| `npm run lint` | ESLint 実行 |
+
+## ライセンス
+
+Private

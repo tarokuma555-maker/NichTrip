@@ -1,100 +1,79 @@
-import Image from "next/image";
+import ThemeSelector from "@/components/ThemeSelector";
+import WorkSearch from "@/components/WorkSearch";
+import PopularWorks from "@/components/PopularWorks";
+import spotsData from "../../data/pilgrimage-spots.json";
+
+// JSON から作品情報を抽出（サーバー側で静的に処理）
+const works = spotsData.map((w) => ({
+  title: w.work_title,
+  title_en: w.work_title_en,
+  year: w.work_year,
+  genre: w.work_genre,
+  spotCount: w.spots.length,
+}));
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen">
+      {/* ===== ヒーローセクション ===== */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-warm-100 via-warm-50 to-white">
+        {/* 装飾背景 */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-accent/10 blur-3xl" />
+          <div className="absolute top-32 -left-20 w-72 h-72 rounded-full bg-sub/10 blur-3xl" />
+          <div className="absolute bottom-0 right-1/3 w-80 h-80 rounded-full bg-warm-300/20 blur-3xl" />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+        <div className="relative max-w-4xl mx-auto px-5 pt-12 pb-16 sm:pt-20 sm:pb-24 text-center">
+          {/* ロゴ */}
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-navy mb-4">
+            <span className="inline-block mr-2">🗺️</span>
+            NichTrip AI
+          </h1>
+
+          {/* キャッチコピー */}
+          <p className="text-lg sm:text-xl text-navy/70 max-w-lg mx-auto leading-relaxed">
+            テーマを選ぶだけで、
+            <br className="sm:hidden" />
+            AIがあなただけの
+            <span className="text-accent font-bold">ニッチ旅</span>
+            を作る
+          </p>
+        </div>
+      </section>
+
+      {/* ===== テーマ選択 ===== */}
+      <section className="max-w-4xl mx-auto px-5 -mt-6 relative z-10">
+        <ThemeSelector />
+      </section>
+
+      {/* ===== 作品検索 ===== */}
+      <section className="max-w-4xl mx-auto px-5 mt-14">
+        <h2 className="text-xl font-bold text-navy text-center mb-2">
+          作品から探す
+        </h2>
+        <p className="text-sm text-navy/50 text-center mb-6">
+          聖地巡礼したいアニメ・映画のタイトルを入力
+        </p>
+        <WorkSearch works={works} />
+      </section>
+
+      {/* ===== 人気作品カルーセル ===== */}
+      <section className="max-w-4xl mx-auto px-5 mt-16 mb-20">
+        <div className="flex items-baseline justify-between mb-5">
+          <h2 className="text-xl font-bold text-navy">
+            対応作品
+          </h2>
+          <span className="text-sm text-navy/40">
+            全{works.length}作品 / {works.reduce((s, w) => s + w.spotCount, 0)}スポット
+          </span>
+        </div>
+        <PopularWorks works={works} />
+      </section>
+
+      {/* ===== フッター ===== */}
+      <footer className="border-t border-warm-200 py-8 text-center text-sm text-navy/40">
+        <p>&copy; 2025 NichTrip AI &mdash; AIがつくるニッチな旅</p>
       </footer>
     </div>
   );
