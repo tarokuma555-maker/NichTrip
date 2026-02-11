@@ -7,6 +7,8 @@ import MapView, { type MapSpot } from "./MapView";
 import ShareButton from "./ShareButton";
 import TransportOptions from "./TransportOptions";
 import HotelSuggestions from "./HotelSuggestions";
+import { useAuth } from "@/components/AuthProvider";
+import ProBanner from "./ProBanner";
 
 type TransportMode = "train" | "car" | "walk" | "taxi";
 
@@ -180,6 +182,9 @@ export default function PlanTimeline({
           <MetaBadge emoji="📍" text={`全${allSpots.length}スポット`} />
         </div>
       </div>
+
+      {/* ===== 無料プランの制限 + Pro誘導 ===== */}
+      <FreeLimitsBanner />
 
       {/* ===== 移動手段タブ ===== */}
       <div className="mb-8">
@@ -385,5 +390,52 @@ function MetaBadge({ emoji, text }: { emoji: string; text: string }) {
       <span>{emoji}</span>
       <span>{text}</span>
     </span>
+  );
+}
+
+function FreeLimitsBanner() {
+  const { isPro } = useAuth();
+
+  if (isPro) return null;
+
+  const limits = [
+    { icon: "🔄", free: "プラン生成 月3回まで", pro: "無制限" },
+    { icon: "🎬", free: "1作品のみ", pro: "最大3作品ミックス" },
+    { icon: "📸", free: "レビュー閲覧 5件/スポット", pro: "無制限" },
+    { icon: "💾", free: "プラン保存 3件まで", pro: "無制限" },
+  ];
+
+  return (
+    <div className="mb-8 border-2 border-white/10 overflow-hidden">
+      {/* ヘッダー */}
+      <div className="bg-white/[0.03] px-4 py-3 border-b border-white/10">
+        <p className="text-xs font-black text-white/60 uppercase tracking-wider">
+          現在のプラン: <span className="text-white/40">FREE</span>
+        </p>
+      </div>
+
+      {/* 制限リスト */}
+      <div className="p-4 space-y-2.5">
+        {limits.map((item, i) => (
+          <div key={i} className="flex items-center gap-3">
+            <span className="text-sm shrink-0">{item.icon}</span>
+            <div className="flex-1 min-w-0">
+              <span className="text-xs text-white/40 line-through">{item.free}</span>
+            </div>
+            <span className="text-[11px] text-red-400 font-black shrink-0">
+              Pro: {item.pro}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* CTA */}
+      <div className="px-4 pb-4">
+        <ProBanner
+          variant="inline"
+          message="すべての制限を解除してプロプランにアップグレード"
+        />
+      </div>
+    </div>
   );
 }

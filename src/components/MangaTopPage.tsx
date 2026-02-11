@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getWorkVisual } from "@/lib/work-visuals";
+import { useAuth } from "@/components/AuthProvider";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -264,6 +265,43 @@ function AboutSection() {
                   生成プランをマップ上にルート表示。シェア機能でSNS投稿も。
                 </p>
                 <div className="absolute inset-0 stripe-diagonal opacity-20 pointer-events-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Pro Plan カード — Maps セクションの下 */}
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 mt-4 sm:mt-5">
+        <div className="about-card relative overflow-hidden">
+          <div className="bg-gradient-to-r from-red-500/10 to-red-900/10 text-white p-6 sm:p-8 border-[3px] border-red-500/30 shadow-[4px_4px_0px_0px_rgba(229,62,62,0.3)]">
+            <span className="text-[10px] font-black tracking-[0.4em] text-red-400 uppercase mb-2 sm:mb-3 block">
+              04 — Pro Plan
+            </span>
+            <h3 className="text-xl sm:text-3xl font-black mb-3">
+              <span className="text-red-500">Pro</span>でもっと自由に
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              <div className="flex items-start gap-2">
+                <span className="shrink-0 w-5 h-5 bg-red-500 flex items-center justify-center text-white text-[10px] font-black mt-0.5">✓</span>
+                <div>
+                  <p className="text-sm font-black">複数作品ミックス</p>
+                  <p className="text-[11px] text-white/40">2〜3作品を組み合わせた巡礼</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="shrink-0 w-5 h-5 bg-red-500 flex items-center justify-center text-white text-[10px] font-black mt-0.5">✓</span>
+                <div>
+                  <p className="text-sm font-black">プラン生成 無制限</p>
+                  <p className="text-[11px] text-white/40">月3回の制限なし</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <span className="shrink-0 w-5 h-5 bg-red-500 flex items-center justify-center text-white text-[10px] font-black mt-0.5">✓</span>
+                <div>
+                  <p className="text-sm font-black">レビュー全件閲覧</p>
+                  <p className="text-[11px] text-white/40">他の旅行者のTipsすべて</p>
+                </div>
               </div>
             </div>
           </div>
@@ -702,6 +740,198 @@ function CTASection() {
 }
 
 /* ================================================================
+   Section: PRO PLAN
+   ================================================================ */
+function ProSection() {
+  const { isPro } = useAuth();
+  const router = useRouter();
+
+  if (isPro) return null;
+
+  const features = [
+    {
+      icon: "🎭",
+      title: "複数作品ミックス巡礼",
+      desc: "2〜3作品を組み合わせて1つのプランに",
+    },
+    {
+      icon: "♾️",
+      title: "プラン生成 無制限",
+      desc: "月3回の制限なし、何度でも生成",
+    },
+    {
+      icon: "📸",
+      title: "レビュー全件閲覧",
+      desc: "他の旅行者のTips・写真すべて",
+    },
+  ];
+
+  return (
+    <section className="pro-section relative bg-[#0a0a0a] py-20 sm:py-32 overflow-hidden">
+      {/* 赤グロー背景 */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-red-500/5 blur-[100px]" />
+
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
+        {/* ヘッダー */}
+        <div className="text-center mb-10 sm:mb-14">
+          <span className="inline-block bg-red-500/10 text-red-400 text-[10px] font-black tracking-[0.4em] px-4 py-2 border-2 border-red-500/30 mb-4">
+            PRO PLAN
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-black text-white leading-tight mb-3">
+            もっと自由に、
+            <br />
+            <span className="text-red-500">もっと深く。</span>
+          </h2>
+          <p className="text-sm text-white/40 max-w-md mx-auto">
+            プロプランでアニメ聖地巡礼をさらに充実させましょう
+          </p>
+        </div>
+
+        {/* 特徴カード */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-10">
+          {features.map((f, i) => (
+            <div
+              key={i}
+              className="pro-card bg-[#111] border-2 border-white/10 p-6 sm:p-8
+                         hover:border-red-500/30 transition-colors"
+            >
+              <span className="text-3xl mb-4 block">{f.icon}</span>
+              <h3 className="text-base sm:text-lg font-black text-white mb-2">
+                {f.title}
+              </h3>
+              <p className="text-xs sm:text-sm text-white/40">{f.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* 価格 + CTA */}
+        <div className="text-center">
+          <p className="text-2xl sm:text-3xl font-black text-white mb-2">
+            月額<span className="text-red-500">480</span>円〜
+          </p>
+          <p className="text-xs text-white/30 mb-6">
+            今なら3ヶ月間 月480円！4ヶ月目以降 ¥980/月
+          </p>
+          <button
+            onClick={() => router.push("/pricing")}
+            className="inline-flex items-center gap-2 bg-red-500 text-white text-sm sm:text-base font-black
+                       px-8 sm:px-10 py-3.5 sm:py-4 border-2 border-red-400/30
+                       shadow-[4px_4px_0_rgba(0,0,0,0.4)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.4)]
+                       hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-150"
+          >
+            プロプランを見る
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================
+   Section: PLAN COMPARISON (Free vs Pro)
+   ================================================================ */
+const COMPARISON_ROWS = [
+  { label: "プラン生成", free: "月3回", pro: "無制限" },
+  { label: "作品選択", free: "1作品のみ", pro: "最大3作品ミックス" },
+  { label: "AIチャットカスタマイズ", free: "—", pro: "対応" },
+  { label: "交通チケット比較", free: "対応", pro: "対応" },
+  { label: "宿泊施設比較", free: "対応", pro: "対応" },
+  { label: "OGP画像付きシェア", free: "対応", pro: "対応" },
+  { label: "UGCレビュー投稿", free: "対応", pro: "対応" },
+  { label: "UGCレビュー閲覧", free: "5件/スポット", pro: "無制限" },
+  { label: "プラン保存", free: "3件まで", pro: "無制限" },
+];
+
+function PlanComparisonSection() {
+  const { isPro } = useAuth();
+  const router = useRouter();
+
+  return (
+    <section className="relative bg-black py-20 sm:py-32 overflow-hidden">
+      <div className="absolute inset-0 halftone opacity-[0.02]" />
+
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6">
+        {/* ヘッダー */}
+        <div className="text-center mb-10 sm:mb-14">
+          <div className="flex items-center justify-center gap-4 mb-2">
+            <h2 className="text-4xl sm:text-7xl font-black text-white manga-shadow-red leading-none">
+              PLANS
+            </h2>
+          </div>
+          <div className="h-1 w-24 sm:w-32 bg-red-500 mx-auto" />
+          <p className="mt-3 text-white/40 text-xs sm:text-sm font-medium tracking-wider">
+            無料プラン vs プロプラン
+          </p>
+        </div>
+
+        {/* 比較テーブル */}
+        <div className="border-2 border-white/10 overflow-hidden">
+          {/* テーブルヘッダー */}
+          <div className="grid grid-cols-3 border-b-2 border-white/10">
+            <div className="p-3 sm:p-4" />
+            <div className="p-3 sm:p-4 text-center border-l-2 border-white/10">
+              <p className="text-xs font-black text-white/40 uppercase tracking-wider">Free</p>
+              <p className="text-lg sm:text-xl font-black text-white mt-1">¥0</p>
+            </div>
+            <div className="p-3 sm:p-4 text-center border-l-2 border-red-500/30 bg-red-500/5">
+              <p className="text-xs font-black text-red-400 uppercase tracking-wider">Pro</p>
+              <p className="text-lg sm:text-xl font-black text-white mt-1">¥480<span className="text-xs text-white/40">/月</span></p>
+            </div>
+          </div>
+
+          {/* 機能行 */}
+          {COMPARISON_ROWS.map((row, i) => (
+            <div
+              key={i}
+              className={`grid grid-cols-3 ${
+                i < COMPARISON_ROWS.length - 1 ? "border-b border-white/5" : ""
+              }`}
+            >
+              <div className="p-3 sm:p-4 flex items-center">
+                <span className="text-xs sm:text-sm text-white/60 font-bold">{row.label}</span>
+              </div>
+              <div className="p-3 sm:p-4 text-center border-l-2 border-white/10 flex items-center justify-center">
+                <span className={`text-xs sm:text-sm font-bold ${
+                  row.free === "—" ? "text-white/20" : "text-white/50"
+                }`}>
+                  {row.free}
+                </span>
+              </div>
+              <div className="p-3 sm:p-4 text-center border-l-2 border-red-500/30 bg-red-500/[0.02] flex items-center justify-center">
+                <span className="text-xs sm:text-sm font-black text-white/80">
+                  {row.pro}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA */}
+        {!isPro && (
+          <div className="text-center mt-8">
+            <button
+              onClick={() => router.push("/pricing")}
+              className="inline-flex items-center gap-2 bg-red-500 text-white text-sm font-black
+                         px-8 py-3.5 border-2 border-red-400/30
+                         shadow-[4px_4px_0_rgba(0,0,0,0.4)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.4)]
+                         hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-150"
+            >
+              プロプランに登録する
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================
    メインコンポーネント
    ================================================================ */
 export default function MangaTopPage({
@@ -786,6 +1016,8 @@ export default function MangaTopPage({
     <div ref={containerRef}>
       <HeroSection />
       <AboutSection />
+      <ProSection />
+      <PlanComparisonSection />
       <PosterGallerySection works={posterWorks} />
       <TitleListSection works={titleOnlyWorks} />
       <CTASection />

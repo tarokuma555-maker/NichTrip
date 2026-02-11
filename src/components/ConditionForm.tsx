@@ -7,6 +7,7 @@ import LoadingAnimation from "./LoadingAnimation";
 import PlanTimeline from "./PlanTimeline";
 import PaywallModal from "./PaywallModal";
 import AuthModal from "./AuthModal";
+import ProBanner from "./ProBanner";
 
 type Phase = "form" | "loading" | "result" | "error";
 
@@ -344,16 +345,12 @@ export default function ConditionForm({
                 </div>
               )}
 
-              {/* Pro バッジ（複数作品選択） */}
+              {/* Pro 誘導バナー */}
               {!isPro && !work && (
-                <div className="mt-2 flex items-center gap-1.5">
-                  <span className="text-[10px] font-black text-red-400 border border-red-500/30 px-1.5 py-0.5">
-                    PRO
-                  </span>
-                  <span className="text-[11px] text-white/30">
-                    複数作品ミックス巡礼
-                  </span>
-                </div>
+                <ProBanner
+                  variant="inline"
+                  message="複数の作品をミックスしてプランを作りたい場合はプロプランに登録できます"
+                />
               )}
 
               {/* サジェストドロップダウン */}
