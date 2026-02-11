@@ -6,7 +6,7 @@
 BEGIN;
 
 -- ============================================
--- anime_works（10作品）
+-- anime_works（50作品）
 -- ============================================
 INSERT INTO anime_works (id, title, title_en, genre, year, description) VALUES
   ('a0000000-0000-4000-8000-000000000001', '君の名は。', 'Your Name', '映画', 2016,
@@ -31,7 +31,7 @@ INSERT INTO anime_works (id, title, title_en, genre, year, description) VALUES
    '廃校を阻止するためスクールアイドルとして活動する9人の少女たちの物語');
 
 -- ============================================
--- pilgrimage_spots（全45スポット）
+-- pilgrimage_spots（全168スポット）
 -- ============================================
 
 -- ----------------------------------------

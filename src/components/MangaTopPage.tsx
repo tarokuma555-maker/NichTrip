@@ -223,9 +223,9 @@ function AboutSection() {
                   02 — Data
                 </span>
                 <h3 className="text-2xl sm:text-4xl font-black mb-2">
-                  10作品
+                  50作品
                   <br />
-                  45スポット
+                  168スポット
                 </h3>
                 <p className="text-sm text-white/70">
                   登録済みの聖地情報からAIが最適ルートを計算。

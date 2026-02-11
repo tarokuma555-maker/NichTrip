@@ -15,7 +15,7 @@ const themes: ThemeCard[] = [
     id: "pilgrimage",
     emoji: "🎌",
     title: "アニメ聖地巡礼",
-    description: "10作品の聖地を巡る旅。名シーンの舞台を実際に歩こう",
+    description: "50作品の聖地を巡る旅。名シーンの舞台を実際に歩こう",
     active: true,
   },
   {
