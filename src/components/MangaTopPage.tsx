@@ -226,7 +226,7 @@ function AboutSection() {
                 AnimeTripsとは<span className="text-red-500">?</span>
               </h3>
               <p className="text-sm sm:text-base text-black/60 leading-relaxed max-w-md">
-                アニメ聖地巡礼・パワースポット・B級グルメ。あなたの「好き」に合わせて、AIが最適な旅程を自動生成するWebアプリ。
+                好きなアニメを選ぶだけで、作品の舞台やロケ地を巡る聖地巡礼プランをAIが自動生成。あなただけの「推し旅」がここから始まります。
               </p>
               <div className="absolute -bottom-4 -right-4 w-24 sm:w-32 h-24 sm:h-32 halftone opacity-[0.06] rounded-tl-full" />
             </div>
