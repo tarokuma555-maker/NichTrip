@@ -377,9 +377,9 @@
     "loading": "Loading map..."
   },
   "LocaleSwitcher": {
-    "ja": "JP",
-    "en": "EN",
-    "zh": "中",
-    "ko": "한"
+    "ja": "日本語",
+    "en": "English",
+    "zh": "中文",
+    "ko": "한국어"
   }
 }
