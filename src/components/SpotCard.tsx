@@ -136,7 +136,7 @@ export default function SpotCard({
                     <p className="text-xs text-white/30 font-black tracking-wider mb-1">
                       SCENE
                     </p>
-                    <p className="text-sm text-white/80 font-bold leading-relaxed">
+                    <p className="text-sm text-white/80 font-bold leading-relaxed break-words">
                       {spot.anime_scene}
                     </p>
                     {spot.episode && (
@@ -176,7 +176,7 @@ export default function SpotCard({
               <div className="bg-white/5 border-2 border-white/10 p-3">
                 <div className="flex items-start gap-2">
                   <span className="text-white/60 mt-px"><FoodIcon /></span>
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-xs text-white/40 mb-0.5 font-bold">近くのグルメ</p>
                     <p className="text-sm font-black text-white">
                       {spot.nearby_food.name}
@@ -184,6 +184,21 @@ export default function SpotCard({
                     <p className="text-xs text-white/40 mt-0.5">
                       {spot.nearby_food.genre} / {spot.nearby_food.budget}
                     </p>
+                    <a
+                      href={`https://www.google.com/maps/search/${encodeURIComponent(spot.nearby_food.name + " " + (spot.address ?? ""))}/@${spot.lat},${spot.lng},15z`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-flex items-center gap-1 mt-2 text-[11px] font-black text-red-400 border border-red-500/30 px-2.5 py-1
+                                 hover:bg-red-500/10 transition-colors"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                      Google Mapで見る
+                      <span className="text-[10px]">&rarr;</span>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -222,7 +237,7 @@ function DetailRow({
       <span className="text-white/60 mt-px">{icon}</span>
       <div>
         <p className="text-xs text-white/40 font-bold">{label}</p>
-        <p className="text-sm text-white/70 leading-relaxed">{value}</p>
+        <p className="text-sm text-white/70 leading-relaxed break-words">{value}</p>
       </div>
     </div>
   );

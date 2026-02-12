@@ -144,8 +144,9 @@ export function getTransportIcon(type: string): string {
 export function buildRakutenSearchUrl(keyword: string): string {
   const affiliateId = getRakutenAffiliateId();
   const encodedKeyword = encodeURIComponent(keyword);
+  const searchUrl = `https://search.travel.rakuten.co.jp/ds/hotellist/search?f_keyword=${encodedKeyword}`;
   if (affiliateId) {
-    return `https://hb.afl.rakuten.co.jp/hgc/${affiliateId}/?pc=https%3A%2F%2Ftravel.rakuten.co.jp%2Fyado%2F${encodedKeyword}%2F`;
+    return `https://hb.afl.rakuten.co.jp/hgc/${affiliateId}/?pc=${encodeURIComponent(searchUrl)}`;
   }
-  return `https://travel.rakuten.co.jp/yado/${encodedKeyword}/`;
+  return searchUrl;
 }

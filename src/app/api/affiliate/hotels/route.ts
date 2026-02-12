@@ -94,7 +94,7 @@ async function fetchRakutenHotels(params: {
       bookingUrl:
         info.affiliateUrl ??
         info.hotelInformationUrl ??
-        '',
+        buildRakutenSearchUrl(info.hotelName ?? params.keyword ?? ''),
       source: 'rakuten' as const,
     };
   }).filter(Boolean) as HotelItem[];

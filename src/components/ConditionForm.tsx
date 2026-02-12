@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { PlanRequest, GeneratedPlan } from "@/lib/types";
 import { useAuth } from "@/components/AuthProvider";
 import LoadingAnimation from "./LoadingAnimation";
@@ -10,6 +10,8 @@ import AuthModal from "./AuthModal";
 import ProBanner from "./ProBanner";
 
 type Phase = "form" | "loading" | "result" | "error";
+
+const SESSION_KEY = "animetrips_plan_state";
 
 type WorkItem = {
   id: string;
@@ -72,6 +74,10 @@ export default function ConditionForm({
   const [plan, setPlan] = useState<GeneratedPlan | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Usage tracking
+  const [usageUsed, setUsageUsed] = useState(0);
+  const [usageLimit, setUsageLimit] = useState(3);
+
   // Paywall / Auth modals
   const [showPaywall, setShowPaywall] = useState(false);
   const [paywallReason, setPaywallReason] = useState<"usage_limit" | "multi_work">("usage_limit");
@@ -81,6 +87,61 @@ export default function ConditionForm({
   const [allWorks, setAllWorks] = useState<WorkItem[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestRef = useRef<HTMLDivElement>(null);
+
+  // sessionStorageから復元
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(SESSION_KEY);
+      if (saved) {
+        const s = JSON.parse(saved);
+        if (s.plan && s.phase === "result") {
+          setPlan(s.plan);
+          setPhase("result");
+          setKeyword(s.keyword ?? work ?? "");
+          setDeparture(s.departure ?? "東京");
+          setDays(s.days ?? null);
+          setBudget(s.budget ?? null);
+          setCompanions(s.companions ?? null);
+        }
+      }
+    } catch {}
+  }, [work]);
+
+  // プラン結果をsessionStorageに保存
+  const savePlanToSession = useCallback(
+    (planData: GeneratedPlan) => {
+      try {
+        sessionStorage.setItem(
+          SESSION_KEY,
+          JSON.stringify({
+            phase: "result",
+            plan: planData,
+            keyword,
+            departure,
+            days,
+            budget,
+            companions,
+          })
+        );
+      } catch {}
+    },
+    [keyword, departure, days, budget, companions]
+  );
+
+  // 使用量を取得
+  const fetchUsage = useCallback(() => {
+    fetch("/api/usage")
+      .then((res) => res.json())
+      .then((data) => {
+        if (typeof data.used === "number") setUsageUsed(data.used);
+        if (typeof data.limit === "number") setUsageLimit(data.limit);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!isPro) fetchUsage();
+  }, [isPro, fetchUsage]);
 
   // 作品一覧を取得
   useEffect(() => {
@@ -241,6 +302,8 @@ export default function ConditionForm({
       const data: GeneratedPlan = await res.json();
       setPlan(data);
       setPhase("result");
+      savePlanToSession(data);
+      setUsageUsed((prev) => prev + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       setErrorMsg("通信エラーが発生しました。ネットワークを確認してください。");
@@ -251,6 +314,7 @@ export default function ConditionForm({
   function handleReset() {
     setPlan(null);
     setPhase("form");
+    try { sessionStorage.removeItem(SESSION_KEY); } catch {}
   }
 
   // ---------- Loading ----------
@@ -395,7 +459,7 @@ export default function ConditionForm({
                     <div className="flex items-center gap-1.5">
                       <span className="w-4 h-4 bg-yellow-500/80 flex items-center justify-center text-black text-[10px] font-black">!</span>
                       <span className="text-xs text-yellow-400/80">
-                        データベース未登録（AIが自動で聖地を検索します）
+                        データベース未登録（自動で聖地を検索します）
                       </span>
                     </div>
                   )}
@@ -530,6 +594,28 @@ export default function ConditionForm({
       {phase === "error" && errorMsg && (
         <div className="mt-6 bg-red-500/10 border-2 border-red-500/30 px-4 py-3 text-sm text-red-400 font-bold">
           {errorMsg}
+        </div>
+      )}
+
+      {/* 残り回数 */}
+      {!isPro && (
+        <div className="mt-6 flex items-center justify-center gap-2">
+          <span className="text-xs text-white/40 font-bold">今月の残り回数:</span>
+          <div className="flex gap-1">
+            {Array.from({ length: usageLimit }, (_, i) => (
+              <div
+                key={i}
+                className={`w-3 h-3 border ${
+                  i < usageLimit - usageUsed
+                    ? "bg-red-500 border-red-400/50"
+                    : "bg-white/5 border-white/10"
+                }`}
+              />
+            ))}
+          </div>
+          <span className="text-xs font-black text-red-400">
+            {Math.max(0, usageLimit - usageUsed)}/{usageLimit}
+          </span>
         </div>
       )}
 

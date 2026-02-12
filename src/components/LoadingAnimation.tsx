@@ -182,7 +182,7 @@ export default function LoadingAnimation() {
               key={i}
               className={`flex items-center gap-3 px-3 py-2 border-2 transition-all duration-300 ${
                 current
-                  ? "border-red-500/50 bg-red-500/5 shadow-[2px_2px_0_rgba(229,62,62,0.3)]"
+                  ? "border-red-500/50 bg-red-500/5 shadow-[2px_2px_0_rgba(229,62,62,0.3)] step-slide-in"
                   : done
                     ? "border-white/5 bg-white/[0.02]"
                     : "border-white/5"
@@ -190,11 +190,14 @@ export default function LoadingAnimation() {
             >
               <div className="shrink-0 w-6 h-6 flex items-center justify-center">
                 {done ? (
-                  <span className="w-5 h-5 bg-emerald-500 flex items-center justify-center text-white text-[10px] font-black">
+                  <span className="w-5 h-5 bg-emerald-500 flex items-center justify-center text-white text-[10px] font-black step-check-in">
                     ✓
                   </span>
                 ) : current ? (
-                  <div className="w-5 h-5 border-2 border-red-500 border-t-transparent animate-spin" />
+                  <div className="relative w-5 h-5 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-red-500/30 step-ping" />
+                    <div className="w-3 h-3 bg-red-500 step-glow" />
+                  </div>
                 ) : (
                   <div className="w-2 h-2 bg-white/15" />
                 )}

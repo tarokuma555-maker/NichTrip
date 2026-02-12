@@ -194,7 +194,7 @@ function TransportConnector({
       <div className="min-w-0">
         <span className="text-xs text-white/60 font-bold">{info.text}</span>
         {mode === "train" && info.detail !== info.text && (
-          <p className="text-[11px] text-white/30 mt-0.5 leading-relaxed break-all">
+          <p className="text-[11px] text-white/30 mt-0.5 leading-relaxed break-words">
             {info.detail}
           </p>
         )}
@@ -267,7 +267,7 @@ export default function PlanTimeline({
         <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 leading-tight">
           {plan.title}
         </h2>
-        <p className="text-sm text-white/50 leading-relaxed max-w-md mx-auto">
+        <p className="text-sm text-white/50 leading-relaxed max-w-md mx-auto break-words">
           {plan.summary}
         </p>
 
