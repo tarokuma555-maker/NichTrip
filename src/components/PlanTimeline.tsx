@@ -529,9 +529,6 @@ function MetaBadge({ icon, text }: { icon: React.ReactNode; text: string }) {
 }
 
 function TravelAds({ departure, destination }: { departure?: string; destination: string }) {
-  const { isPro } = useAuth();
-  if (isPro) return null;
-
   const ads = [
     {
       icon: <IconHotel className="w-5 h-5" />,

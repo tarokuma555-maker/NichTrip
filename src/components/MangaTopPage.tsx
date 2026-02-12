@@ -750,34 +750,47 @@ function ProSection() {
 
   const features = [
     {
-      icon: "🎭",
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M6 6.878V6a2.25 2.25 0 012.25-2.25h7.5A2.25 2.25 0 0118 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 004.5 9v.878m13.5-3A2.25 2.25 0 0119.5 9v.878m0 0a2.246 2.246 0 00-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0121 12v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6c0-1.244 1.007-2.25 2.25-2.25h13.5" />
+        </svg>
+      ),
       title: "複数作品ミックス巡礼",
       desc: "2〜3作品を組み合わせて1つのプランに",
     },
     {
-      icon: "♾️",
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M21.015 4.356v4.992" />
+        </svg>
+      ),
       title: "プラン生成 無制限",
       desc: "月3回の制限なし、何度でも生成",
     },
     {
-      icon: "📸",
+      icon: (
+        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ),
       title: "レビュー全件閲覧",
       desc: "他の旅行者のTips・写真すべて",
     },
   ];
 
   return (
-    <section className="pro-section relative bg-[#0a0a0a] py-20 sm:py-32 overflow-hidden">
+    <section className="pro-section relative bg-[#0a0a0a] py-12 sm:py-20 overflow-hidden">
       {/* 赤グロー背景 */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-red-500/5 blur-[100px]" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
         {/* ヘッダー */}
-        <div className="text-center mb-10 sm:mb-14">
-          <span className="inline-block bg-red-500/10 text-red-400 text-[10px] font-black tracking-[0.4em] px-4 py-2 border-2 border-red-500/30 mb-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <span className="inline-block bg-red-500/10 text-red-400 text-[10px] font-black tracking-[0.4em] px-4 py-2 border-2 border-red-500/30 mb-3">
             PRO PLAN
           </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-white leading-tight mb-3">
+          <h2 className="text-2xl sm:text-4xl font-black text-white leading-tight mb-2">
             もっと自由に、
             <br />
             <span className="text-red-500">もっと深く。</span>
@@ -788,18 +801,20 @@ function ProSection() {
         </div>
 
         {/* 特徴カード */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
           {features.map((f, i) => (
             <div
               key={i}
-              className="pro-card bg-[#111] border-2 border-white/10 p-6 sm:p-8
-                         hover:border-red-500/30 transition-colors"
+              className="pro-card bg-[#111] border-2 border-white/10 p-4 sm:p-5
+                         hover:border-red-500/30 transition-colors flex items-start gap-3"
             >
-              <span className="text-3xl mb-4 block">{f.icon}</span>
-              <h3 className="text-base sm:text-lg font-black text-white mb-2">
-                {f.title}
-              </h3>
-              <p className="text-xs sm:text-sm text-white/40">{f.desc}</p>
+              <span className="shrink-0 text-red-400 mt-0.5">{f.icon}</span>
+              <div>
+                <h3 className="text-sm sm:text-base font-black text-white mb-1">
+                  {f.title}
+                </h3>
+                <p className="text-[11px] sm:text-xs text-white/40">{f.desc}</p>
+              </div>
             </div>
           ))}
         </div>
