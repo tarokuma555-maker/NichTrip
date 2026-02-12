@@ -136,34 +136,39 @@ export function getTransportIcon(type: string): string {
   }
 }
 
-/** Booking.com アフィリエイトURL（tp.media経由） */
+/** tp.media アフィリエイトが有効か（Booking.comプログラム参加済み） */
+function isBookingAffiliateEnabled(): boolean {
+  return process.env.BOOKING_AFFILIATE_ENABLED === 'true' && !!getMarker();
+}
+
+/** Booking.com アフィリエイトURL（tp.media経由、未参加時は直リンク） */
 export function buildBookingAffiliateUrl(
   location: string,
   checkin?: string,
   checkout?: string,
   adults?: number
 ): string {
-  const marker = getMarker();
-  const projectId = process.env.TRAVELPAYOUTS_PROJECT_ID ?? '';
   const dest = encodeURIComponent(location);
   const bookingUrl = `https://www.booking.com/searchresults.ja.html?ss=${dest}${
     checkin ? `&checkin=${checkin}` : ''
   }${checkout ? `&checkout=${checkout}` : ''}${
     adults ? `&group_adults=${adults}` : ''
   }`;
-  if (!marker) return bookingUrl;
+  if (!isBookingAffiliateEnabled()) return bookingUrl;
+  const marker = getMarker();
+  const projectId = process.env.TRAVELPAYOUTS_PROJECT_ID ?? '';
   return `https://tp.media/r?marker=${marker}${
     projectId ? `&trs=${projectId}` : ''
   }&p=504&u=${encodeURIComponent(bookingUrl)}`;
 }
 
-/** Booking.com ホテル名検索URL（tp.media経由） */
+/** Booking.com ホテル名検索URL（tp.media経由、未参加時は直リンク） */
 export function buildBookingHotelUrl(hotelName: string, area?: string): string {
-  const marker = getMarker();
-  const projectId = process.env.TRAVELPAYOUTS_PROJECT_ID ?? '';
   const query = area ? `${hotelName} ${area}` : hotelName;
   const bookingUrl = `https://www.booking.com/searchresults.ja.html?ss=${encodeURIComponent(query)}`;
-  if (!marker) return bookingUrl;
+  if (!isBookingAffiliateEnabled()) return bookingUrl;
+  const marker = getMarker();
+  const projectId = process.env.TRAVELPAYOUTS_PROJECT_ID ?? '';
   return `https://tp.media/r?marker=${marker}${
     projectId ? `&trs=${projectId}` : ''
   }&p=504&u=${encodeURIComponent(bookingUrl)}`;
