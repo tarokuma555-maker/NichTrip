@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
 import AuthModal from "@/components/AuthModal";
 import PaywallModal from "@/components/PaywallModal";
@@ -23,6 +24,7 @@ export default function UGCSection({
   lng,
   isExpanded,
 }: Props) {
+  const t = useTranslations("UGC");
   const { user, isPro } = useAuth();
 
   const [data, setData] = useState<UGCData | null>(null);
@@ -141,7 +143,7 @@ export default function UGCSection({
                 : "bg-transparent text-red-400 border-red-500 hover:bg-red-500 hover:text-white shadow-[2px_2px_0_rgba(229,62,62,0.3)]"
             }`}
           >
-            {isCheckedIn ? "✓ 訪問済み" : "🎌 行った！"}
+            {isCheckedIn ? `✓ ${t("visited")}` : `🎌 ${t("checkin")}`}
           </button>
           {checkinAnimating && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -158,8 +160,8 @@ export default function UGCSection({
           {loading
             ? "..."
             : checkinCount > 0
-              ? `${checkinCount}人が訪問`
-              : "最初の訪問者になろう"}
+              ? t("visitorsCount", { count: checkinCount })
+              : t("beFirst")}
         </span>
       </div>
 
@@ -167,8 +169,8 @@ export default function UGCSection({
       {reviews.length > 0 && (
         <div>
           <p className="text-xs text-white/40 font-black mb-2 flex items-center gap-1">
-            <span>📸</span> みんなの口コミ
-            <span className="text-white/20">({totalReviewCount}件)</span>
+            <span>📸</span> {t("reviews")}
+            <span className="text-white/20">{t("reviewCount", { count: totalReviewCount })}</span>
           </p>
           <div className="space-y-2">
             {reviews.map((review) => (
@@ -181,7 +183,7 @@ export default function UGCSection({
               onClick={() => setShowPaywall(true)}
               className="mt-2 w-full py-2 text-xs text-red-400 font-black border-2 border-red-500/20 hover:border-red-500/40 transition-colors"
             >
-              他{hiddenCount}件のレビューはProプランで →
+              {t("moreReviewsPro", { count: hiddenCount })}
             </button>
           )}
         </div>
@@ -199,7 +201,7 @@ export default function UGCSection({
         }}
         className="w-full py-2.5 text-xs font-black text-white/60 border-2 border-white/10 hover:border-white/30 hover:text-white transition-all"
       >
-        ✏️ レビューを書く
+        ✏️ {t("writeReview")}
       </button>
 
       {/* ===== モーダル群 ===== */}
@@ -229,6 +231,7 @@ export default function UGCSection({
 /* ========== ReviewCard ========== */
 
 function ReviewCard({ review }: { review: SpotReview }) {
+  const t = useTranslations("UGC");
   return (
     <div className="bg-white/5 border-2 border-white/10 p-3 shadow-[2px_2px_0_rgba(255,255,255,0.03)]">
       <div className="flex items-center gap-2 mb-1.5">
@@ -265,12 +268,12 @@ function ReviewCard({ review }: { review: SpotReview }) {
 
       {review.tips && (
         <p className="text-[11px] text-white/40">
-          <span className="font-black">💡 Tips:</span> {review.tips}
+          <span className="font-black">💡 {t("tipsLabel")}</span> {review.tips}
         </p>
       )}
       {review.best_angle && (
         <p className="text-[11px] text-white/40 mt-0.5">
-          <span className="font-black">📐 アングル:</span> {review.best_angle}
+          <span className="font-black">📐 {t("angleLabel")}</span> {review.best_angle}
         </p>
       )}
     </div>
@@ -297,6 +300,7 @@ function ReviewFormModal({
   }) => Promise<ReviewResult>;
   onClose: () => void;
 }) {
+  const t = useTranslations("UGC");
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [tips, setTips] = useState("");
@@ -313,7 +317,7 @@ function ReviewFormModal({
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      alert("写真は5MB以下にしてください");
+      alert(t("photoSizeError"));
       return;
     }
 
@@ -368,7 +372,7 @@ function ReviewFormModal({
           {/* ★ 評価 */}
           <div>
             <label className="block text-xs font-black text-white/60 mb-1">
-              評価 *
+              {t("rating")} *
             </label>
             <div className="flex gap-1">
               {[1, 2, 3, 4, 5].map((n) => (
@@ -391,20 +395,20 @@ function ReviewFormModal({
           {/* コメント */}
           <div>
             <label className="block text-xs font-black text-white/60 mb-1">
-              コメント
+              {t("comment")}
             </label>
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               className="manga-input w-full px-3 py-2.5 h-20 resize-none"
-              placeholder="感想を書こう..."
+              placeholder={t("commentPlaceholder")}
             />
           </div>
 
           {/* 写真 */}
           <div>
             <label className="block text-xs font-black text-white/60 mb-1">
-              📷 写真
+              📷 {t("photo")}
             </label>
             {photoUrl ? (
               <div className="relative w-full h-32 bg-black/40 border-2 border-white/10 overflow-hidden">
@@ -424,7 +428,7 @@ function ReviewFormModal({
             ) : (
               <>
                 <label className="block w-full py-3 text-center text-xs font-bold text-white/40 border-2 border-dashed border-white/10 hover:border-white/30 cursor-pointer transition-colors">
-                  {uploading ? "アップロード中..." : "写真を追加"}
+                  {uploading ? t("uploading") : t("addPhoto")}
                   <input
                     type="file"
                     accept="image/*"
@@ -434,7 +438,7 @@ function ReviewFormModal({
                 </label>
                 {uploadError && (
                   <p className="text-[11px] text-red-400 font-bold mt-1">
-                    写真のアップロードに失敗しました
+                    {t("uploadError")}
                   </p>
                 )}
               </>
@@ -444,35 +448,35 @@ function ReviewFormModal({
           {/* Tips */}
           <div>
             <label className="block text-xs font-black text-white/60 mb-1">
-              💡 訪問のコツ
+              💡 {t("visitTips")}
             </label>
             <input
               type="text"
               value={tips}
               onChange={(e) => setTips(e.target.value)}
               className="manga-input w-full px-3 py-2.5"
-              placeholder="朝8時前が空いてて撮影しやすい"
+              placeholder={t("tipsPlaceholder")}
             />
           </div>
 
           {/* ベストアングル */}
           <div>
             <label className="block text-xs font-black text-white/60 mb-1">
-              📐 おすすめアングル
+              📐 {t("bestAngle")}
             </label>
             <input
               type="text"
               value={bestAngle}
               onChange={(e) => setBestAngle(e.target.value)}
               className="manga-input w-full px-3 py-2.5"
-              placeholder="階段の下から見上げると同じ構図"
+              placeholder={t("anglePlaceholder")}
             />
           </div>
 
           {/* 訪問日 */}
           <div>
             <label className="block text-xs font-black text-white/60 mb-1">
-              訪問日
+              {t("visitedDate")}
             </label>
             <input
               type="date"
@@ -485,7 +489,7 @@ function ReviewFormModal({
           {/* エラー */}
           {submitError && (
             <p className="text-xs text-red-400 font-bold bg-red-500/10 border border-red-500/30 px-3 py-2">
-              投稿に失敗しました。もう一度お試しください。
+              {t("submitError")}
             </p>
           )}
 
@@ -499,7 +503,7 @@ function ReviewFormModal({
                 : "bg-red-500 text-white border-red-400/50 shadow-[3px_3px_0_rgba(0,0,0,0.3)] hover:shadow-[1px_1px_0_rgba(0,0,0,0.3)] hover:translate-x-0.5 hover:translate-y-0.5"
             }`}
           >
-            {submitting ? "投稿中..." : "レビューを投稿する"}
+            {submitting ? t("submitting") : t("submitReview")}
           </button>
 
           <button
@@ -507,7 +511,7 @@ function ReviewFormModal({
             onClick={onClose}
             className="w-full py-2 text-xs text-white/30 hover:text-white/50 font-bold transition-colors"
           >
-            キャンセル
+            {t("cancel")}
           </button>
         </form>
       </div>

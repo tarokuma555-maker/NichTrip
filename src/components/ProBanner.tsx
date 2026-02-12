@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/components/AuthProvider";
+import { useTranslations } from "next-intl";
 import AuthModal from "./AuthModal";
 
 export default function ProBanner({
@@ -16,6 +17,7 @@ export default function ProBanner({
 }) {
   const { user, isPro } = useAuth();
   const router = useRouter();
+  const t = useTranslations("Pro");
   const [showAuth, setShowAuth] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -33,13 +35,13 @@ export default function ProBanner({
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "決済ページの作成に失敗しました");
+        setError(data.error ?? t("checkoutError"));
         return;
       }
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setError("決済URLの取得に失敗しました");
+        setError(t("urlError"));
       }
     } catch {
       router.push("/pricing");
@@ -56,7 +58,7 @@ export default function ProBanner({
             PRO
           </span>
           <span className="text-[11px] text-white/40">
-            {message ?? "複数作品ミックス巡礼"}
+            {message ?? t("mixMessage")}
           </span>
           <button
             type="button"
@@ -64,7 +66,7 @@ export default function ProBanner({
             disabled={loading}
             className="text-[11px] text-red-400 font-black hover:text-red-300 transition-colors"
           >
-            {loading ? "..." : "プロプランに登録 →"}
+            {loading ? "..." : t("registerPro")}
           </button>
         </div>
         {showAuth && <AuthModal onClose={() => setShowAuth(false)} defaultTab="signup" />}
@@ -85,7 +87,7 @@ export default function ProBanner({
         </div>
 
         <p className="text-sm font-bold text-white/80 mb-1">
-          {message ?? "複数の作品をミックスして巡礼プランを作成"}
+          {message ?? t("mixPlanMessage")}
         </p>
 
         {error && (
@@ -99,25 +101,25 @@ export default function ProBanner({
             <span className="w-3.5 h-3.5 bg-emerald-500 flex items-center justify-center text-white text-[8px] font-black shrink-0">
               ✓
             </span>
-            プラン生成 無制限
+            {t("unlimitedGen")}
           </li>
           <li className="flex items-center gap-2 text-xs text-white/50">
             <span className="w-3.5 h-3.5 bg-emerald-500 flex items-center justify-center text-white text-[8px] font-black shrink-0">
               ✓
             </span>
-            複数作品ミックス巡礼
+            {t("mixPilgrimage")}
           </li>
           <li className="flex items-center gap-2 text-xs text-white/50">
             <span className="w-3.5 h-3.5 bg-emerald-500 flex items-center justify-center text-white text-[8px] font-black shrink-0">
               ✓
             </span>
-            レビュー全件閲覧
+            {t("allReviews")}
           </li>
         </ul>
 
         <div className="flex items-center gap-3">
           <span className="text-lg font-black text-white">
-            月額480円〜
+            {t("monthlyPrice")}
           </span>
           <button
             onClick={handleCta}
@@ -127,7 +129,7 @@ export default function ProBanner({
                        hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-150
                        disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "処理中..." : "プロになる →"}
+            {loading ? t("processing") : t("becomePro")}
           </button>
         </div>
       </div>

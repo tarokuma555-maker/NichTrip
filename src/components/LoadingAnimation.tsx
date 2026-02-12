@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const POSTER_IMAGES = [
   "demon-slayer", "naruto", "one-piece", "attack-on-titan", "jujutsu-kaisen",
@@ -15,10 +16,10 @@ const POSTER_IMAGES = [
 ];
 
 const STEPS = [
-  { text: "聖地データを検索中...", pct: 25 },
-  { text: "最適なルートを計算中...", pct: 50 },
-  { text: "周辺グルメを調査中...", pct: 75 },
-  { text: "プランを仕上げています...", pct: 95 },
+  { key: "step1", pct: 25 },
+  { key: "step2", pct: 50 },
+  { key: "step3", pct: 75 },
+  { key: "step4", pct: 95 },
 ];
 
 function shuffle<T>(arr: T[]): T[] {
@@ -31,6 +32,7 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 export default function LoadingAnimation() {
+  const t = useTranslations("Loading");
   const [activeStep, setActiveStep] = useState(0);
   const [featuredIdx, setFeaturedIdx] = useState(0);
   const [flash, setFlash] = useState(false);
@@ -181,7 +183,7 @@ export default function LoadingAnimation() {
             </span>
           </div>
           <p key={activeStep} className="text-sm font-black text-red-400 status-text-typing">
-            {STEPS[activeStep].text}
+            {t(STEPS[activeStep].key)}
           </p>
         </div>
 
@@ -236,7 +238,7 @@ export default function LoadingAnimation() {
         </div>
 
         <p className="text-center text-[11px] text-white/30 mt-4">
-          約10〜20秒で完成します
+          {t("estimate")}
         </p>
       </div>
     </div>

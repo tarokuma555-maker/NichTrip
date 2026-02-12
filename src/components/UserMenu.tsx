@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
 import AuthModal from "./AuthModal";
 
 export default function UserMenu({ className = "" }: { className?: string }) {
+  const t = useTranslations("UserMenu");
   const { user, loading, signOut } = useAuth();
   const [showAuth, setShowAuth] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -30,7 +32,7 @@ export default function UserMenu({ className = "" }: { className?: string }) {
           className={`text-[11px] font-black text-white/50 border border-white/10 px-2.5 py-1
                      hover:text-white hover:border-white/30 transition-colors ${className}`}
         >
-          ログイン
+          {t("login")}
         </button>
         {showAuth && (
           <AuthModal onClose={() => setShowAuth(false)} defaultTab="login" />
@@ -61,7 +63,7 @@ export default function UserMenu({ className = "" }: { className?: string }) {
             }}
             className="w-full text-left px-3 py-2 text-xs text-white/60 hover:bg-white/5 hover:text-white font-bold transition-colors"
           >
-            💎 サブスクリプション
+            💎 {t("subscription")}
           </button>
           <button
             onClick={() => {
@@ -70,7 +72,7 @@ export default function UserMenu({ className = "" }: { className?: string }) {
             }}
             className="w-full text-left px-3 py-2 text-xs text-white/60 hover:bg-white/5 hover:text-white font-bold transition-colors border-t border-white/10"
           >
-            ログアウト
+            {t("logout")}
           </button>
         </div>
       )}

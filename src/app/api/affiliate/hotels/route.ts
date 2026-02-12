@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { buildBookingHotelUrl, buildBookingAffiliateUrl } from '@/lib/affiliate';
 import type { HotelItem } from '@/lib/types';
+import { parseLocale, getHotelLanguageInstruction, getHotelFallback } from '@/lib/api-i18n';
+import type { SupportedLocale } from '@/lib/api-i18n';
 
 let _anthropic: Anthropic | null = null;
 function getAnthropic(): Anthropic {
@@ -31,6 +33,7 @@ async function fetchHotelsWithClaude(params: {
   lat?: number;
   lng?: number;
   budget?: string;
+  locale: SupportedLocale;
 }): Promise<HotelItem[]> {
   const location = params.keyword || '周辺';
   const hint = budgetHint(params.budget);
@@ -49,7 +52,7 @@ async function fetchHotelsWithClaude(params: {
 - features: 特徴を2つ（配列）
 - area: エリア名（市区町村レベル）
 
-JSON配列のみ出力。余計な説明やマークダウンは不要。`;
+JSON配列のみ出力。余計な説明やマークダウンは不要。${getHotelLanguageInstruction(params.locale)}`;
 
   const message = await getAnthropic().messages.create({
     model: 'claude-sonnet-4-5-20250929',
@@ -79,6 +82,7 @@ JSON配列のみ出力。余計な説明やマークダウンは不要。`;
 }
 
 export async function GET(request: NextRequest) {
+  const locale = parseLocale(request.nextUrl.searchParams.get('locale'));
   const keyword = request.nextUrl.searchParams.get('keyword') ?? '';
   const lat = request.nextUrl.searchParams.get('lat');
   const lng = request.nextUrl.searchParams.get('lng');
@@ -97,6 +101,7 @@ export async function GET(request: NextRequest) {
       lat: lat ? parseFloat(lat) : undefined,
       lng: lng ? parseFloat(lng) : undefined,
       budget,
+      locale,
     });
 
     if (hotels.length > 0) {
@@ -104,15 +109,16 @@ export async function GET(request: NextRequest) {
     }
 
     // Claude生成も失敗した場合、エリア検索リンクのみ返す
+    const fallback = getHotelFallback(locale);
     return NextResponse.json({
       hotels: [
         {
-          name: `${keyword || '周辺'}のホテルを検索`,
+          name: `${keyword || fallback.searchHotels}`,
           price: 0,
-          priceDisplay: '料金を比較',
+          priceDisplay: fallback.compareRates,
           rating: null,
           imageUrl: null,
-          features: ['Booking.comで検索'],
+          features: [fallback.searchOnBooking],
           bookingUrl: buildBookingAffiliateUrl(keyword || '日本'),
           source: 'booking' as const,
         },
@@ -122,15 +128,16 @@ export async function GET(request: NextRequest) {
     console.error('affiliate/hotels error:', error);
 
     // エラー時はエリア検索リンクのみ
+    const fallback = getHotelFallback(locale);
     return NextResponse.json({
       hotels: [
         {
-          name: `${keyword || '周辺'}のホテルを検索`,
+          name: `${keyword || fallback.searchHotels}`,
           price: 0,
-          priceDisplay: '料金を比較',
+          priceDisplay: fallback.compareRates,
           rating: null,
           imageUrl: null,
-          features: ['Booking.comで検索'],
+          features: [fallback.searchOnBooking],
           bookingUrl: buildBookingAffiliateUrl(keyword || '日本'),
           source: 'booking' as const,
         },

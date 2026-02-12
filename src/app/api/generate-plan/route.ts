@@ -5,6 +5,16 @@ import { createSupabaseServer } from '@/lib/supabase-server';
 import { isProUser } from '@/lib/subscription';
 import { checkUsageLimit, recordUsage } from '@/lib/usage';
 import type { PlanRequest, GeneratedPlan, PilgrimageSpot } from '@/lib/types';
+import {
+  parseLocale,
+  getLanguageInstruction,
+  getBudgetLabel,
+  getCompanionsLabel,
+  getCustomCompanionsLabel,
+  getCustomBudgetLabel,
+  getNoSpecLabel,
+  type SupportedLocale,
+} from '@/lib/api-i18n';
 
 let _anthropic: Anthropic | null = null;
 
@@ -15,36 +25,20 @@ function getAnthropic(): Anthropic {
   return _anthropic;
 }
 
-const BUDGET_LABEL: Record<string, string> = {
-  low: '節約（1日5,000円以内）',
-  medium: '標準（1日10,000〜15,000円）',
-  high: 'リッチ（1日30,000円以上OK）',
-};
-
-const COMPANIONS_LABEL: Record<string, string> = {
-  solo: 'ひとり旅',
-  couple: 'カップル',
-  friends: '友達グループ',
-  family: 'ファミリー',
-};
-
-function getBudgetLabel(req: PlanRequest): string {
+function getBudgetLabelForReq(req: PlanRequest, locale: SupportedLocale): string {
   if (req.budget === 'custom' && req.budgetMin != null && req.budgetMax != null) {
-    return `総額 ${req.budgetMin.toLocaleString()}円〜${req.budgetMax.toLocaleString()}円`;
+    return getCustomBudgetLabel(locale, req.budgetMin, req.budgetMax);
   }
-  return BUDGET_LABEL[req.budget] ?? '指定なし';
+  return getBudgetLabel(locale, req.budget) || getNoSpecLabel(locale);
 }
 
-function getCompanionsLabel(req: PlanRequest): string {
+function getCompanionsLabelForReq(req: PlanRequest, locale: SupportedLocale): string {
   if (req.companions === 'custom') {
     const adults = req.companionsAdults ?? 1;
     const children = req.companionsChildren ?? 0;
-    const parts: string[] = [];
-    if (adults > 0) parts.push(`大人${adults}人`);
-    if (children > 0) parts.push(`子供${children}人`);
-    return parts.join('・') || '大人1人';
+    return getCustomCompanionsLabel(locale, adults, children);
   }
-  return COMPANIONS_LABEL[req.companions] ?? '指定なし';
+  return getCompanionsLabel(locale, req.companions) || getNoSpecLabel(locale);
 }
 
 const THEME_LABEL: Record<PlanRequest['theme'], string> = {
@@ -57,7 +51,8 @@ const THEME_LABEL: Record<PlanRequest['theme'], string> = {
 function buildPrompt(
   req: PlanRequest,
   spots: PilgrimageSpot[],
-  workTitle: string
+  workTitle: string,
+  locale: SupportedLocale
 ): string {
   const spotsInfo = spots
     .map(
@@ -78,21 +73,22 @@ function buildPrompt(
 - キーワード/作品: ${req.keyword}
 - 出発地: ${req.departure}
 - 日数: ${req.days}日間
-- 予算: ${getBudgetLabel(req)}
-- 同行者: ${getCompanionsLabel(req)}
+- 予算: ${getBudgetLabelForReq(req, locale)}
+- 同行者: ${getCompanionsLabelForReq(req, locale)}
 
 ## 参考：聖地スポットデータ（${workTitle}）
 ${spotsInfo || '該当する登録スポットなし（あなたの知識で補完してください）'}
 
 ${JSON_FORMAT_SECTION}
 
-${RULES_SECTION}`;
+${RULES_SECTION}${getLanguageInstruction(locale)}`;
 }
 
 /** 複数作品クロスオーバーのプロンプト */
 function buildMultiWorkPrompt(
   req: PlanRequest,
-  workSpotsMap: Map<string, PilgrimageSpot[]>
+  workSpotsMap: Map<string, PilgrimageSpot[]>,
+  locale: SupportedLocale
 ): string {
   const workTitles = Array.from(workSpotsMap.keys());
 
@@ -119,8 +115,8 @@ function buildMultiWorkPrompt(
 - 作品: ${workTitles.join(', ')}
 - 出発地: ${req.departure}
 - 日数: ${req.days}日間
-- 予算: ${getBudgetLabel(req)}
-- 同行者: ${getCompanionsLabel(req)}
+- 予算: ${getBudgetLabelForReq(req, locale)}
+- 同行者: ${getCompanionsLabelForReq(req, locale)}
 
 ## 参考：聖地スポットデータ
 ${spotsSection}
@@ -137,7 +133,7 @@ ${JSON_FORMAT_SECTION}
 - 聖地スポットデータがない作品でも、あなたの知識でその作品の有名な聖地を2つ以上含めてください
 - 緯度経度は実在する正確な値を使用してください
 - nearby_foodは実在する可能性の高い店舗・ジャンルを記載してください
-- JSONのみを出力し、前後に説明文やマークダウンのコードブロックを付けないでください`;
+- JSONのみを出力し、前後に説明文やマークダウンのコードブロックを付けないでください${getLanguageInstruction(locale)}`;
 }
 
 const JSON_FORMAT_SECTION = `## 出力JSON形式（厳密に従ってください）
@@ -250,6 +246,7 @@ async function fetchSpotsForKeyword(
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as PlanRequest;
+    const locale = parseLocale(body.locale);
 
     // --- バリデーション ---
     if (!body.keyword || !body.days || !body.theme) {
@@ -321,11 +318,11 @@ export async function POST(request: NextRequest) {
         const { spots, workTitle } = await fetchSpotsForKeyword(kw);
         workSpotsMap.set(workTitle, spots);
       }
-      prompt = buildMultiWorkPrompt(body, workSpotsMap);
+      prompt = buildMultiWorkPrompt(body, workSpotsMap, locale);
     } else {
       // 単一作品（既存動作）
       const { spots, workTitle } = await fetchSpotsForKeyword(body.keyword);
-      prompt = buildPrompt(body, spots, workTitle);
+      prompt = buildPrompt(body, spots, workTitle, locale);
     }
 
     // --- Claude APIでプラン生成 ---

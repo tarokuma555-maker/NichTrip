@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import type { PlanRequest, GeneratedPlan } from "@/lib/types";
 import { useAuth } from "@/components/AuthProvider";
 import LoadingAnimation from "./LoadingAnimation";
@@ -80,28 +81,28 @@ type WorkItem = {
   year: number;
 };
 
-const DAYS_OPTIONS: { label: string; value: number }[] = [
-  { label: "日帰り", value: 1 },
-  { label: "1泊2日", value: 2 },
-  { label: "2泊3日", value: 3 },
-  { label: "その他", value: -1 },
+const DAYS_OPTIONS: { labelKey: string; value: number }[] = [
+  { labelKey: "dayTrip", value: 1 },
+  { labelKey: "oneNight", value: 2 },
+  { labelKey: "twoNights", value: 3 },
+  { labelKey: "other", value: -1 },
 ];
 
-const BUDGET_OPTIONS: { label: string; value: PlanRequest["budget"] }[] = [
-  { label: "リーズナブル", value: "low" },
-  { label: "ふつう", value: "medium" },
-  { label: "贅沢", value: "high" },
+const BUDGET_OPTIONS: { labelKey: string; value: PlanRequest["budget"] }[] = [
+  { labelKey: "budgetLow", value: "low" },
+  { labelKey: "budgetMedium", value: "medium" },
+  { labelKey: "budgetHigh", value: "high" },
 ];
 
 const COMPANIONS_OPTIONS: {
-  label: string;
+  labelKey: string;
   emoji: string;
   value: PlanRequest["companions"];
 }[] = [
-  { label: "ひとり", emoji: "🧑", value: "solo" },
-  { label: "カップル", emoji: "💑", value: "couple" },
-  { label: "友達", emoji: "👫", value: "friends" },
-  { label: "家族", emoji: "👨‍👩‍👧", value: "family" },
+  { labelKey: "solo", emoji: "🧑", value: "solo" },
+  { labelKey: "couple", emoji: "💑", value: "couple" },
+  { labelKey: "friends", emoji: "👫", value: "friends" },
+  { labelKey: "family", emoji: "👨‍👩‍👧", value: "family" },
 ];
 
 export default function ConditionForm({
@@ -112,6 +113,8 @@ export default function ConditionForm({
   work?: string;
 }) {
   const { isPro } = useAuth();
+  const locale = useLocale();
+  const t = useTranslations("ConditionForm");
 
   const [tab, setTab] = useState<Tab>("new");
   const [history, setHistory] = useState<HistoryEntry[]>([]);
@@ -351,11 +354,11 @@ export default function ConditionForm({
       const res = await fetch("/api/generate-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ ...body, locale }),
       });
 
       if (res.status === 429) {
-        setErrorMsg("APIのレート制限です。少し待ってからもう一度お試しください。");
+        setErrorMsg(t("rateLimitError"));
         setPhase("error");
         return;
       }
@@ -374,14 +377,14 @@ export default function ConditionForm({
           setPhase("form");
           return;
         }
-        setErrorMsg(data?.error ?? "プランの生成に失敗しました。");
+        setErrorMsg(data?.error ?? t("generateError"));
         setPhase("error");
         return;
       }
 
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        setErrorMsg(data?.error ?? "プランの生成に失敗しました。");
+        setErrorMsg(data?.error ?? t("generateError"));
         setPhase("error");
         return;
       }
@@ -407,7 +410,7 @@ export default function ConditionForm({
       setHistory(loadHistory());
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
-      setErrorMsg("通信エラーが発生しました。ネットワークを確認してください。");
+      setErrorMsg(t("networkError"));
       setPhase("error");
     }
   }
@@ -470,7 +473,7 @@ export default function ConditionForm({
               : "bg-white/5 text-white/40 hover:text-white/60"
           }`}
         >
-          新規作成
+          {t("newPlan")}
         </button>
         <button
           type="button"
@@ -481,7 +484,7 @@ export default function ConditionForm({
               : "bg-white/5 text-white/40 hover:text-white/60"
           }`}
         >
-          履歴
+          {t("history")}
           {history.length > 0 && (
             <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-[10px] font-black bg-white/10 border border-white/20">
               {history.length}
@@ -495,13 +498,13 @@ export default function ConditionForm({
         <div className="space-y-3">
           {history.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-sm text-white/30 font-bold">まだプランがありません</p>
+              <p className="text-sm text-white/30 font-bold">{t("noHistory")}</p>
               <button
                 type="button"
                 onClick={() => setTab("new")}
                 className="mt-4 text-xs text-red-400 font-black border-2 border-red-500/30 px-4 py-2 hover:bg-red-500/10 transition-colors"
               >
-                プランを作成する
+                {t("createPlan")}
               </button>
             </div>
           ) : (
@@ -526,9 +529,9 @@ export default function ConditionForm({
                 <div className="flex items-center gap-2 text-[11px] text-white/40 font-bold">
                   <span>{entry.keyword}</span>
                   <span>|</span>
-                  <span>{entry.departure}発</span>
+                  <span>{entry.departure}{t("departure")}</span>
                   <span>|</span>
-                  <span>{entry.days === 1 ? "日帰り" : `${entry.days - 1}泊${entry.days}日`}</span>
+                  <span>{entry.days === 1 ? t("dayTrip") : t("nightStay", { nights: entry.days - 1, days: entry.days })}</span>
                 </div>
               </button>
             ))
@@ -541,7 +544,7 @@ export default function ConditionForm({
       <>
       <div className="space-y-6">
         {/* 作品名（検索付き） */}
-        <FormSection label="作品名" icon="🎬">
+        <FormSection label={t("workLabel")} icon="🎬">
           {work ? (
             <div className="manga-input px-4 py-3 text-white font-bold">
               {work}
@@ -568,7 +571,7 @@ export default function ConditionForm({
                   ))}
                   {selectedWorks.length >= 3 && (
                     <span className="text-[10px] text-white/30 font-bold self-center">
-                      最大3作品
+                      {t("max3works")}
                     </span>
                   )}
                 </div>
@@ -597,8 +600,8 @@ export default function ConditionForm({
                     onFocus={() => setShowSuggestions(true)}
                     placeholder={
                       isPro && selectedWorks.length > 0
-                        ? "さらに作品を追加..."
-                        : "作品名を検索..."
+                        ? t("addMore")
+                        : t("searchWork")
                     }
                     className="manga-input w-full pl-10 pr-4 py-3"
                   />
@@ -609,7 +612,7 @@ export default function ConditionForm({
               {!isPro && !work && (
                 <ProBanner
                   variant="inline"
-                  message="複数の作品をミックスしてプランを作りたい場合はプロプランに登録できます"
+                  message={t("proMixBanner")}
                 />
               )}
 
@@ -634,7 +637,7 @@ export default function ConditionForm({
                         </p>
                       </div>
                       <span className="shrink-0 ml-2 text-[10px] text-red-400 font-black border border-red-500/30 px-2 py-0.5">
-                        選択
+                        {t("select")}
                       </span>
                     </button>
                   ))}
@@ -655,7 +658,7 @@ export default function ConditionForm({
                     <div className="flex items-center gap-1.5">
                       <span className="w-4 h-4 bg-yellow-500/80 flex items-center justify-center text-black text-[10px] font-black">!</span>
                       <span className="text-xs text-yellow-400/80">
-                        データベース未登録（自動で聖地を検索します）
+                        {t("notInDB")}
                       </span>
                     </div>
                   )}
@@ -667,8 +670,8 @@ export default function ConditionForm({
                 <div className="mt-2 flex items-center gap-1.5">
                   <span className="w-4 h-4 bg-emerald-500 flex items-center justify-center text-white text-[10px] font-black">✓</span>
                   <span className="text-xs text-emerald-400 font-bold">
-                    {selectedWorks.length}作品選択済み
-                    {selectedWorks.length > 1 && " — ミックス巡礼プランを生成します"}
+                    {t("worksSelected", { count: selectedWorks.length })}
+                    {selectedWorks.length > 1 && t("mixPlan")}
                   </span>
                 </div>
               )}
@@ -677,22 +680,22 @@ export default function ConditionForm({
         </FormSection>
 
         {/* 出発地 */}
-        <FormSection label="出発地" icon="📍">
+        <FormSection label={t("departureLabel")} icon="📍">
           <input
             type="text"
             value={departure}
             onChange={(e) => setDeparture(e.target.value)}
-            placeholder="東京"
+            placeholder={t("departurePlaceholder")}
             className="manga-input w-full px-4 py-3"
           />
         </FormSection>
 
         {/* 日数 */}
-        <FormSection label="日数" icon="📅">
+        <FormSection label={t("daysLabel")} icon="📅">
           <ChipGroup
             options={DAYS_OPTIONS.map((o) => ({
               key: String(o.value),
-              label: o.label,
+              label: t(o.labelKey),
             }))}
             selected={days !== null ? String(days) : null}
             onSelect={(key) => setDays(Number(key))}
@@ -705,23 +708,23 @@ export default function ConditionForm({
                 max="365"
                 value={daysCustom}
                 onChange={(e) => setDaysCustom(e.target.value)}
-                placeholder="日数"
+                placeholder={t("daysPlaceholder")}
                 className="manga-input w-24 px-3 py-2.5 text-center"
               />
-              <span className="text-sm text-white/50 font-bold">日間</span>
+              <span className="text-sm text-white/50 font-bold">{t("daysUnit")}</span>
             </div>
           )}
         </FormSection>
 
         {/* 予算 */}
-        <FormSection label="予算" icon="💰">
+        <FormSection label={t("budgetLabel")} icon="💰">
           <ChipGroup
             options={[
               ...BUDGET_OPTIONS.map((o) => ({
                 key: o.value,
-                label: o.label,
+                label: t(o.labelKey),
               })),
-              { key: "custom", label: "手動で設定" },
+              { key: "custom", label: t("budgetCustom") },
             ]}
             selected={budget}
             onSelect={(key) => setBudget(key as PlanRequest["budget"])}
@@ -737,14 +740,14 @@ export default function ConditionForm({
         </FormSection>
 
         {/* 同行者 */}
-        <FormSection label="同行者" icon="👥">
+        <FormSection label={t("companionsLabel")} icon="👥">
           <ChipGroup
             options={[
               ...COMPANIONS_OPTIONS.map((o) => ({
                 key: o.value,
-                label: `${o.emoji} ${o.label}`,
+                label: `${o.emoji} ${t(o.labelKey)}`,
               })),
-              { key: "custom", label: "人数を設定" },
+              { key: "custom", label: t("customCount") },
             ]}
             selected={companions}
             onSelect={(key) =>
@@ -754,13 +757,13 @@ export default function ConditionForm({
           {companions === "custom" && (
             <div className="mt-3 flex flex-col gap-3">
               <CounterRow
-                label="大人"
+                label={t("adults")}
                 value={companionsAdults}
                 min={1}
                 onChange={setCompanionsAdults}
               />
               <CounterRow
-                label="子供"
+                label={t("children")}
                 value={companionsChildren}
                 min={0}
                 onChange={setCompanionsChildren}
@@ -780,7 +783,7 @@ export default function ConditionForm({
       {/* 残り回数 */}
       {!isPro && (
         <div className="mt-6 flex items-center justify-center gap-2">
-          <span className="text-xs text-white/40 font-bold">今月の残り回数:</span>
+          <span className="text-xs text-white/40 font-bold">{t("remainingCount")}</span>
           <div className="flex gap-1">
             {Array.from({ length: usageLimit }, (_, i) => (
               <div
@@ -813,13 +816,13 @@ export default function ConditionForm({
           }
         `}
       >
-        プランを作成する
+        {t("generatePlan")}
       </button>
 
       {usageLimitReached ? (
         <div className="mt-4 text-center space-y-3">
           <p className="text-xs text-red-400 font-black">
-            今月の無料プラン生成回数を使い切りました
+            {t("limitReached")}
           </p>
           <a
             href="/pricing"
@@ -827,16 +830,16 @@ export default function ConditionForm({
                        shadow-[4px_4px_0_rgba(0,0,0,0.4)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.4)] hover:translate-x-0.5 hover:translate-y-0.5
                        transition-all duration-200"
           >
-            Proプランに登録する
+            {t("registerProPlan")}
             <span className="text-xs">&rarr;</span>
           </a>
           <p className="text-[11px] text-white/30">
-            月額480円で無制限にプラン生成できます
+            {t("proUnlimited")}
           </p>
         </div>
       ) : !isReady ? (
         <p className="mt-2 text-center text-xs text-white/30 font-bold">
-          すべての項目を入力すると生成できます
+          {t("fillAll")}
         </p>
       ) : null}
       </>
@@ -933,6 +936,7 @@ function CounterRow({
   min: number;
   onChange: (v: number) => void;
 }) {
+  const t = useTranslations("ConditionForm");
   return (
     <div className="flex items-center gap-3">
       <span className="text-sm text-white/70 w-12 shrink-0 font-bold">{label}</span>
@@ -954,7 +958,7 @@ function CounterRow({
         >
           +
         </button>
-        <span className="text-sm text-white/40 font-bold">人</span>
+        <span className="text-sm text-white/40 font-bold">{t("personUnit")}</span>
       </div>
     </div>
   );
@@ -975,6 +979,7 @@ function BudgetSlider({
   onMinChange: (v: string) => void;
   onMaxChange: (v: string) => void;
 }) {
+  const t = useTranslations("ConditionForm");
   const minVal = parseInt(min) || 10000;
   const maxVal = parseInt(max) || 50000;
 
@@ -1007,16 +1012,16 @@ function BudgetSlider({
   function formatYen(v: number) {
     if (v >= 10000) {
       const man = v / 10000;
-      return Number.isInteger(man) ? `${man}万円` : `${man.toFixed(1)}万円`;
+      return t("currencyManYen", { amount: Number.isInteger(man) ? String(man) : man.toFixed(1) });
     }
-    return `${v.toLocaleString()}円`;
+    return t("currencyYen", { amount: v.toLocaleString() });
   }
 
   return (
     <div className="mt-3 space-y-3">
       {/* 下限 */}
       <div className="flex items-center gap-2">
-        <span className="text-xs text-white/50 w-8 shrink-0 font-bold">下限</span>
+        <span className="text-xs text-white/50 w-8 shrink-0 font-bold">{t("budgetMin")}</span>
         <button
           type="button"
           onClick={() => stepMin(-1)}
@@ -1048,7 +1053,7 @@ function BudgetSlider({
 
       {/* 上限 */}
       <div className="flex items-center gap-2">
-        <span className="text-xs text-white/50 w-8 shrink-0 font-bold">上限</span>
+        <span className="text-xs text-white/50 w-8 shrink-0 font-bold">{t("budgetMax")}</span>
         <button
           type="button"
           onClick={() => stepMax(-1)}

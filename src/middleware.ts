@@ -1,10 +1,16 @@
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import createMiddleware from 'next-intl/middleware';
+import { routing } from '@/i18n/routing';
+
+const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: { headers: request.headers },
-  });
+  // 1) Run next-intl middleware first (handles locale detection & redirect)
+  const intlResponse = intlMiddleware(request);
+
+  // Use the intl response as the base, or create a new one if intl didn't redirect
+  const response = intlResponse;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -25,6 +31,7 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
+  // 2) Supabase auth session handling
   const supabase = createServerClient(supabaseUrl, supabaseKey, {
     cookies: {
       get(name: string) {
@@ -32,16 +39,10 @@ export async function middleware(request: NextRequest) {
       },
       set(name: string, value: string, options: CookieOptions) {
         request.cookies.set({ name, value, ...options });
-        response = NextResponse.next({
-          request: { headers: request.headers },
-        });
         response.cookies.set({ name, value, ...options });
       },
       remove(name: string, options: CookieOptions) {
         request.cookies.set({ name, value: '', ...options });
-        response = NextResponse.next({
-          request: { headers: request.headers },
-        });
         response.cookies.set({ name, value: '', ...options });
       },
     },
@@ -66,5 +67,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|images/).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|images/|api/).*)'],
 };

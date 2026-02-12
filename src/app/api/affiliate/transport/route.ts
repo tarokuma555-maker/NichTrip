@@ -6,6 +6,8 @@ import {
   getTransportIcon,
 } from '@/lib/affiliate';
 import type { TransportOption } from '@/lib/types';
+import { parseLocale, getTransportLanguageInstruction, getTransportFallback } from '@/lib/api-i18n';
+import type { SupportedLocale } from '@/lib/api-i18n';
 
 let _anthropic: Anthropic | null = null;
 function getAnthropic(): Anthropic {
@@ -27,7 +29,8 @@ type RawOption = {
 function buildPrompt(
   from: string,
   to: string,
-  companions?: string
+  companions?: string,
+  locale?: SupportedLocale
 ): string {
   return `${from}から${to}への交通手段を3パターン提案してください。
 ${companions ? `同行者: ${companions}` : ''}
@@ -41,7 +44,7 @@ ${companions ? `同行者: ${companions}` : ''}
 - recommendation: おすすめポイント1文
 
 JSON配列のみ出力。マークダウンや説明は一切不要。
-例: [{"type":"shinkansen","name":"東海道新幹線","duration":"約2時間","price":"約14,000円","transfers":0,"recommendation":"最速で快適"}]`;
+例: [{"type":"shinkansen","name":"東海道新幹線","duration":"約2時間","price":"約14,000円","transfers":0,"recommendation":"最速で快適"}]${getTransportLanguageInstruction(locale ?? 'ja')}`;
 }
 
 function parseResponse(text: string): RawOption[] {
@@ -63,38 +66,39 @@ function parseResponse(text: string): RawOption[] {
 }
 
 /** Claude APIが失敗した場合のフォールバック交通手段 */
-function buildFallbackOptions(from: string, to: string): TransportOption[] {
+function buildFallbackOptions(from: string, to: string, locale: SupportedLocale = 'ja'): TransportOption[] {
+  const fb = getTransportFallback(locale);
   return [
     {
       type: 'train',
       icon: getTransportIcon('train'),
-      name: `${from}→${to} 電車`,
-      duration: '時間は経路による',
-      price: '経路検索で確認',
+      name: `${from}→${to} ${fb.train}`,
+      duration: fb.durationUnknown,
+      price: fb.checkRoute,
       transfers: 0,
-      recommendation: 'Google Mapsで最適ルートを検索してください',
+      recommendation: fb.searchGoogle,
       bookingUrl: `https://www.google.com/maps/dir/${encodeURIComponent(from)}/${encodeURIComponent(to)}/?travelmode=transit`,
       source: 'google_maps',
     },
     {
       type: 'car',
       icon: getTransportIcon('car'),
-      name: `${from}→${to} レンタカー`,
-      duration: '距離による',
-      price: 'レンタカー検索で確認',
+      name: `${from}→${to} ${fb.rental}`,
+      duration: fb.distanceDepends,
+      price: fb.checkRental,
       transfers: 0,
-      recommendation: '自由に移動できるのが魅力',
+      recommendation: fb.freeTravel,
       bookingUrl: `https://www.google.com/maps/dir/${encodeURIComponent(from)}/${encodeURIComponent(to)}/?travelmode=driving`,
       source: 'google_maps',
     },
     {
       type: 'taxi',
       icon: getTransportIcon('taxi'),
-      name: `タクシー / 配車アプリ`,
-      duration: '距離による',
-      price: '距離に応じた料金',
+      name: fb.taxi,
+      duration: fb.distanceDepends,
+      price: fb.distanceFare,
       transfers: 0,
-      recommendation: '駅から聖地スポットへの移動に便利',
+      recommendation: fb.taxiConvenient,
       bookingUrl: null,
       source: 'info_only',
     },
@@ -102,6 +106,7 @@ function buildFallbackOptions(from: string, to: string): TransportOption[] {
 }
 
 export async function GET(request: NextRequest) {
+  const locale = parseLocale(request.nextUrl.searchParams.get('locale'));
   const from = request.nextUrl.searchParams.get('from');
   const to = request.nextUrl.searchParams.get('to');
   const date = request.nextUrl.searchParams.get('date') ?? undefined;
@@ -115,7 +120,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const prompt = buildPrompt(from, to, companions);
+    const prompt = buildPrompt(from, to, companions, locale);
 
     const message = await getAnthropic().messages.create({
       model: 'claude-sonnet-4-5-20250929',
@@ -125,7 +130,7 @@ export async function GET(request: NextRequest) {
 
     const block = message.content[0];
     if (block.type !== 'text') {
-      return NextResponse.json({ options: buildFallbackOptions(from, to) });
+      return NextResponse.json({ options: buildFallbackOptions(from, to, locale) });
     }
 
     let rawOptions: RawOption[];
@@ -133,11 +138,11 @@ export async function GET(request: NextRequest) {
       rawOptions = parseResponse(block.text);
     } catch {
       console.error('Transport JSON parse failed:', block.text.slice(0, 200));
-      return NextResponse.json({ options: buildFallbackOptions(from, to) });
+      return NextResponse.json({ options: buildFallbackOptions(from, to, locale) });
     }
 
     if (!rawOptions || rawOptions.length === 0) {
-      return NextResponse.json({ options: buildFallbackOptions(from, to) });
+      return NextResponse.json({ options: buildFallbackOptions(from, to, locale) });
     }
 
     const options: TransportOption[] = rawOptions.map((opt) => ({
@@ -156,6 +161,6 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('affiliate/transport error:', error);
     // エラー時はフォールバックを返す（空配列ではなく）
-    return NextResponse.json({ options: buildFallbackOptions(from, to) });
+    return NextResponse.json({ options: buildFallbackOptions(from, to, locale) });
   }
 }

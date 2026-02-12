@@ -11,14 +11,15 @@ import { useAuth } from "@/components/AuthProvider";
 import ProBanner from "./ProBanner";
 import { getWorkVisual, hasPoster } from "@/lib/work-visuals";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 type TransportMode = "train" | "car" | "walk" | "taxi";
 
-const TRANSPORT_MODES: { key: TransportMode; label: string }[] = [
-  { key: "train", label: "電車" },
-  { key: "car", label: "車" },
-  { key: "walk", label: "徒歩" },
-  { key: "taxi", label: "タクシー" },
+const TRANSPORT_MODES: { key: TransportMode; labelKey: string }[] = [
+  { key: "train", labelKey: "train" },
+  { key: "car", labelKey: "car" },
+  { key: "walk", labelKey: "walk" },
+  { key: "taxi", labelKey: "taxi" },
 ];
 
 /* ===== SVG Outline Icons ===== */
@@ -159,7 +160,8 @@ function extractDuration(access: string): string | null {
  */
 function getTransportInfo(
   access: string,
-  mode: TransportMode
+  mode: TransportMode,
+  t: (key: string, values?: Record<string, string | number>) => string
 ): { text: string; detail: string } {
   const durationStr = extractDuration(access);
   const minutes = extractMinutes(access);
@@ -173,25 +175,25 @@ function getTransportInfo(
     case "car":
       return {
         text: minutes
-          ? `車で約${Math.max(5, minutes - 5)}〜${minutes + 5}分`
-          : "車でのルート",
-        detail: "一般道利用 ※高速道路利用で短縮可能",
+          ? t("carDuration", { min: Math.max(5, minutes - 5), max: minutes + 5 })
+          : t("carRoute"),
+        detail: t("carDetail"),
       };
     case "walk":
       return {
         text: minutes
-          ? `徒歩約${minutes * 3}〜${minutes * 4}分`
-          : "徒歩ルート",
-        detail: "※距離が長い場合は他の交通手段をおすすめします",
+          ? t("walkDuration", { min: minutes * 3, max: minutes * 4 })
+          : t("walkRoute"),
+        detail: t("walkDetail"),
       };
     case "taxi":
       return {
         text: minutes
-          ? `タクシーで約${Math.max(3, minutes - 5)}〜${minutes}分`
-          : "タクシーでの移動",
+          ? t("taxiDuration", { min: Math.max(3, minutes - 5), max: minutes })
+          : t("taxiRoute"),
         detail: minutes
-          ? `推定料金: ¥${(Math.round((minutes * 80) / 100) * 100).toLocaleString()}〜¥${(Math.round((minutes * 120) / 100) * 100).toLocaleString()}`
-          : "※料金は距離・時間帯により変動",
+          ? `${t("taxiEstimate")} ¥${(Math.round((minutes * 80) / 100) * 100).toLocaleString()}〜¥${(Math.round((minutes * 120) / 100) * 100).toLocaleString()}`
+          : t("taxiFareNote"),
       };
   }
 }
@@ -203,7 +205,8 @@ function TransportConnector({
   nextSpot: PlanSpot;
   mode: TransportMode;
 }) {
-  const info = getTransportInfo(nextSpot.access, mode);
+  const t = useTranslations("PlanTimeline");
+  const info = getTransportInfo(nextSpot.access, mode, t);
 
   return (
     <div className="flex items-start gap-2 py-2 pl-3">
@@ -238,6 +241,7 @@ export default function PlanTimeline({
   budget?: string;
   companions?: string;
 }) {
+  const t = useTranslations("PlanTimeline");
   const [focusIndex, setFocusIndex] = useState<number | null>(null);
   const [transportMode, setTransportMode] = useState<TransportMode>("train");
   const mapRef = useRef<HTMLDivElement>(null);
@@ -309,7 +313,7 @@ export default function PlanTimeline({
         <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
           <MetaBadge icon={<IconMoney className="w-3.5 h-3.5" />} text={plan.total_budget_estimate} />
           <MetaBadge icon={<IconSeason className="w-3.5 h-3.5" />} text={plan.best_season} />
-          <MetaBadge icon={<IconPin className="w-3.5 h-3.5" />} text={`全${allSpots.length}スポット`} />
+          <MetaBadge icon={<IconPin className="w-3.5 h-3.5" />} text={t("totalSpots", { count: allSpots.length })} />
         </div>
       </div>
 
@@ -322,7 +326,7 @@ export default function PlanTimeline({
       {/* ===== 移動手段タブ ===== */}
       <div className="mb-8">
         <p className="text-xs text-white/40 font-black uppercase tracking-wider mb-3">
-          Transport Mode
+          {t("transportMode")}
         </p>
         <div className="flex gap-2 overflow-x-auto hide-scrollbar">
           {TRANSPORT_MODES.map((m) => (
@@ -337,7 +341,7 @@ export default function PlanTimeline({
                 }
               `}
             >
-              <span>{m.label}</span>
+              <span>{t(m.labelKey)}</span>
             </button>
           ))}
         </div>
@@ -433,7 +437,7 @@ export default function PlanTimeline({
                   <div className="flex-1 border-t-2 border-dashed border-white/10" />
                   <span className="text-xs text-white/30 shrink-0 font-bold flex items-center gap-1.5">
                     <IconHotel className="w-3.5 h-3.5" />
-                    宿泊
+                    {t("stay")}
                   </span>
                   <div className="flex-1 border-t-2 border-dashed border-white/10" />
                 </div>
@@ -455,9 +459,9 @@ export default function PlanTimeline({
       <div ref={mapRef} className="mt-12">
         <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
           <IconMap className="w-5 h-5 text-white/60" />
-          ルートマップ
+          {t("routeMap")}
           <span className="text-xs font-normal text-white/40 ml-2">
-            {TRANSPORT_MODES.find((m) => m.key === transportMode)?.label}モード
+            {t("modeLabel", { mode: t(TRANSPORT_MODES.find((m) => m.key === transportMode)?.labelKey ?? "train") })}
           </span>
         </h3>
         <MapView
@@ -497,7 +501,7 @@ export default function PlanTimeline({
       <div className="mt-12">
         <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
           <IconShare className="w-5 h-5 text-white/60" />
-          プランを共有
+          {t("sharePlan")}
         </h3>
         <ShareButton plan={plan} keyword={keyword} />
       </div>
@@ -510,7 +514,7 @@ export default function PlanTimeline({
                      hover:bg-white/5 hover:text-white hover:border-white/40 transition-all duration-200
                      shadow-[3px_3px_0_rgba(255,255,255,0.05)]"
         >
-          条件を変えてもう一度作る
+          {t("resetPlan")}
         </button>
       </div>
     </div>
@@ -529,13 +533,15 @@ function MetaBadge({ icon, text }: { icon: React.ReactNode; text: string }) {
 }
 
 function TravelAds({ departure, destination }: { departure?: string; destination: string }) {
+  const t = useTranslations("TravelAds");
+
   const ads = [
     {
       icon: <IconHotel className="w-5 h-5" />,
-      title: "宿泊予約",
-      desc: `${destination}周辺のホテル・旅館を検索`,
+      title: t("hotelTitle"),
+      desc: t("hotelDesc", { destination }),
       url: `https://www.booking.com/searchresults.ja.html?ss=${encodeURIComponent(destination)}&lang=ja`,
-      cta: "Booking.comで探す",
+      cta: t("hotelCta"),
       color: "text-red-400 border-red-500/30 hover:bg-red-500/10",
     },
     {
@@ -544,26 +550,26 @@ function TravelAds({ departure, destination }: { departure?: string; destination
           <path d="M12 2L4 7v4l8-3 8 3V7l-8-5zM4 11l8 3 8-3M4 11v4l8 5 8-5v-4" />
         </svg>
       ),
-      title: "航空券",
-      desc: departure ? `${departure} → ${destination} のフライトを検索` : "航空券を検索",
+      title: t("flightTitle"),
+      desc: departure ? t("flightDesc", { from: departure, to: destination }) : t("flightDescSimple"),
       url: "https://www.aviasales.com/?marker=594814",
-      cta: "航空券を検索",
+      cta: t("flightCta"),
       color: "text-blue-400 border-blue-500/30 hover:bg-blue-500/10",
     },
     {
       icon: <IconCar className="w-5 h-5" />,
-      title: "レンタカー",
-      desc: "自由に聖地をめぐるならレンタカーが便利",
+      title: t("rentalTitle"),
+      desc: t("rentalDesc"),
       url: "https://www.discovercars.com/",
-      cta: "レンタカーを探す",
+      cta: t("rentalCta"),
       color: "text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10",
     },
     {
       icon: <IconTaxi className="w-5 h-5" />,
-      title: "タクシー配車",
-      desc: "駅から聖地スポットへの移動に便利",
+      title: t("taxiTitle"),
+      desc: t("taxiDesc"),
       url: "https://m.uber.com/",
-      cta: "Uberで配車",
+      cta: t("taxiCta"),
       color: "text-yellow-400 border-yellow-500/30 hover:bg-yellow-500/10",
     },
   ];
@@ -574,7 +580,7 @@ function TravelAds({ departure, destination }: { departure?: string; destination
         <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
         </svg>
-        旅行に役立つサービス
+        {t("title")}
       </h3>
       <div className="grid grid-cols-2 gap-3">
         {ads.map((ad, i) => (
@@ -599,7 +605,7 @@ function TravelAds({ departure, destination }: { departure?: string; destination
         ))}
       </div>
       <p className="text-[9px] text-white/20 mt-2 text-center">
-        AD — Proプランで広告を非表示にできます
+        {t("adNote")}
       </p>
     </div>
   );
@@ -607,14 +613,15 @@ function TravelAds({ departure, destination }: { departure?: string; destination
 
 function FreeLimitsBanner() {
   const { isPro } = useAuth();
+  const t = useTranslations("FreeLimits");
 
   if (isPro) return null;
 
   const limits = [
-    { free: "プラン生成 月3回まで", pro: "無制限" },
-    { free: "1作品のみ", pro: "最大3作品ミックス" },
-    { free: "レビュー閲覧 5件/スポット", pro: "無制限" },
-    { free: "プラン保存 3件まで", pro: "無制限" },
+    { free: t("planGen3"), pro: t("proUnlimited") },
+    { free: t("oneWorkOnly"), pro: t("proMax3Mix") },
+    { free: t("review5"), pro: t("proUnlimited") },
+    { free: t("save3"), pro: t("proUnlimited") },
   ];
 
   return (
@@ -622,7 +629,7 @@ function FreeLimitsBanner() {
       {/* ヘッダー */}
       <div className="bg-white/[0.03] px-4 py-3 border-b border-white/10">
         <p className="text-xs font-black text-white/60 uppercase tracking-wider">
-          現在のプラン: <span className="text-white/40">FREE</span>
+          {t("currentPlan")} <span className="text-white/40">FREE</span>
         </p>
       </div>
 
@@ -647,7 +654,7 @@ function FreeLimitsBanner() {
       <div className="px-4 pb-4">
         <ProBanner
           variant="inline"
-          message="すべての制限を解除してプロプランにアップグレード"
+          message={t("upgradeMsg")}
         />
       </div>
     </div>

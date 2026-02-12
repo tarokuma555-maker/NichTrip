@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createSupabaseServer } from '@/lib/supabase-server';
 import { isProUser } from '@/lib/subscription';
+import { parseLocale, getChatLanguageInstruction, SupportedLocale } from '@/lib/api-i18n';
 
 let _anthropic: Anthropic | null = null;
 function getAnthropic(): Anthropic {
@@ -11,7 +12,8 @@ function getAnthropic(): Anthropic {
   return _anthropic;
 }
 
-const SYSTEM_PROMPT = `あなたはアニメ聖地巡礼の専門アドバイザーです。ユーザーの旅行プランについてカスタマイズの相談に乗ります。
+function getSystemPrompt(locale: SupportedLocale): string {
+  return `あなたはアニメ聖地巡礼の専門アドバイザーです。ユーザーの旅行プランについてカスタマイズの相談に乗ります。
 
 対応できること:
 - 聖地巡礼のルート相談
@@ -21,7 +23,8 @@ const SYSTEM_PROMPT = `あなたはアニメ聖地巡礼の専門アドバイザ
 - 交通手段のアドバイス
 - 宿泊のアドバイス
 
-回答は簡潔で親しみやすい日本語で、200文字以内を目安にしてください。`;
+${getChatLanguageInstruction(locale)}`;
+}
 
 const CHAT_LIMIT_FREE = 1;
 
@@ -75,7 +78,8 @@ async function recordChatUsage(
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages } = await request.json();
+    const { messages, locale: localeParam } = await request.json();
+    const locale = parseLocale(localeParam);
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
@@ -126,7 +130,7 @@ export async function POST(request: NextRequest) {
     const response = await getAnthropic().messages.create({
       model: 'claude-sonnet-4-5-20250929',
       max_tokens: 1024,
-      system: SYSTEM_PROMPT,
+      system: getSystemPrompt(locale),
       messages: apiMessages,
     });
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import {
   useJsApiLoader,
   GoogleMap,
@@ -69,6 +70,7 @@ export default function MapView({
   focusIndex: number | null;
   transportMode?: string;
 }) {
+  const t = useTranslations("MapView");
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? "";
 
   const { isLoaded, loadError } = useJsApiLoader({
@@ -136,12 +138,12 @@ export default function MapView({
     return <Fallback message="Google Maps APIキーを .env.local に設定してください" />;
   }
   if (loadError) {
-    return <Fallback message="Google Maps の読み込みに失敗しました" />;
+    return <Fallback message={t("loadError")} />;
   }
   if (!isLoaded) {
     return (
       <div className="w-full h-80 rounded-2xl bg-white/5 animate-pulse flex items-center justify-center">
-        <span className="text-white/30 text-sm">地図を読み込み中...</span>
+        <span className="text-white/30 text-sm">{t("loading")}</span>
       </div>
     );
   }

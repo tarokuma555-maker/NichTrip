@@ -1,32 +1,26 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
 
 type PlanTier = "free" | "pro";
 
-const FREE_FEATURES = [
-  { text: "プラン生成 月3回", included: true },
-  { text: "1作品の聖地巡礼", included: true },
-  { text: "チャット相談 月1回", included: true },
-  { text: "交通チケット比較", included: true },
-  { text: "宿泊施設比較", included: true },
-  { text: "OGP画像付きシェア", included: true },
-  { text: "UGCレビュー投稿", included: true },
-  { text: "UGCレビュー閲覧（5件/スポット）", included: true },
-  { text: "プラン保存 3件まで", included: true },
+const FREE_FEATURE_KEYS = [
+  "freePlanGen3", "freeOneWork", "freeChat1", "freeTransport",
+  "freeHotel", "freeShare", "freeUGCPost", "freeUGC5", "freeSave3",
 ];
 
-const PRO_FEATURES = [
-  { text: "プラン生成 無制限", included: true },
-  { text: "複数作品ミックス巡礼", included: true, highlight: true },
-  { text: "チャット相談 無制限", included: true },
-  { text: "交通チケット比較", included: true },
-  { text: "宿泊施設比較", included: true },
-  { text: "OGP画像付きシェア", included: true },
-  { text: "UGCレビュー投稿", included: true },
-  { text: "UGCレビュー閲覧 無制限", included: true },
-  { text: "プラン保存 無制限", included: true },
+const PRO_FEATURE_KEYS = [
+  { key: "proUnlimitedGen" },
+  { key: "proMixPilgrimage", highlight: true },
+  { key: "proChatUnlimited" },
+  { key: "proTransport" },
+  { key: "proHotel" },
+  { key: "proShare" },
+  { key: "proUGCPost" },
+  { key: "proUGCUnlimited" },
+  { key: "proSaveUnlimited" },
 ];
 
 export default function PricingCard({
@@ -34,9 +28,13 @@ export default function PricingCard({
 }: {
   onNeedAuth: () => void;
 }) {
+  const t = useTranslations("Pricing");
   const { user, isPro } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const freeFeatures = FREE_FEATURE_KEYS.map(key => ({ text: t(key), included: true }));
+  const proFeatures = PRO_FEATURE_KEYS.map(f => ({ text: t(f.key), included: true, highlight: f.highlight }));
 
   async function handleCheckout() {
     if (!user) {
@@ -50,14 +48,14 @@ export default function PricingCard({
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "決済ページの作成に失敗しました");
+        setError(data.error ?? t("checkoutError"));
         return;
       }
       if (data.url) {
         window.location.href = data.url;
       }
     } catch {
-      setError("通信エラーが発生しました");
+      setError(t("networkError"));
     } finally {
       setLoading(false);
     }
@@ -70,14 +68,14 @@ export default function PricingCard({
       const res = await fetch("/api/stripe/portal", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "管理ページの読み込みに失敗しました");
+        setError(data.error ?? t("portalError"));
         return;
       }
       if (data.url) {
         window.location.href = data.url;
       }
     } catch {
-      setError("通信エラーが発生しました");
+      setError(t("networkError"));
     } finally {
       setLoading(false);
     }
@@ -95,9 +93,9 @@ export default function PricingCard({
       <TierCard
         tier="free"
         price="¥0"
-        period="/月"
-        features={FREE_FEATURES}
-        ctaLabel={isPro ? "現在のプラン" : "現在のプラン"}
+        period={t("perMonth")}
+        features={freeFeatures}
+        ctaLabel={t("currentPlan")}
         ctaDisabled
         isCurrentPlan={!isPro}
       />
@@ -106,16 +104,16 @@ export default function PricingCard({
       <TierCard
         tier="pro"
         price="¥480"
-        period="/月"
-        subPrice="4ヶ月目以降 ¥980/月"
-        promoBanner="今なら3ヶ月間 月480円！"
-        features={PRO_FEATURES}
+        period={t("perMonth")}
+        subPrice={t("subPrice")}
+        promoBanner={t("promoBanner")}
+        features={proFeatures}
         ctaLabel={
           isPro
-            ? "サブスクリプション管理"
+            ? t("manageSub")
             : loading
-              ? "処理中..."
-              : "プロになる"
+              ? t("processing")
+              : t("becomePro")
         }
         ctaDisabled={loading}
         onCtaClick={isPro ? handlePortal : handleCheckout}

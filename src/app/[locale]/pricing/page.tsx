@@ -1,9 +1,12 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import PricingContent from "./PricingContent";
 import UserMenu from "@/components/UserMenu";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 export default function PricingPage() {
+  const t = useTranslations("Common");
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* ヘッダー */}
@@ -26,12 +29,13 @@ export default function PricingPage() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            <span className="text-sm font-medium">トップへ</span>
+            <span className="text-sm font-medium">{t("backToTop")}</span>
           </Link>
           <span className="ml-auto text-base font-black text-white">
-            AnimeTrips
+            {t("animeTrips")}
           </span>
-          <UserMenu className="ml-3" />
+          <LocaleSwitcher />
+          <UserMenu className="ml-2" />
         </div>
       </header>
 

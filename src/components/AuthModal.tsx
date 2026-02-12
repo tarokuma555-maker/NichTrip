@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { createSupabaseBrowser } from "@/lib/supabase-browser";
+import { useTranslations } from "next-intl";
 
 type Tab = "login" | "signup";
 
@@ -24,6 +25,7 @@ export default function AuthModal({
   onClose: () => void;
   defaultTab?: Tab;
 }) {
+  const t = useTranslations("AuthModal");
   const [tab, setTab] = useState<Tab>(defaultTab);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -62,9 +64,7 @@ export default function AuthModal({
       if (err) {
         setError(err.message);
       } else {
-        setSuccess(
-          "確認メールを送信しました。メールのリンクをクリックしてください。"
-        );
+        setSuccess(t("signupSuccess"));
       }
     } else {
       const { error: err } = await supabase.auth.signInWithPassword({
@@ -74,7 +74,7 @@ export default function AuthModal({
       if (err) {
         setError(
           err.message === "Invalid login credentials"
-            ? "メールアドレスまたはパスワードが正しくありません"
+            ? t("invalidCredentials")
             : err.message
         );
       } else {
@@ -103,33 +103,33 @@ export default function AuthModal({
           className="w-full flex items-center justify-center gap-3 py-3 bg-white text-[#333] text-sm font-bold border-2 border-white/80 hover:bg-gray-100 transition-colors"
         >
           <GoogleIcon />
-          Googleで続ける
+          {t("googleLogin")}
         </button>
 
         <div className="flex items-center gap-3 my-4">
           <div className="flex-1 border-t border-white/10" />
-          <span className="text-[11px] text-white/30">または</span>
+          <span className="text-[11px] text-white/30">{t("or")}</span>
           <div className="flex-1 border-t border-white/10" />
         </div>
 
         {/* タブ */}
         <div className="flex border-b-2 border-white/10 mb-6">
-          {(["login", "signup"] as Tab[]).map((t) => (
+          {(["login", "signup"] as Tab[]).map((tt) => (
             <button
-              key={t}
+              key={tt}
               type="button"
               onClick={() => {
-                setTab(t);
+                setTab(tt);
                 setError("");
                 setSuccess("");
               }}
               className={`flex-1 py-2 text-sm font-black transition-colors ${
-                tab === t
+                tab === tt
                   ? "text-red-400 border-b-2 border-red-500 -mb-[2px]"
                   : "text-white/40 hover:text-white/60"
               }`}
             >
-              {t === "login" ? "ログイン" : "新規登録"}
+              {tt === "login" ? t("login") : t("signup")}
             </button>
           ))}
         </div>
@@ -137,7 +137,7 @@ export default function AuthModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-black text-white/60 mb-1">
-              メールアドレス
+              {t("email")}
             </label>
             <input
               type="email"
@@ -151,7 +151,7 @@ export default function AuthModal({
 
           <div>
             <label className="block text-xs font-black text-white/60 mb-1">
-              パスワード
+              {t("password")}
             </label>
             <input
               type="password"
@@ -160,7 +160,7 @@ export default function AuthModal({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="manga-input w-full px-3 py-2.5"
-              placeholder="6文字以上"
+              placeholder={t("passwordPlaceholder")}
             />
           </div>
 
@@ -186,10 +186,10 @@ export default function AuthModal({
             }`}
           >
             {loading
-              ? "処理中..."
+              ? t("processing")
               : tab === "login"
-                ? "ログイン"
-                : "アカウント作成"}
+                ? t("login")
+                : t("createAccount")}
           </button>
         </form>
 
@@ -199,7 +199,7 @@ export default function AuthModal({
           onClick={onClose}
           className="mt-4 w-full py-2 text-xs text-white/40 hover:text-white/60 font-bold transition-colors"
         >
-          閉じる
+          {t("close")}
         </button>
       </div>
       </div>

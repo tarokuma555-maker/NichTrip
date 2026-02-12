@@ -6,6 +6,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getWorkVisual } from "@/lib/work-visuals";
 import { useAuth } from "@/components/AuthProvider";
+import { useTranslations } from "next-intl";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
+import UserMenu from "@/components/UserMenu";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -74,6 +77,7 @@ function PosterStencil({
    ================================================================ */
 function HeroSection() {
   const router = useRouter();
+  const t = useTranslations("TopPage");
 
   return (
     <section className="hero-section relative min-h-screen bg-black overflow-hidden flex items-center justify-center">
@@ -130,7 +134,7 @@ function HeroSection() {
       <div className="hero-content relative z-10 text-center px-4 sm:px-6 max-w-4xl">
         <div className="hero-badge mb-4 sm:mb-6">
           <span className="inline-block bg-red-500 text-white text-[9px] sm:text-xs font-black tracking-[0.3em] sm:tracking-[0.4em] px-4 sm:px-5 py-2 sm:py-2.5 uppercase border border-red-400/30">
-            Anime Pilgrimage Planner
+            {t("badge")}
           </span>
         </div>
 
@@ -141,11 +145,10 @@ function HeroSection() {
 
         <div className="hero-bubble mt-6 sm:mt-8">
           <p className="text-sm sm:text-lg font-bold text-white/70 leading-relaxed">
-            あの聖地へ、
-            <span className="text-red-400 font-black">物語の世界</span>
-            へ。
-            <br className="sm:hidden" />
-            聖地巡礼プランを提案します。
+            {t.rich("heroSub", {
+              highlight: (chunks) => <span className="text-red-400 font-black">{chunks}</span>,
+              br: () => <br className="sm:hidden" />,
+            })}
           </p>
         </div>
 
@@ -163,7 +166,7 @@ function HeroSection() {
                        active:scale-[0.97]
                        transition-all duration-200"
           >
-            <span>Start Your Journey</span>
+            <span>{t("heroCta")}</span>
             <svg
               className="w-5 h-5 group-hover:translate-x-1 transition-transform"
               fill="none"
@@ -182,7 +185,7 @@ function HeroSection() {
 
         <div className="hero-scroll mt-8 sm:mt-10 flex flex-col items-center gap-2">
           <span className="text-[9px] sm:text-[10px] font-bold tracking-[0.3em] text-white/30 uppercase">
-            Scroll Down
+            {t("scrollDown")}
           </span>
           <div className="w-px h-8 bg-gradient-to-b from-red-500/60 to-transparent animate-bounce-down" />
         </div>
@@ -201,6 +204,8 @@ function HeroSection() {
    Section 2: ABOUT
    ================================================================ */
 function AboutSection() {
+  const t = useTranslations("TopPage");
+
   return (
     <section className="about-section relative bg-[#0a0a0a] py-20 sm:py-32 overflow-hidden">
       <div className="absolute inset-0 halftone opacity-[0.03]" />
@@ -224,10 +229,12 @@ function AboutSection() {
                 01 — Concept
               </span>
               <h3 className="text-2xl sm:text-5xl font-black mb-3 sm:mb-4 leading-tight">
-                AnimeTripsとは<span className="text-red-500">?</span>
+                {t.rich("aboutConcept", {
+                  accent: (chunks) => <span className="text-red-500">{chunks}</span>,
+                })}
               </h3>
               <p className="text-sm sm:text-base text-black/60 leading-relaxed max-w-md">
-                好きなアニメを選ぶだけで、作品の舞台やロケ地を巡る聖地巡礼プランを自動生成。あなただけの「推し旅」がここから始まります。
+                {t("aboutConceptDesc")}
               </p>
               <div className="absolute -bottom-4 -right-4 w-24 sm:w-32 h-24 sm:h-32 halftone opacity-[0.06] rounded-tl-full" />
             </div>
@@ -241,12 +248,15 @@ function AboutSection() {
                   02 — Data
                 </span>
                 <h3 className="text-xl sm:text-4xl font-black mb-2">
-                  500<span className="text-lg sm:text-2xl">+</span>作品
-                  <br />
-                  1,900<span className="text-lg sm:text-2xl">+</span>スポット
+                  {t("aboutDataTitle").split("\n").map((line, i) => (
+                    <span key={i}>
+                      {i > 0 && <br />}
+                      {line}
+                    </span>
+                  ))}
                 </h3>
                 <p className="text-xs sm:text-sm text-white/70">
-                  日本の全アニメ作品に対応。聖地情報を自動検索しルートを計算。
+                  {t("aboutDataDesc")}
                 </p>
               </div>
             </div>
@@ -257,12 +267,15 @@ function AboutSection() {
                   03 — Map
                 </span>
                 <h3 className="text-xl sm:text-4xl font-black mb-2">
-                  Google Maps
-                  <br />
-                  ルート表示
+                  {t("aboutMapTitle").split("\n").map((line, i) => (
+                    <span key={i}>
+                      {i > 0 && <br />}
+                      {line}
+                    </span>
+                  ))}
                 </h3>
                 <p className="text-xs sm:text-sm text-white/50">
-                  生成プランをマップ上にルート表示。シェア機能でSNS投稿も。
+                  {t("aboutMapDesc")}
                 </p>
                 <div className="absolute inset-0 stripe-diagonal opacity-20 pointer-events-none" />
               </div>
@@ -279,28 +292,30 @@ function AboutSection() {
               04 — Pro Plan
             </span>
             <h3 className="text-xl sm:text-3xl font-black mb-3">
-              <span className="text-red-500">Pro</span>でもっと自由に
+              {t.rich("proFreeMore", {
+                accent: (chunks) => <span className="text-red-500">{chunks}</span>,
+              })}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
               <div className="flex items-start gap-2">
                 <span className="shrink-0 w-5 h-5 bg-red-500 flex items-center justify-center text-white text-[10px] font-black mt-0.5">✓</span>
                 <div>
-                  <p className="text-sm font-black">複数作品ミックス</p>
-                  <p className="text-[11px] text-white/40">2〜3作品を組み合わせた巡礼</p>
+                  <p className="text-sm font-black">{t("proFeatureMix")}</p>
+                  <p className="text-[11px] text-white/40">{t("proFeatureMixDesc")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <span className="shrink-0 w-5 h-5 bg-red-500 flex items-center justify-center text-white text-[10px] font-black mt-0.5">✓</span>
                 <div>
-                  <p className="text-sm font-black">プラン生成 無制限</p>
-                  <p className="text-[11px] text-white/40">月3回の制限なし</p>
+                  <p className="text-sm font-black">{t("proFeatureUnlimited")}</p>
+                  <p className="text-[11px] text-white/40">{t("proFeatureUnlimitedDesc")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <span className="shrink-0 w-5 h-5 bg-red-500 flex items-center justify-center text-white text-[10px] font-black mt-0.5">✓</span>
                 <div>
-                  <p className="text-sm font-black">レビュー全件閲覧</p>
-                  <p className="text-[11px] text-white/40">他の旅行者のTipsすべて</p>
+                  <p className="text-sm font-black">{t("proFeatureReviews")}</p>
+                  <p className="text-[11px] text-white/40">{t("proFeatureReviewsDesc")}</p>
                 </div>
               </div>
             </div>
@@ -378,6 +393,7 @@ function PosterCard({ work }: { work: Work }) {
    Section 3: POSTER GALLERY (50 works with images, shuffled)
    ================================================================ */
 function PosterGallerySection({ works }: { works: Work[] }) {
+  const t = useTranslations("TopPage");
   const [search, setSearch] = useState("");
   const [shuffled, setShuffled] = useState<Work[]>(works);
 
@@ -415,7 +431,7 @@ function PosterGallerySection({ works }: { works: Work[] }) {
         </div>
         <div className="h-1 w-24 sm:w-32 bg-red-500" />
         <p className="mt-3 text-white/40 text-xs sm:text-sm font-medium tracking-wider">
-          人気作品 — タップしてプランを作成
+          {t("worksPickup")}
         </p>
 
         {/* 検索バー */}
@@ -434,7 +450,7 @@ function PosterGallerySection({ works }: { works: Work[] }) {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="作品名で検索..."
+            placeholder={t("searchPlaceholder")}
             className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2.5
                        text-sm text-white placeholder:text-white/30
                        focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20
@@ -469,7 +485,7 @@ function PosterGallerySection({ works }: { works: Work[] }) {
 
         {filtered.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-white/30 text-sm">該当する作品が見つかりません</p>
+            <p className="text-white/30 text-sm">{t("noWorksFound")}</p>
           </div>
         )}
       </div>
@@ -489,6 +505,7 @@ const DECADES = [
 
 function TitleListSection({ works }: { works: Work[] }) {
   const router = useRouter();
+  const t = useTranslations("TopPage");
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
     "2020s": true,
@@ -534,7 +551,7 @@ function TitleListSection({ works }: { works: Work[] }) {
           </div>
           <div className="h-1 w-24 sm:w-32 bg-red-500" />
           <p className="mt-3 text-white/40 text-xs sm:text-sm font-medium tracking-wider">
-            対応作品一覧 — タップしてプランを作成
+            {t("allWorksDesc")}
           </p>
 
           {/* 検索バー */}
@@ -553,7 +570,7 @@ function TitleListSection({ works }: { works: Work[] }) {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="作品名で検索..."
+              placeholder={t("searchPlaceholder")}
               className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2.5
                          text-sm text-white placeholder:text-white/30
                          focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20
@@ -598,7 +615,7 @@ function TitleListSection({ works }: { works: Work[] }) {
                     {group.label}
                   </span>
                   <span className="text-white/30 text-xs font-bold">
-                    {group.works.length}作品
+                    {t("worksCount", { count: group.works.length })}
                   </span>
                   <div className="flex-1 h-px bg-white/10" />
                   <svg
@@ -659,7 +676,7 @@ function TitleListSection({ works }: { works: Work[] }) {
 
         {filtered.length === 0 && (
           <div className="text-center py-16">
-            <p className="text-white/30 text-sm">該当する作品が見つかりません</p>
+            <p className="text-white/30 text-sm">{t("noWorksFound")}</p>
           </div>
         )}
       </div>
@@ -672,6 +689,7 @@ function TitleListSection({ works }: { works: Work[] }) {
    ================================================================ */
 function CTASection() {
   const router = useRouter();
+  const t = useTranslations("TopPage");
 
   return (
     <section className="relative bg-black overflow-hidden flex items-center justify-center py-24 sm:py-32">
@@ -687,18 +705,17 @@ function CTASection() {
 
         {/* メイン見出し */}
         <h2 className="text-4xl sm:text-6xl font-black text-white leading-[1.1] mb-5 sm:mb-6">
-          あの場所へ、
+          {t("ctaHeading1")}
           <br />
-          <span className="text-red-500">会いに行こう。</span>
+          <span className="text-red-500">{t("ctaHeading2")}</span>
         </h2>
 
         {/* サブテキスト */}
         <p className="text-sm sm:text-base text-white/40 leading-relaxed mb-8 sm:mb-10">
-          好きな作品を選ぶだけ。
-          <br />
-          聖地巡礼の旅プランを
-          <br className="sm:hidden" />
-          自動で作成します。
+          {t.rich("ctaSub", {
+            br: () => <br />,
+            mbr: () => <br className="sm:hidden" />,
+          })}
         </p>
 
         {/* CTAボタン */}
@@ -714,7 +731,7 @@ function CTASection() {
                      active:scale-[0.97]
                      transition-all duration-200"
         >
-          <span>Start Your Journey</span>
+          <span>{t("heroCta")}</span>
           <svg
             className="w-5 h-5 group-hover:translate-x-1 transition-transform"
             fill="none"
@@ -745,6 +762,7 @@ function CTASection() {
 function ProSection() {
   const { isPro } = useAuth();
   const router = useRouter();
+  const t = useTranslations("TopPage");
 
   if (isPro) return null;
 
@@ -755,8 +773,8 @@ function ProSection() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M6 6.878V6a2.25 2.25 0 012.25-2.25h7.5A2.25 2.25 0 0118 6v.878m-12 0c.235-.083.487-.128.75-.128h10.5c.263 0 .515.045.75.128m-12 0A2.25 2.25 0 004.5 9v.878m13.5-3A2.25 2.25 0 0119.5 9v.878m0 0a2.246 2.246 0 00-.75-.128H5.25c-.263 0-.515.045-.75.128m15 0A2.25 2.25 0 0121 12v6a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 18v-6c0-1.244 1.007-2.25 2.25-2.25h13.5" />
         </svg>
       ),
-      title: "複数作品ミックス巡礼",
-      desc: "2〜3作品を組み合わせて1つのプランに",
+      title: t("proFeatureMix"),
+      desc: t("proFeatureMixDesc"),
     },
     {
       icon: (
@@ -764,8 +782,8 @@ function ProSection() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M21.015 4.356v4.992" />
         </svg>
       ),
-      title: "プラン生成 無制限",
-      desc: "月3回の制限なし、何度でも生成",
+      title: t("proFeatureUnlimited"),
+      desc: t("proFeatureUnlimitedDesc"),
     },
     {
       icon: (
@@ -774,8 +792,8 @@ function ProSection() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
         </svg>
       ),
-      title: "レビュー全件閲覧",
-      desc: "他の旅行者のTips・写真すべて",
+      title: t("proFeatureReviews"),
+      desc: t("proFeatureReviewsDesc"),
     },
   ];
 
@@ -791,12 +809,12 @@ function ProSection() {
             PRO PLAN
           </span>
           <h2 className="text-2xl sm:text-4xl font-black text-white leading-tight mb-2">
-            もっと自由に、
+            {t("proMoreFree")}
             <br />
-            <span className="text-red-500">もっと深く。</span>
+            <span className="text-red-500">{t("proMoreDeep")}</span>
           </h2>
           <p className="text-sm text-white/40 max-w-md mx-auto">
-            プロプランでアニメ聖地巡礼をさらに充実させましょう
+            {t("proEnrich")}
           </p>
         </div>
 
@@ -822,10 +840,13 @@ function ProSection() {
         {/* 価格 + CTA */}
         <div className="text-center">
           <p className="text-2xl sm:text-3xl font-black text-white mb-2">
-            月額<span className="text-red-500">480</span>円〜
+            {t.rich("proPrice", {
+              price: "480",
+              accent: (chunks) => <span className="text-red-500">{chunks}</span>,
+            })}
           </p>
           <p className="text-xs text-white/30 mb-6">
-            今なら3ヶ月間 月480円！4ヶ月目以降 ¥980/月
+            {t("proPromo")}
           </p>
           <button
             onClick={() => router.push("/pricing")}
@@ -834,7 +855,7 @@ function ProSection() {
                        shadow-[4px_4px_0_rgba(0,0,0,0.4)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.4)]
                        hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-150"
           >
-            プロプランを見る
+            {t("proViewPlans")}
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
@@ -848,29 +869,30 @@ function ProSection() {
 /* ================================================================
    Section: PLAN COMPARISON (Free vs Pro)
    ================================================================ */
-const COMPARISON_ROWS: {
-  label: string;
-  free: string;
-  pro: string;
+const COMPARISON_KEYS: {
+  labelKey: string;
+  freeKey: string;
+  proKey: string;
   proHighlight?: boolean;
   freeLimit?: boolean;
 }[] = [
-  { label: "プラン生成回数", free: "月3回まで", pro: "無制限", proHighlight: true, freeLimit: true },
-  { label: "作品選択", free: "1作品のみ", pro: "最大3作品ミックス", proHighlight: true, freeLimit: true },
-  { label: "チャット相談", free: "月1回まで", pro: "無制限", proHighlight: true, freeLimit: true },
-  { label: "プラン保存", free: "3件まで", pro: "無制限", proHighlight: true, freeLimit: true },
-  { label: "UGCレビュー閲覧", free: "5件/スポット", pro: "無制限", proHighlight: true, freeLimit: true },
-  { label: "交通チケット比較", free: "○", pro: "○" },
-  { label: "宿泊施設比較", free: "○", pro: "○" },
-  { label: "OGP画像付きシェア", free: "○", pro: "○" },
-  { label: "UGCレビュー投稿", free: "○", pro: "○" },
-  { label: "広告非表示", free: "×", pro: "○", proHighlight: true },
-  { label: "優先サポート", free: "×", pro: "○", proHighlight: true },
+  { labelKey: "comparisonPlanGen", freeKey: "free3perMonth", proKey: "unlimited", proHighlight: true, freeLimit: true },
+  { labelKey: "comparisonWork", freeKey: "freeOneWork", proKey: "proMax3Mix", proHighlight: true, freeLimit: true },
+  { labelKey: "comparisonChat", freeKey: "freeChat1", proKey: "unlimited", proHighlight: true, freeLimit: true },
+  { labelKey: "comparisonSave", freeKey: "freeSave3", proKey: "unlimited", proHighlight: true, freeLimit: true },
+  { labelKey: "comparisonUGC", freeKey: "freeUGC5", proKey: "unlimited", proHighlight: true, freeLimit: true },
+  { labelKey: "comparisonTransport", freeKey: "check", proKey: "check" },
+  { labelKey: "comparisonHotel", freeKey: "check", proKey: "check" },
+  { labelKey: "comparisonShare", freeKey: "check", proKey: "check" },
+  { labelKey: "comparisonUGCPost", freeKey: "check", proKey: "check" },
+  { labelKey: "comparisonAds", freeKey: "cross", proKey: "check", proHighlight: true },
+  { labelKey: "comparisonSupport", freeKey: "cross", proKey: "check", proHighlight: true },
 ];
 
 function PlanComparisonSection() {
   const { isPro } = useAuth();
   const router = useRouter();
+  const t = useTranslations("TopPage");
 
   return (
     <section className="relative bg-black py-20 sm:py-32 overflow-hidden">
@@ -886,7 +908,7 @@ function PlanComparisonSection() {
           </div>
           <div className="h-1 w-24 sm:w-32 bg-red-500 mx-auto" />
           <p className="mt-3 text-white/40 text-xs sm:text-sm font-medium tracking-wider">
-            無料プラン vs プロプラン
+            {t("comparisonTitle")}
           </p>
         </div>
 
@@ -901,47 +923,51 @@ function PlanComparisonSection() {
             </div>
             <div className="p-3 sm:p-4 text-center border-l-2 border-red-500/30 bg-red-500/5">
               <p className="text-xs font-black text-red-400 uppercase tracking-wider">Pro</p>
-              <p className="text-lg sm:text-xl font-black text-white mt-1">¥480<span className="text-xs text-white/40">/月</span></p>
+              <p className="text-lg sm:text-xl font-black text-white mt-1">¥480<span className="text-xs text-white/40">{t("perMonth")}</span></p>
             </div>
           </div>
 
           {/* 機能行 */}
-          {COMPARISON_ROWS.map((row, i) => (
-            <div
-              key={i}
-              className={`grid grid-cols-3 ${
-                i < COMPARISON_ROWS.length - 1 ? "border-b border-white/5" : ""
-              }`}
-            >
-              <div className="p-3 sm:p-4 flex items-center">
-                <span className="text-xs sm:text-sm text-white/60 font-bold">{row.label}</span>
+          {COMPARISON_KEYS.map((row, i) => {
+            const freeValue = row.freeKey === "check" ? "○" : row.freeKey === "cross" ? "×" : t(row.freeKey as Parameters<typeof t>[0]);
+            const proValue = row.proKey === "check" ? "○" : t(row.proKey as Parameters<typeof t>[0]);
+            return (
+              <div
+                key={i}
+                className={`grid grid-cols-3 ${
+                  i < COMPARISON_KEYS.length - 1 ? "border-b border-white/5" : ""
+                }`}
+              >
+                <div className="p-3 sm:p-4 flex items-center">
+                  <span className="text-xs sm:text-sm text-white/60 font-bold">{t(row.labelKey as Parameters<typeof t>[0])}</span>
+                </div>
+                <div className="p-3 sm:p-4 text-center border-l-2 border-white/10 flex items-center justify-center">
+                  {freeValue === "×" ? (
+                    <span className="w-5 h-5 flex items-center justify-center text-white/15 text-sm">×</span>
+                  ) : freeValue === "○" ? (
+                    <span className="w-5 h-5 bg-white/10 flex items-center justify-center text-white/40 text-[10px] font-black">✓</span>
+                  ) : (
+                    <span className={`text-xs sm:text-sm font-bold ${
+                      row.freeLimit ? "text-white/30" : "text-white/50"
+                    }`}>
+                      {freeValue}
+                    </span>
+                  )}
+                </div>
+                <div className="p-3 sm:p-4 text-center border-l-2 border-red-500/30 bg-red-500/[0.02] flex items-center justify-center">
+                  {proValue === "○" ? (
+                    <span className="w-5 h-5 bg-emerald-500 flex items-center justify-center text-white text-[10px] font-black">✓</span>
+                  ) : (
+                    <span className={`text-xs sm:text-sm font-black ${
+                      row.proHighlight ? "text-red-400" : "text-white/80"
+                    }`}>
+                      {proValue}
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="p-3 sm:p-4 text-center border-l-2 border-white/10 flex items-center justify-center">
-                {row.free === "×" ? (
-                  <span className="w-5 h-5 flex items-center justify-center text-white/15 text-sm">×</span>
-                ) : row.free === "○" ? (
-                  <span className="w-5 h-5 bg-white/10 flex items-center justify-center text-white/40 text-[10px] font-black">✓</span>
-                ) : (
-                  <span className={`text-xs sm:text-sm font-bold ${
-                    row.freeLimit ? "text-white/30" : "text-white/50"
-                  }`}>
-                    {row.free}
-                  </span>
-                )}
-              </div>
-              <div className="p-3 sm:p-4 text-center border-l-2 border-red-500/30 bg-red-500/[0.02] flex items-center justify-center">
-                {row.pro === "○" ? (
-                  <span className="w-5 h-5 bg-emerald-500 flex items-center justify-center text-white text-[10px] font-black">✓</span>
-                ) : (
-                  <span className={`text-xs sm:text-sm font-black ${
-                    row.proHighlight ? "text-red-400" : "text-white/80"
-                  }`}>
-                    {row.pro}
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* CTA */}
@@ -954,7 +980,7 @@ function PlanComparisonSection() {
                          shadow-[4px_4px_0_rgba(0,0,0,0.4)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.4)]
                          hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-150"
             >
-              プロプランに登録する
+              {t("registerPro")}
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
@@ -1049,6 +1075,13 @@ export default function MangaTopPage({
 
   return (
     <div ref={containerRef}>
+      {/* トップバー */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-transparent">
+        <div className="max-w-4xl mx-auto px-4 sm:px-5 h-14 flex items-center justify-end gap-2">
+          <LocaleSwitcher />
+          <UserMenu />
+        </div>
+      </header>
       <HeroSection />
       <AboutSection />
       <ProSection />

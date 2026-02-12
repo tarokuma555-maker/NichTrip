@@ -1,9 +1,11 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import PlanPageContent from "./PlanPageContent";
 import PlanPageHeader from "./PlanPageHeader";
 
 export default function PlanPage() {
+  const t = useTranslations("Common");
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* ヘッダー */}
@@ -16,10 +18,10 @@ export default function PlanPage() {
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            <span className="text-sm font-medium">トップへ</span>
+            <span className="text-sm font-medium">{t("backToTop")}</span>
           </Link>
           <span className="ml-auto text-base font-black text-white">
-            AnimeTrips
+            {t("animeTrips")}
           </span>
           <PlanPageHeader />
         </div>

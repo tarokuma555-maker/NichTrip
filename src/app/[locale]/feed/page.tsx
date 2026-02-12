@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
 import AuthModal from "@/components/AuthModal";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 import type { SpotReview } from "@/lib/types";
 
 const FREE_POST_LIMIT = 3;
@@ -31,6 +33,7 @@ const SAMPLE_REVIEWS: SpotReview[] = [
 ];
 
 export default function FeedPage() {
+  const t = useTranslations("Feed");
   const { user, isPro } = useAuth();
   const [reviews, setReviews] = useState<SpotReview[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,16 +71,16 @@ export default function FeedPage() {
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setCheckoutError(data.error ?? "決済ページの作成に失敗しました");
+        setCheckoutError(data.error ?? t("checkoutError"));
         return;
       }
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setCheckoutError("決済URLの取得に失敗しました");
+        setCheckoutError(t("urlError"));
       }
     } catch {
-      setCheckoutError("通信エラーが発生しました");
+      setCheckoutError(t("networkError"));
     } finally {
       setCheckoutLoading(false);
     }
@@ -91,7 +94,10 @@ export default function FeedPage() {
           <svg className="w-5 h-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <h1 className="text-base font-black text-white">みんなの巡礼レポート</h1>
+          <h1 className="text-base font-black text-white">{t("title")}</h1>
+          <div className="ml-auto">
+            <LocaleSwitcher />
+          </div>
         </div>
       </header>
 
@@ -112,9 +118,9 @@ export default function FeedPage() {
             <svg className="w-12 h-12 text-white/10 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <p className="text-sm text-white/30 font-bold">まだ投稿がありません</p>
+            <p className="text-sm text-white/30 font-bold">{t("noPosts")}</p>
             <p className="text-xs text-white/20 mt-1">
-              聖地を訪れたらレビューを投稿しよう
+              {t("postEncourage")}
             </p>
           </div>
         ) : (
@@ -140,13 +146,13 @@ export default function FeedPage() {
                     </svg>
 
                     <h3 className="text-base font-black text-white mb-2">
-                      これ以上見るにはProプラン
+                      {t("proRequired")}
                     </h3>
                     <p className="text-xs text-white/40 mb-1 leading-relaxed">
-                      他の旅行者のレポートをすべて閲覧できます
+                      {t("viewAll")}
                     </p>
                     <p className="text-xs text-white/30 mb-5">
-                      残り{reviews.length - FREE_POST_LIMIT}件の投稿
+                      {t("remainingPosts", { count: reviews.length - FREE_POST_LIMIT })}
                     </p>
 
                     {checkoutError && (
@@ -164,11 +170,11 @@ export default function FeedPage() {
                           : "bg-red-500 text-white border-red-400/50 shadow-[3px_3px_0_rgba(0,0,0,0.3)] hover:shadow-[1px_1px_0_rgba(0,0,0,0.3)] hover:translate-x-0.5 hover:translate-y-0.5"
                       }`}
                     >
-                      {checkoutLoading ? "処理中..." : user ? "プロプランに登録" : "ログインして始める"}
+                      {checkoutLoading ? t("processing") : user ? t("registerPro") : t("loginToStart")}
                     </button>
 
                     <p className="text-[11px] text-white/20 mt-3">
-                      月額480円〜
+                      {t("monthlyPrice")}
                     </p>
                   </div>
                 </div>
@@ -186,6 +192,8 @@ export default function FeedPage() {
 /* ========== Feed Card ========== */
 
 function FeedCard({ review }: { review: SpotReview }) {
+  const t = useTranslations("Feed");
+  const locale = useLocale();
   return (
     <article className="bg-white/5 border-2 border-white/10 overflow-hidden">
       {/* ヘッダー */}
@@ -249,7 +257,7 @@ function FeedCard({ review }: { review: SpotReview }) {
               <polyline points="9 22 9 12 15 12 15 22" />
             </svg>
             <p className="text-xs text-white/40">
-              <span className="font-black">アングル:</span> {review.best_angle}
+              <span className="font-black">{t("angle")}</span> {review.best_angle}
             </p>
           </div>
         )}
@@ -258,8 +266,8 @@ function FeedCard({ review }: { review: SpotReview }) {
         <div className="flex items-center justify-between pt-1">
           <span className="text-[10px] text-white/20 font-bold">
             {review.visited_date
-              ? new Date(review.visited_date).toLocaleDateString("ja-JP")
-              : new Date(review.created_at).toLocaleDateString("ja-JP")}
+              ? new Date(review.visited_date).toLocaleDateString(locale)
+              : new Date(review.created_at).toLocaleDateString(locale)}
           </span>
         </div>
       </div>

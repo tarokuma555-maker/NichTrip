@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
+import { useTranslations } from "next-intl";
 
 const USAGE_KEY = "animetrips_usage";
 
@@ -22,6 +23,7 @@ function getLocalUsage(): number {
 
 export default function UsageBadge({ className = "" }: { className?: string }) {
   const { user, isPro, loading: authLoading } = useAuth();
+  const t = useTranslations("Usage");
   const [used, setUsed] = useState(0);
   const [limit, setLimit] = useState<number | null>(3);
   const [loaded, setLoaded] = useState(false);
@@ -88,7 +90,7 @@ export default function UsageBadge({ className = "" }: { className?: string }) {
     <span
       className={`inline-flex items-center gap-1 text-[11px] font-black px-2 py-0.5 border ${colorClass} ${className}`}
     >
-      残り{remaining}回
+      {t("remaining", { count: remaining })}
     </span>
   );
 }

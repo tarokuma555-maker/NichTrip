@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
 
 type PaywallReason =
@@ -9,14 +10,6 @@ type PaywallReason =
   | "ai_chat"
   | "ugc_review"
   | "plan_save";
-
-const REASON_MESSAGES: Record<PaywallReason, string> = {
-  usage_limit: "今月の無料プラン生成回数（3回）を使い切りました。",
-  multi_work: "複数作品のミックス巡礼はProプランの機能です。",
-  ai_chat: "チャットカスタマイズはProプランの機能です。",
-  ugc_review: "6件目以降のレビュー閲覧はProプランの機能です。",
-  plan_save: "4件目以降のプラン保存はProプランの機能です。",
-};
 
 export default function PaywallModal({
   reason = "usage_limit",
@@ -27,9 +20,18 @@ export default function PaywallModal({
   onClose: () => void;
   onLogin: () => void;
 }) {
+  const t = useTranslations("Paywall");
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const REASON_MESSAGES: Record<PaywallReason, string> = {
+    usage_limit: t("usageLimit"),
+    multi_work: t("multiWork"),
+    ai_chat: t("aiChat"),
+    ugc_review: t("ugcReview"),
+    plan_save: t("planSave"),
+  };
 
   async function handleUpgrade() {
     if (!user) {
@@ -43,16 +45,16 @@ export default function PaywallModal({
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "決済ページの作成に失敗しました");
+        setError(data.error ?? t("checkoutError"));
         return;
       }
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setError("決済URLの取得に失敗しました");
+        setError(t("urlError"));
       }
     } catch {
-      setError("通信エラーが発生しました");
+      setError(t("networkError"));
     } finally {
       setLoading(false);
     }
@@ -76,7 +78,7 @@ export default function PaywallModal({
 
         {/* メッセージ */}
         <h3 className="text-lg font-black text-white mb-2">
-          Proプランにアップグレード
+          {t("upgrade")}
         </h3>
         <p className="text-sm text-white/50 mb-4 leading-relaxed">
           {REASON_MESSAGES[reason]}
@@ -91,12 +93,12 @@ export default function PaywallModal({
 
         {/* 価格 */}
         <div className="bg-white/5 border-2 border-white/10 p-3 mb-6">
-          <p className="text-xs text-white/40 font-bold">Proプラン</p>
+          <p className="text-xs text-white/40 font-bold">{t("proPlan")}</p>
           <p className="text-2xl font-black text-white">
-            月額<span className="text-red-400">480</span>円〜
+            {t("monthlyPrice", { price: "480" })}
           </p>
           <p className="text-[11px] text-white/30">
-            最初の3ヶ月間。4ヶ月目以降は月額980円
+            {t("promoDetail")}
           </p>
         </div>
 
@@ -110,7 +112,7 @@ export default function PaywallModal({
               : "bg-red-500 text-white border-red-400/50 shadow-[3px_3px_0_rgba(0,0,0,0.3)] hover:shadow-[1px_1px_0_rgba(0,0,0,0.3)] hover:translate-x-0.5 hover:translate-y-0.5"
           }`}
         >
-          {loading ? "処理中..." : user ? "プロになる" : "ログインして始める"}
+          {loading ? t("processing") : user ? t("becomePro") : t("loginToStart")}
         </button>
 
         {/* 閉じる */}
@@ -118,7 +120,7 @@ export default function PaywallModal({
           onClick={onClose}
           className="mt-3 w-full py-2 text-xs text-white/30 hover:text-white/50 font-bold transition-colors"
         >
-          あとで
+          {t("later")}
         </button>
       </div>
     </div>

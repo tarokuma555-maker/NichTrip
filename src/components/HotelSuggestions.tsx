@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import type { HotelItem } from "@/lib/types";
 import { useAuth } from "@/components/AuthProvider";
 
@@ -27,6 +28,8 @@ export default function HotelSuggestions({
   lng?: number;
   budget?: string;
 }) {
+  const t = useTranslations("Hotel");
+  const locale = useLocale();
   const { isPro } = useAuth();
   const [hotels, setHotels] = useState<HotelItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +46,7 @@ export default function HotelSuggestions({
     if (lat) params.set("lat", String(lat));
     if (lng) params.set("lng", String(lng));
     if (budget) params.set("budget", budget);
+    params.set("locale", locale);
 
     fetch(`/api/affiliate/hotels?${params}`)
       .then((res) => {
@@ -58,7 +62,7 @@ export default function HotelSuggestions({
       .finally(() => {
         setLoading(false);
       });
-  }, [keyword, lat, lng, budget]);
+  }, [keyword, lat, lng, budget, locale]);
 
   if (error || (!loading && hotels.length === 0)) return null;
 
@@ -67,7 +71,7 @@ export default function HotelSuggestions({
       <div>
         <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
           <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
-          この日のおすすめ宿
+          {t("recommended")}
         </h4>
         <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
           {[1, 2, 3].map((i) => (
@@ -94,20 +98,20 @@ export default function HotelSuggestions({
       <div>
         <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
           <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
-          この日のおすすめ宿
+          {t("recommended")}
         </h4>
         <div className="bg-white/5 border-2 border-white/10 p-4 text-center">
           <p className="text-xs text-white/40 font-bold mb-2">
-            おすすめの宿 {hotels.length}件
+            {t("countHotels", { count: hotels.length })}
           </p>
           <p className="text-[11px] text-white/30 mb-3">
-            Proプランで宿泊先の詳細を確認できます
+            {t("proRequired")}
           </p>
           <a
             href="/pricing"
             className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-3 py-1.5 hover:bg-red-500/10 transition-colors"
           >
-            Proプランを見る <span className="text-[10px]">&rarr;</span>
+            {t("viewProPlan")} <span className="text-[10px]">&rarr;</span>
           </a>
         </div>
       </div>
@@ -118,7 +122,7 @@ export default function HotelSuggestions({
     <div>
       <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
         <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
-        この日のおすすめ宿
+        {t("recommended")}
       </h4>
       <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
         {hotels.map((hotel, idx) => (
@@ -181,7 +185,7 @@ export default function HotelSuggestions({
                 className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-2.5 py-1
                            hover:bg-red-500/10 transition-colors"
               >
-                {hotel.source === "booking" ? "料金を比較する" : "予約する"}
+                {hotel.source === "booking" ? t("compareRates") : t("book")}
                 <span className="text-[10px]">&rarr;</span>
               </a>
               {hotel.source === "booking" && (

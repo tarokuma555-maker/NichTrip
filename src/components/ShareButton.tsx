@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import type { GeneratedPlan } from "@/lib/types";
 
 /* ============================================================
@@ -28,11 +29,12 @@ const DAY_COLORS = [
    メインコンポーネント
    ============================================================ */
 export default function ShareButton({ plan, keyword }: Props) {
+  const t = useTranslations("Share");
   const [saving, setSaving] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   /* ---------- X（Twitter）シェア ---------- */
-  const tweetText = buildTweetText(plan, keyword);
+  const tweetText = buildTweetText(plan, keyword, t("more"), t("hashtags"));
   const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
 
   function handleShareX() {
@@ -80,7 +82,7 @@ export default function ShareButton({ plan, keyword }: Props) {
                      shadow-[3px_3px_0_rgba(255,255,255,0.05)]"
         >
           <XIcon />
-          Xでシェア
+          {t("shareX")}
         </button>
 
         {/* 画像保存 */}
@@ -96,12 +98,12 @@ export default function ShareButton({ plan, keyword }: Props) {
           {saving ? (
             <>
               <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-              保存中...
+              {t("saving")}
             </>
           ) : (
             <>
               <CameraIcon />
-              画像として保存
+              {t("saveImage")}
             </>
           )}
         </button>
@@ -114,7 +116,7 @@ export default function ShareButton({ plan, keyword }: Props) {
           style={{ width: 1080, height: 1080, padding: 64, fontFamily: "sans-serif" }}
           className="bg-[#0a0a0a] flex flex-col"
         >
-          <ShareCard plan={plan} keyword={keyword} />
+          <ShareCard plan={plan} keyword={keyword} totalSpotsText={t("totalSpots", { count: plan.days.reduce((s, d) => s + d.spots.length, 0) })} hashtagsText={t("hashtags")} />
         </div>
       </div>
     </div>
@@ -127,11 +129,14 @@ export default function ShareButton({ plan, keyword }: Props) {
 function ShareCard({
   plan,
   keyword,
+  totalSpotsText,
+  hashtagsText,
 }: {
   plan: GeneratedPlan;
   keyword: string;
+  totalSpotsText: string;
+  hashtagsText: string;
 }) {
-  const totalSpots = plan.days.reduce((s, d) => s + d.spots.length, 0);
 
   return (
     <>
@@ -174,7 +179,7 @@ function ShareCard({
       <div style={{ display: "flex", gap: 12, marginBottom: 32, flexWrap: "wrap" as const }}>
         <Badge text={`💰 ${plan.total_budget_estimate}`} />
         <Badge text={`🌸 ${plan.best_season}`} />
-        <Badge text={`📍 全${totalSpots}スポット`} />
+        <Badge text={`📍 ${totalSpotsText}`} />
       </div>
 
       {/* Day ごとのスポットリスト */}
@@ -233,7 +238,7 @@ function ShareCard({
       >
         <div>
           <div style={{ fontSize: 14, color: "#ffffff", opacity: 0.3 }}>
-            #AnimeTrips #聖地巡礼 {keyword && `#${keyword.replace(/[.。！!？?\s]/g, "")}`}
+            {hashtagsText} {keyword && `#${keyword.replace(/[.。！!？?\s]/g, "")}`}
           </div>
           <div style={{ fontSize: 14, color: "#E53E3E", marginTop: 4 }}>
             {SITE_URL}
@@ -264,7 +269,7 @@ function ShareCard({
 /* ============================================================
    ツイートテキスト生成
    ============================================================ */
-function buildTweetText(plan: GeneratedPlan, keyword: string): string {
+function buildTweetText(plan: GeneratedPlan, keyword: string, more: string, hashtags: string): string {
   const spots = plan.days
     .flatMap((d) => d.spots)
     .slice(0, 3)
@@ -281,11 +286,11 @@ function buildTweetText(plan: GeneratedPlan, keyword: string): string {
     plan.summary,
     "",
     spots,
-    plan.days.flatMap((d) => d.spots).length > 3 ? "...ほか" : "",
+    plan.days.flatMap((d) => d.spots).length > 3 ? more : "",
     "",
     `💰 ${plan.total_budget_estimate} / 🌸 ${plan.best_season}`,
     "",
-    `#AnimeTrips #聖地巡礼${workTag}`,
+    `${hashtags}${workTag}`,
     SITE_URL,
   ]
     .filter(Boolean)

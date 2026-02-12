@@ -37,6 +37,7 @@ export type PlanRequest = {
   companions: 'solo' | 'couple' | 'friends' | 'family' | 'custom';
   companionsAdults?: number;
   companionsChildren?: number;
+  locale?: string;
 };
 
 // 生成されたプランのスポット

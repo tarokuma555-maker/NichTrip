@@ -2,7 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 
 type Message = {
   role: "user" | "assistant";
@@ -41,6 +43,8 @@ function incrementChatUsageLocal(): void {
 
 export default function ChatPage() {
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations("Chat");
   const { isPro } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -89,7 +93,7 @@ export default function ChatPage() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: newMessages }),
+        body: JSON.stringify({ messages: newMessages, locale }),
       });
 
       const data = await res.json();
@@ -99,7 +103,7 @@ export default function ChatPage() {
           setLimitReached(true);
           setError("");
         } else {
-          setError(data.error ?? "エラーが発生しました");
+          setError(data.error ?? t("error"));
         }
         setLoading(false);
         return;
@@ -115,7 +119,7 @@ export default function ChatPage() {
         setLimitReached(true);
       }
     } catch {
-      setError("通信エラーが発生しました");
+      setError(t("networkError"));
     } finally {
       setLoading(false);
     }
@@ -135,8 +139,8 @@ export default function ChatPage() {
             </svg>
           </button>
           <div className="flex-1">
-            <h1 className="text-sm font-black text-white">チャット</h1>
-            <p className="text-[10px] text-white/30 font-bold">聖地巡礼アドバイザー</p>
+            <h1 className="text-sm font-black text-white">{t("title")}</h1>
+            <p className="text-[10px] text-white/30 font-bold">{t("subtitle")}</p>
           </div>
           {!isPro && (
             <span className={`text-[10px] font-bold border px-2 py-1 ${
@@ -144,14 +148,15 @@ export default function ChatPage() {
                 ? "text-red-400 border-red-500/30"
                 : "text-white/30 border-white/10"
             }`}>
-              {limitReached ? "無料枠使用済" : "無料: 1回"}
+              {limitReached ? t("freeUsed") : t("freeCount")}
             </span>
           )}
           {isPro && (
             <span className="text-[10px] text-emerald-400 font-bold border border-emerald-500/30 px-2 py-1">
-              Pro: 無制限
+              {t("proUnlimited")}
             </span>
           )}
+          <LocaleSwitcher />
         </div>
       </header>
 
@@ -166,25 +171,25 @@ export default function ChatPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <h2 className="text-lg font-black text-white mb-2">聖地巡礼チャット</h2>
+              <h2 className="text-lg font-black text-white mb-2">{t("pilgrimageChat")}</h2>
               <p className="text-sm text-white/40 mb-6 max-w-sm mx-auto">
-                旅行プランのカスタマイズ、聖地情報、おすすめスポットなど何でもどうぞ
+                {t("chatDesc")}
               </p>
               <div className="flex flex-wrap justify-center gap-2">
-                {[
-                  "秋葉原周辺のアニメスポットは？",
-                  "鎌倉の聖地巡礼ルートを教えて",
-                  "大洗のガルパン聖地はどこ？",
-                ].map((q) => (
+                {([
+                  { key: "suggestion1" as const, text: t("suggestion1") },
+                  { key: "suggestion2" as const, text: t("suggestion2") },
+                  { key: "suggestion3" as const, text: t("suggestion3") },
+                ]).map((q) => (
                   <button
-                    key={q}
+                    key={q.key}
                     onClick={() => {
-                      setInput(q);
+                      setInput(q.text);
                       inputRef.current?.focus();
                     }}
                     className="text-xs text-white/50 border border-white/10 px-3 py-2 hover:border-red-500/30 hover:text-red-400 transition-colors"
                   >
-                    {q}
+                    {q.text}
                   </button>
                 ))}
               </div>
@@ -259,7 +264,7 @@ export default function ChatPage() {
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="メッセージを入力..."
+                placeholder={t("inputPlaceholder")}
                 disabled={loading}
                 className="flex-1 bg-white/5 border-2 border-white/10 text-white text-sm font-medium
                            placeholder:text-white/30 px-4 py-3
@@ -286,16 +291,17 @@ export default function ChatPage() {
 
 /* Pro誘導カード */
 function ProUpgradeCard({ router }: { router: ReturnType<typeof useRouter> }) {
+  const t = useTranslations("Chat");
   return (
     <div className="bg-gradient-to-r from-red-500/10 to-red-900/10 border-2 border-red-500/30 p-6 text-center">
       <span className="inline-block bg-red-500 text-white text-[10px] font-black tracking-[0.3em] px-3 py-1.5 mb-4">
         PRO PLAN
       </span>
       <h3 className="text-base font-black text-white mb-2">
-        チャットの無料回数を使い切りました
+        {t("limitTitle")}
       </h3>
       <p className="text-sm text-white/40 mb-5">
-        プロプランに登録すると、チャットが無制限でご利用いただけます
+        {t("limitDesc")}
       </p>
       <button
         onClick={() => router.push("/pricing")}
@@ -304,7 +310,7 @@ function ProUpgradeCard({ router }: { router: ReturnType<typeof useRouter> }) {
                    shadow-[4px_4px_0_rgba(0,0,0,0.4)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.4)]
                    hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-150"
       >
-        プロプランを見る
+        {t("viewProPlan")}
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
         </svg>

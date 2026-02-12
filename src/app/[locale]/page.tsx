@@ -1,5 +1,5 @@
 import MangaTopPage from "@/components/MangaTopPage";
-import spotsData from "../../data/pilgrimage-spots.json";
+import spotsData from "../../../data/pilgrimage-spots.json";
 
 // 人気Top10（ポスター付きカード表示）
 const FEATURED_TITLES = new Set([

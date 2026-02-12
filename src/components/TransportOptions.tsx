@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations, useLocale } from "next-intl";
 import type { TransportOption } from "@/lib/types";
 
 /* ===== Transport SVG Icons (outline) ===== */
@@ -59,6 +60,8 @@ export default function TransportOptions({
   to: string;
   companions?: string;
 }) {
+  const t = useTranslations("Transport");
+  const locale = useLocale();
   const [options, setOptions] = useState<TransportOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -71,6 +74,7 @@ export default function TransportOptions({
 
     const params = new URLSearchParams({ from, to });
     if (companions) params.set("companions", companions);
+    params.set("locale", locale);
 
     fetch(`/api/affiliate/transport?${params}`)
       .then((res) => {
@@ -86,7 +90,7 @@ export default function TransportOptions({
       .finally(() => {
         setLoading(false);
       });
-  }, [from, to, companions]);
+  }, [from, to, companions, locale]);
 
   if (error || (!loading && options.length === 0)) return null;
 
@@ -97,7 +101,7 @@ export default function TransportOptions({
           <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
           </svg>
-          おすすめの行き方
+          {t("recommendedWay")}
         </h3>
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
@@ -121,7 +125,7 @@ export default function TransportOptions({
         <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
         </svg>
-        おすすめの行き方
+        {t("recommendedWay")}
       </h3>
       <div className="space-y-3">
         {options.map((opt, idx) => (
@@ -131,7 +135,7 @@ export default function TransportOptions({
           >
             {idx === 0 && (
               <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-black px-2.5 py-1">
-                おすすめ
+                {t("recommended")}
               </span>
             )}
 
@@ -149,12 +153,12 @@ export default function TransportOptions({
               </span>
               {opt.transfers > 0 && (
                 <span className="text-[11px] text-white/40 font-bold">
-                  乗り換え{opt.transfers}回
+                  {t("transfers", { count: opt.transfers })}
                 </span>
               )}
               {opt.transfers === 0 && (
                 <span className="text-[11px] text-emerald-400/60 font-bold">
-                  直通
+                  {t("direct")}
                 </span>
               )}
             </div>
@@ -171,7 +175,7 @@ export default function TransportOptions({
                 className="inline-flex items-center gap-1.5 text-xs font-black text-white bg-black border-2 border-white/20 px-3 py-1.5
                            hover:bg-white/10 transition-colors"
               >
-                Uber タクシーで配車
+                {t("uberTaxi")}
                 <span className="text-[10px]">&rarr;</span>
               </a>
             ) : opt.type === "flight" ? (
@@ -182,7 +186,7 @@ export default function TransportOptions({
                 className="inline-flex items-center gap-1.5 text-xs font-black text-blue-400 border-2 border-blue-500/30 px-3 py-1.5
                            hover:bg-blue-500/10 transition-colors"
               >
-                チケットを見る
+                {t("viewTicket")}
                 <span className="text-[10px]">&rarr;</span>
               </a>
             ) : opt.bookingUrl ? (
@@ -193,12 +197,12 @@ export default function TransportOptions({
                 className="inline-flex items-center gap-1.5 text-xs font-black text-red-400 border-2 border-red-500/30 px-3 py-1.5
                            hover:bg-red-500/10 transition-colors"
               >
-                チケットを見る
+                {t("viewTicket")}
                 <span className="text-[10px]">&rarr;</span>
               </a>
             ) : (
               <p className="text-[11px] text-white/30 font-bold">
-                各交通会社のサイトで予約できます
+                {t("bookViaCompany")}
               </p>
             )}
           </div>

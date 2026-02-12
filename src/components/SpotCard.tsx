@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { PlanSpot } from "@/lib/types";
 import UGCSection from "./UGCSection";
 
@@ -15,6 +16,7 @@ export default function SpotCard({
   onLocate?: () => void;
   workTitle?: string;
 }) {
+  const t = useTranslations("SpotCard");
   const [open, setOpen] = useState(false);
 
   return (
@@ -44,7 +46,7 @@ export default function SpotCard({
               </h4>
               <span className="shrink-0 flex items-center gap-1 text-xs text-white/50 bg-white/5 border border-white/10 px-2 py-1 font-bold">
                 <ClockIcon />
-                {spot.stay_minutes}分
+                {t("minutes", { min: spot.stay_minutes })}
               </span>
             </div>
 
@@ -61,10 +63,10 @@ export default function SpotCard({
                   }}
                   className="shrink-0 flex items-center gap-0.5 text-[11px] text-red-400 hover:text-red-300
                              font-black transition-colors border border-red-500/30 px-1.5 py-0.5"
-                  aria-label="地図で表示"
+                  aria-label={t("map")}
                 >
                   <PinIcon />
-                  地図
+                  {t("map")}
                 </button>
               )}
             </div>
@@ -159,17 +161,17 @@ export default function SpotCard({
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  シーン画像を検索
+                  {t("searchScene")}
                   <span className="text-[10px]">&rarr;</span>
                 </a>
               </div>
             )}
 
             {/* アクセス */}
-            <DetailRow icon={<AccessIcon />} label="アクセス" value={spot.access} />
+            <DetailRow icon={<AccessIcon />} label={t("access")} value={spot.access} />
 
             {/* ヒント */}
-            <DetailRow icon={<TipsIcon />} label="ヒント" value={spot.tips} />
+            <DetailRow icon={<TipsIcon />} label={t("tips")} value={spot.tips} />
 
             {/* グルメ */}
             {spot.nearby_food && (
@@ -177,7 +179,7 @@ export default function SpotCard({
                 <div className="flex items-start gap-2">
                   <span className="text-white/60 mt-px"><FoodIcon /></span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-white/40 mb-0.5 font-bold">近くのグルメ</p>
+                    <p className="text-xs text-white/40 mb-0.5 font-bold">{t("nearbyFood")}</p>
                     <p className="text-sm font-black text-white">
                       {spot.nearby_food.name}
                     </p>
@@ -196,7 +198,7 @@ export default function SpotCard({
                         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
                         <circle cx="12" cy="10" r="3" />
                       </svg>
-                      Google Mapで見る
+                      {t("viewOnMap")}
                       <span className="text-[10px]">&rarr;</span>
                     </a>
                   </div>
