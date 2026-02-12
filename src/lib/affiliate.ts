@@ -75,9 +75,9 @@ export function buildBusUrl(): string {
   return 'https://www.bushikaku.net/';
 }
 
-/** タクシー（将来対応用） */
-export function buildTaxiUrl(): string | null {
-  return process.env.TAXI_AFFILIATE_URL ?? null;
+/** タクシー（Uber） */
+export function buildTaxiUrl(): string {
+  return process.env.TAXI_AFFILIATE_URL ?? 'https://m.uber.com/';
 }
 
 /** type に応じた予約URL */

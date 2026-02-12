@@ -8,6 +8,7 @@ type PlanTier = "free" | "pro";
 const FREE_FEATURES = [
   { text: "プラン生成 月3回", included: true },
   { text: "1作品の聖地巡礼", included: true },
+  { text: "チャット相談 月1回", included: true },
   { text: "交通チケット比較", included: true },
   { text: "宿泊施設比較", included: true },
   { text: "OGP画像付きシェア", included: true },
@@ -19,7 +20,7 @@ const FREE_FEATURES = [
 const PRO_FEATURES = [
   { text: "プラン生成 無制限", included: true },
   { text: "複数作品ミックス巡礼", included: true, highlight: true },
-  { text: "AIチャットカスタマイズ", included: true },
+  { text: "チャット相談 無制限", included: true },
   { text: "交通チケット比較", included: true },
   { text: "宿泊施設比較", included: true },
   { text: "OGP画像付きシェア", included: true },

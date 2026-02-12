@@ -145,7 +145,7 @@ function HeroSection() {
             <span className="text-red-400 font-black">物語の世界</span>
             へ。
             <br className="sm:hidden" />
-            AIがあなたの旅を描きます。
+            聖地巡礼プランを提案します。
           </p>
         </div>
 
@@ -227,7 +227,7 @@ function AboutSection() {
                 AnimeTripsとは<span className="text-red-500">?</span>
               </h3>
               <p className="text-sm sm:text-base text-black/60 leading-relaxed max-w-md">
-                好きなアニメを選ぶだけで、作品の舞台やロケ地を巡る聖地巡礼プランをAIが自動生成。あなただけの「推し旅」がここから始まります。
+                好きなアニメを選ぶだけで、作品の舞台やロケ地を巡る聖地巡礼プランを自動生成。あなただけの「推し旅」がここから始まります。
               </p>
               <div className="absolute -bottom-4 -right-4 w-24 sm:w-32 h-24 sm:h-32 halftone opacity-[0.06] rounded-tl-full" />
             </div>
@@ -246,7 +246,7 @@ function AboutSection() {
                   1,900<span className="text-lg sm:text-2xl">+</span>スポット
                 </h3>
                 <p className="text-xs sm:text-sm text-white/70">
-                  日本の全アニメ作品に対応。AIが聖地情報を自動検索しルートを計算。
+                  日本の全アニメ作品に対応。聖地情報を自動検索しルートを計算。
                 </p>
               </div>
             </div>
@@ -696,7 +696,7 @@ function CTASection() {
         <p className="text-sm sm:text-base text-white/40 leading-relaxed mb-8 sm:mb-10">
           好きな作品を選ぶだけ。
           <br />
-          AIが聖地巡礼の旅プランを
+          聖地巡礼の旅プランを
           <br className="sm:hidden" />
           自動で作成します。
         </p>
@@ -833,16 +833,24 @@ function ProSection() {
 /* ================================================================
    Section: PLAN COMPARISON (Free vs Pro)
    ================================================================ */
-const COMPARISON_ROWS = [
-  { label: "プラン生成", free: "月3回", pro: "無制限" },
-  { label: "作品選択", free: "1作品のみ", pro: "最大3作品ミックス" },
-  { label: "AIチャットカスタマイズ", free: "—", pro: "対応" },
-  { label: "交通チケット比較", free: "対応", pro: "対応" },
-  { label: "宿泊施設比較", free: "対応", pro: "対応" },
-  { label: "OGP画像付きシェア", free: "対応", pro: "対応" },
-  { label: "UGCレビュー投稿", free: "対応", pro: "対応" },
-  { label: "UGCレビュー閲覧", free: "5件/スポット", pro: "無制限" },
-  { label: "プラン保存", free: "3件まで", pro: "無制限" },
+const COMPARISON_ROWS: {
+  label: string;
+  free: string;
+  pro: string;
+  proHighlight?: boolean;
+  freeLimit?: boolean;
+}[] = [
+  { label: "プラン生成回数", free: "月3回まで", pro: "無制限", proHighlight: true, freeLimit: true },
+  { label: "作品選択", free: "1作品のみ", pro: "最大3作品ミックス", proHighlight: true, freeLimit: true },
+  { label: "チャット相談", free: "月1回まで", pro: "無制限", proHighlight: true, freeLimit: true },
+  { label: "プラン保存", free: "3件まで", pro: "無制限", proHighlight: true, freeLimit: true },
+  { label: "UGCレビュー閲覧", free: "5件/スポット", pro: "無制限", proHighlight: true, freeLimit: true },
+  { label: "交通チケット比較", free: "○", pro: "○" },
+  { label: "宿泊施設比較", free: "○", pro: "○" },
+  { label: "OGP画像付きシェア", free: "○", pro: "○" },
+  { label: "UGCレビュー投稿", free: "○", pro: "○" },
+  { label: "広告非表示", free: "×", pro: "○", proHighlight: true },
+  { label: "優先サポート", free: "×", pro: "○", proHighlight: true },
 ];
 
 function PlanComparisonSection() {
@@ -894,16 +902,28 @@ function PlanComparisonSection() {
                 <span className="text-xs sm:text-sm text-white/60 font-bold">{row.label}</span>
               </div>
               <div className="p-3 sm:p-4 text-center border-l-2 border-white/10 flex items-center justify-center">
-                <span className={`text-xs sm:text-sm font-bold ${
-                  row.free === "—" ? "text-white/20" : "text-white/50"
-                }`}>
-                  {row.free}
-                </span>
+                {row.free === "×" ? (
+                  <span className="w-5 h-5 flex items-center justify-center text-white/15 text-sm">×</span>
+                ) : row.free === "○" ? (
+                  <span className="w-5 h-5 bg-white/10 flex items-center justify-center text-white/40 text-[10px] font-black">✓</span>
+                ) : (
+                  <span className={`text-xs sm:text-sm font-bold ${
+                    row.freeLimit ? "text-white/30" : "text-white/50"
+                  }`}>
+                    {row.free}
+                  </span>
+                )}
               </div>
               <div className="p-3 sm:p-4 text-center border-l-2 border-red-500/30 bg-red-500/[0.02] flex items-center justify-center">
-                <span className="text-xs sm:text-sm font-black text-white/80">
-                  {row.pro}
-                </span>
+                {row.pro === "○" ? (
+                  <span className="w-5 h-5 bg-emerald-500 flex items-center justify-center text-white text-[10px] font-black">✓</span>
+                ) : (
+                  <span className={`text-xs sm:text-sm font-black ${
+                    row.proHighlight ? "text-red-400" : "text-white/80"
+                  }`}>
+                    {row.pro}
+                  </span>
+                )}
               </div>
             </div>
           ))}

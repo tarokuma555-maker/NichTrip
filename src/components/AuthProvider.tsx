@@ -37,8 +37,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const supabase = createSupabaseBrowser();
 
+  // 開発者用: URLパラメータ or localStorage で Pro 強制モード
+  // スマホ: ?dev_pro=true で ON / ?dev_pro=false で OFF
+  const checkDevOverride = useCallback(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const devPro = params.get("dev_pro");
+      if (devPro === "true") {
+        localStorage.setItem("dev_force_pro", "true");
+      } else if (devPro === "false") {
+        localStorage.removeItem("dev_force_pro");
+      }
+      return localStorage.getItem("dev_force_pro") === "true";
+    } catch {
+      return false;
+    }
+  }, []);
+
   const checkProStatus = useCallback(
     async (userId: string) => {
+      // 開発者オーバーライド
+      if (checkDevOverride()) {
+        setIsPro(true);
+        return;
+      }
       try {
         const { data } = await supabase
           .from("subscriptions")
@@ -51,14 +73,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsPro(false);
       }
     },
-    [supabase]
+    [supabase, checkDevOverride]
   );
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       setSession(s);
       setUser(s?.user ?? null);
-      if (s?.user) {
+      if (checkDevOverride()) {
+        setIsPro(true);
+      } else if (s?.user) {
         checkProStatus(s.user.id);
       }
       setLoading(false);

@@ -32,30 +32,73 @@ function buildPrompt(
   return `${from}から${to}への交通手段を3パターン提案してください。
 ${companions ? `同行者: ${companions}` : ''}
 
-※ 以下の重要ルール:
-- 長距離（50km以上）: 新幹線/在来線/飛行機/高速バス/レンタカーから選ぶ
-- 中距離（10〜50km）: 在来線/バス/レンタカー/タクシーから選ぶ
-- 短距離（10km未満）: 在来線/バス/タクシーから選ぶ
-- 「駅→聖地スポット」の最後の移動にはタクシーを必ず1つ含める
-- タクシーの場合、type は必ず "taxi" にする
-
 各パターンのJSON:
-- type: "flight" | "train" | "shinkansen" | "bus" | "car" | "taxi"
-- name: 交通手段名
-- duration: 所要時間
-- price: 料金目安（大人1人）
-- transfers: 乗り換え回数
+- type: "flight" | "train" | "shinkansen" | "bus" | "car" | "taxi" のいずれか
+- name: 交通手段名（例: "東海道新幹線 のぞみ"）
+- duration: 所要時間（例: "約2時間30分"）
+- price: 料金目安（例: "約14,000円"）
+- transfers: 乗り換え回数（数値）
 - recommendation: おすすめポイント1文
 
-JSON配列のみ出力。余計な説明やマークダウンは不要。`;
+JSON配列のみ出力。マークダウンや説明は一切不要。
+例: [{"type":"shinkansen","name":"東海道新幹線","duration":"約2時間","price":"約14,000円","transfers":0,"recommendation":"最速で快適"}]`;
 }
 
 function parseResponse(text: string): RawOption[] {
-  const cleaned = text
+  // マークダウンのコードブロックを除去
+  let cleaned = text
     .replace(/^```(?:json)?\s*/i, '')
     .replace(/\s*```$/i, '')
     .trim();
-  return JSON.parse(cleaned);
+
+  // JSON配列を抽出（前後にテキストがある場合）
+  const arrayMatch = cleaned.match(/\[[\s\S]*\]/);
+  if (arrayMatch) {
+    cleaned = arrayMatch[0];
+  }
+
+  const parsed = JSON.parse(cleaned);
+  if (!Array.isArray(parsed)) return [];
+  return parsed;
+}
+
+/** Claude APIが失敗した場合のフォールバック交通手段 */
+function buildFallbackOptions(from: string, to: string): TransportOption[] {
+  return [
+    {
+      type: 'train',
+      icon: getTransportIcon('train'),
+      name: `${from}→${to} 電車`,
+      duration: '時間は経路による',
+      price: '経路検索で確認',
+      transfers: 0,
+      recommendation: 'Google Mapsで最適ルートを検索してください',
+      bookingUrl: `https://www.google.com/maps/dir/${encodeURIComponent(from)}/${encodeURIComponent(to)}/?travelmode=transit`,
+      source: 'google_maps',
+    },
+    {
+      type: 'car',
+      icon: getTransportIcon('car'),
+      name: `${from}→${to} レンタカー`,
+      duration: '距離による',
+      price: 'レンタカー検索で確認',
+      transfers: 0,
+      recommendation: '自由に移動できるのが魅力',
+      bookingUrl: `https://www.google.com/maps/dir/${encodeURIComponent(from)}/${encodeURIComponent(to)}/?travelmode=driving`,
+      source: 'google_maps',
+    },
+    {
+      type: 'taxi',
+      icon: getTransportIcon('taxi'),
+      name: `タクシー / 配車アプリ`,
+      duration: '距離による',
+      price: '距離に応じた料金',
+      transfers: 0,
+      recommendation: '駅から聖地スポットへの移動に便利',
+      bookingUrl: null,
+      source: 'info_only',
+    },
+  ];
 }
 
 export async function GET(request: NextRequest) {
@@ -82,10 +125,20 @@ export async function GET(request: NextRequest) {
 
     const block = message.content[0];
     if (block.type !== 'text') {
-      return NextResponse.json({ options: [] });
+      return NextResponse.json({ options: buildFallbackOptions(from, to) });
     }
 
-    const rawOptions = parseResponse(block.text);
+    let rawOptions: RawOption[];
+    try {
+      rawOptions = parseResponse(block.text);
+    } catch {
+      console.error('Transport JSON parse failed:', block.text.slice(0, 200));
+      return NextResponse.json({ options: buildFallbackOptions(from, to) });
+    }
+
+    if (!rawOptions || rawOptions.length === 0) {
+      return NextResponse.json({ options: buildFallbackOptions(from, to) });
+    }
 
     const options: TransportOption[] = rawOptions.map((opt) => ({
       type: opt.type as TransportOption['type'],
@@ -102,6 +155,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ options });
   } catch (error) {
     console.error('affiliate/transport error:', error);
-    return NextResponse.json({ options: [] });
+    // エラー時はフォールバックを返す（空配列ではなく）
+    return NextResponse.json({ options: buildFallbackOptions(from, to) });
   }
 }

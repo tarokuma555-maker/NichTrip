@@ -78,6 +78,22 @@ body {
   animation: scan-line 2s linear infinite;
 }
 
+@keyframes loading-flash {
+  0% { opacity: 0.15; }
+  100% { opacity: 0; }
+}
+.loading-flash {
+  animation: loading-flash 0.4s ease-out forwards;
+}
+
+@keyframes poster-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.poster-float {
+  animation: poster-float 2s ease-in-out infinite;
+}
+
 /* ===== UGC Checkin Confetti ===== */
 @keyframes confetti-fall-1 {
   0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }

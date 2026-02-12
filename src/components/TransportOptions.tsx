@@ -92,7 +92,7 @@ export default function TransportOptions({
 
   if (loading) {
     return (
-      <div>
+      <div className="mb-8">
         <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
           <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -116,7 +116,7 @@ export default function TransportOptions({
   }
 
   return (
-    <div>
+    <div className="mb-8">
       <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
         <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -164,9 +164,27 @@ export default function TransportOptions({
             </p>
 
             {opt.type === "taxi" ? (
-              <p className="text-[11px] text-white/30 font-bold">
-                GOアプリやDiDiで配車できます
-              </p>
+              <a
+                href="https://m.uber.com/"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="inline-flex items-center gap-1.5 text-xs font-black text-white bg-black border-2 border-white/20 px-3 py-1.5
+                           hover:bg-white/10 transition-colors"
+              >
+                Uber タクシーで配車
+                <span className="text-[10px]">&rarr;</span>
+              </a>
+            ) : opt.type === "flight" ? (
+              <a
+                href={opt.bookingUrl || "https://www.aviasales.com/"}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="inline-flex items-center gap-1.5 text-xs font-black text-blue-400 border-2 border-blue-500/30 px-3 py-1.5
+                           hover:bg-blue-500/10 transition-colors"
+              >
+                チケットを見る
+                <span className="text-[10px]">&rarr;</span>
+              </a>
             ) : opt.bookingUrl ? (
               <a
                 href={opt.bookingUrl}

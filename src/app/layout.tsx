@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { AuthProvider } from "@/components/AuthProvider";
 import BottomNav from "@/components/BottomNav";
@@ -11,9 +11,16 @@ const geistSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "AnimeTrips - AIがつくるアニメ聖地巡礼プラン",
+  title: "AnimeTrips - アニメ聖地巡礼プラン",
   description:
-    "アニメ聖地巡礼・パワースポット・B級グルメ。テーマを選ぶだけで、AIがあなただけの旅を作ります。",
+    "アニメ聖地巡礼・パワースポット・B級グルメ。テーマを選ぶだけで、あなただけの旅を作ります。",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({

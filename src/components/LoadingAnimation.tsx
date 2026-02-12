@@ -1,74 +1,54 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
 
-/* ===== SVG Outline Icons ===== */
-function IconSearch({ className = "w-8 h-8" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <circle cx="11" cy="11" r="7" />
-      <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconRoute({ className = "w-8 h-8" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <circle cx="6" cy="6" r="3" />
-      <circle cx="18" cy="18" r="3" />
-      <path d="M6 9v2a4 4 0 004 4h4a4 4 0 004-4V9" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconFood({ className = "w-8 h-8" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path d="M3 3v7a4 4 0 004 4h2" />
-      <path d="M7 3v4" />
-      <path d="M3 7h8" />
-      <path d="M9 14v8" />
-      <path d="M18 3v18" />
-      <path d="M18 3a3 3 0 013 3v1a3 3 0 01-3 3" />
-    </svg>
-  );
-}
-
-function IconSparkle({ className = "w-8 h-8" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-      <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" />
-    </svg>
-  );
-}
+const POSTER_IMAGES = [
+  "demon-slayer", "naruto", "one-piece", "attack-on-titan", "jujutsu-kaisen",
+  "your-name", "slam-dunk", "spy-family", "chainsaw-man", "frieren",
+  "steins-gate", "evangelion", "haikyu", "violet-evergarden", "oshi-no-ko",
+  "my-hero-academia", "death-note", "hunter-x-hunter", "bocchi", "suzume",
+  "sword-art-online", "code-geass", "madoka-magica", "bleach", "tokyo-revengers",
+  "a-silent-voice", "mob-psycho-100", "kaguya-sama", "konosuba", "re-zero",
+  "vinland-saga", "psycho-pass", "bunny-girl-senpai", "sound-euphonium", "toradora",
+  "yurucamp", "k-on", "hyouka", "clannad", "anohana",
+];
 
 const STEPS = [
-  { icon: <IconSearch className="w-10 h-10" />, text: "聖地データを検索中...", pct: 25 },
-  { icon: <IconRoute className="w-10 h-10" />, text: "最適なルートを計算中...", pct: 50 },
-  { icon: <IconFood className="w-10 h-10" />, text: "周辺グルメを調査中...", pct: 75 },
-  { icon: <IconSparkle className="w-10 h-10" />, text: "プランを仕上げています...", pct: 95 },
+  { text: "聖地データを検索中...", pct: 25 },
+  { text: "最適なルートを計算中...", pct: 50 },
+  { text: "周辺グルメを調査中...", pct: 75 },
+  { text: "プランを仕上げています...", pct: 95 },
 ];
 
-const STEP_ICONS_SM = [
-  <IconSearch key="s" className="w-4 h-4" />,
-  <IconRoute key="r" className="w-4 h-4" />,
-  <IconFood key="f" className="w-4 h-4" />,
-  <IconSparkle key="sp" className="w-4 h-4" />,
-];
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 export default function LoadingAnimation() {
   const [activeStep, setActiveStep] = useState(0);
-  const [panelFlash, setPanelFlash] = useState(false);
-  const [textKey, setTextKey] = useState(0);
+  const [featuredIdx, setFeaturedIdx] = useState(0);
+  const [flash, setFlash] = useState(false);
 
+  // Shuffle posters once on mount
+  const shuffled = useMemo(() => shuffle(POSTER_IMAGES), []);
+  // 6 posters for background grid, cycling through
+  const gridPosters = useMemo(() => shuffled.slice(0, 12), [shuffled]);
+  // Featured poster cycles
+  const featuredPosters = useMemo(() => shuffled.slice(0, 8), [shuffled]);
+
+  // Step progression
   useEffect(() => {
     const id = setInterval(() => {
       setActiveStep((prev) => {
         if (prev < STEPS.length - 1) {
-          setPanelFlash(true);
-          setTimeout(() => setPanelFlash(false), 300);
-          setTextKey((k) => k + 1);
+          setFlash(true);
+          setTimeout(() => setFlash(false), 400);
           return prev + 1;
         }
         return prev;
@@ -77,174 +57,187 @@ export default function LoadingAnimation() {
     return () => clearInterval(id);
   }, []);
 
+  // Featured poster cycling
+  useEffect(() => {
+    const id = setInterval(() => {
+      setFeaturedIdx((prev) => (prev + 1) % featuredPosters.length);
+    }, 2000);
+    return () => clearInterval(id);
+  }, [featuredPosters.length]);
+
   const progress = STEPS[activeStep].pct;
 
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4">
-      {/* 漫画パネル風ビジュアル */}
-      <div className="relative w-full max-w-xs mb-6">
-        {/* 集中線の背景 */}
-        <div className="relative w-full aspect-square max-w-[200px] mx-auto overflow-hidden">
-          <svg
-            className="absolute inset-0 w-full h-full animate-spin-slow"
-            viewBox="0 0 200 200"
-            fill="none"
-          >
-            {Array.from({ length: 36 }, (_, i) => {
-              const angle = (i * 10 * Math.PI) / 180;
-              return (
-                <line
-                  key={i}
-                  x1="100"
-                  y1="100"
-                  x2={100 + 100 * Math.cos(angle)}
-                  y2={100 + 100 * Math.sin(angle)}
-                  stroke="#E53E3E"
-                  strokeWidth={i % 6 === 0 ? 2 : 0.5}
-                  opacity={i % 6 === 0 ? 0.3 : 0.1}
-                />
-              );
-            })}
-          </svg>
-
-          {/* 中央の漫画風フレーム */}
-          <div
-            className={`absolute inset-[20%] border-[3px] border-white flex items-center justify-center bg-[#0a0a0a] transition-all duration-300 ${
-              panelFlash
-                ? "shadow-[0_0_30px_rgba(229,62,62,0.6)] scale-110 border-red-500"
-                : "shadow-[4px_4px_0_rgba(229,62,62,0.4)]"
-            }`}
-          >
-            {/* コマ枠の角装飾 */}
-            <div className="absolute -top-1 -left-1 w-3 h-3 border-l-2 border-t-2 border-red-500" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 border-r-2 border-t-2 border-red-500" />
-            <div className="absolute -bottom-1 -left-1 w-3 h-3 border-l-2 border-b-2 border-red-500" />
-            <div className="absolute -bottom-1 -right-1 w-3 h-3 border-r-2 border-b-2 border-red-500" />
-
-            {/* スキャンライン効果 */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-red-500/30 to-transparent scan-line" />
+    <div className="flex flex-col items-center justify-center py-8 px-4 relative overflow-hidden">
+      {/* Background poster mosaic */}
+      <div className="absolute inset-0 overflow-hidden opacity-[0.07]">
+        <div className="grid grid-cols-4 gap-1 h-full">
+          {gridPosters.map((name, i) => (
+            <div key={name} className="relative overflow-hidden" style={{ animationDelay: `${i * 0.2}s` }}>
+              <Image
+                src={`/images/works/${name}.jpg`}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="25vw"
+                priority={i < 4}
+              />
             </div>
-
-            {/* アイコン */}
-            <div className="text-center">
-              <span
-                className={`block text-white transition-transform duration-300 ${
-                  panelFlash ? "scale-125" : "scale-100"
-                }`}
-              >
-                {STEPS[activeStep].icon}
-              </span>
-            </div>
-          </div>
-
-          {/* ハーフトーンオーバーレイ */}
-          <div className="absolute inset-0 halftone-red opacity-[0.04] pointer-events-none" />
-        </div>
-
-        {/* ステータステキスト — ターミナル風 */}
-        <div className="mt-5 mx-4">
-          <div className="border-2 border-white/10 bg-black/40 px-4 py-3">
-            {/* ターミナルヘッダー */}
-            <div className="flex items-center gap-1.5 mb-2">
-              <div className="w-1.5 h-1.5 bg-red-500" />
-              <div className="w-1.5 h-1.5 bg-white/20" />
-              <div className="w-1.5 h-1.5 bg-white/20" />
-              <span className="text-[9px] text-white/20 font-bold ml-1.5 uppercase tracking-widest">
-                generating
-              </span>
-            </div>
-            {/* タイピングテキスト */}
-            <p
-              key={textKey}
-              className="text-sm font-black text-red-400 status-text-typing"
-            >
-              {STEPS[activeStep].text}
-            </p>
-          </div>
+          ))}
         </div>
       </div>
 
-      <p className="text-xs text-white/40 mb-6">
-        所要時間の目安：約10〜20秒
-      </p>
-
-      {/* プログレスバー — 漫画風 */}
-      <div className="w-full max-w-xs mb-8">
-        <div className="flex justify-between mb-2">
-          <span className="text-[10px] text-white/40 font-black uppercase tracking-wider">
-            Progress
-          </span>
-          <span className="text-[10px] text-red-400 font-black">{progress}%</span>
-        </div>
-        <div className="w-full h-3 bg-white/5 border-2 border-white/10 overflow-hidden">
-          <div
-            className="h-full transition-all duration-1000 ease-out relative"
-            style={{ width: `${progress}%` }}
-          >
-            {/* 斜めストライプ進捗バー */}
-            <div
-              className="absolute inset-0 bg-red-500"
-              style={{
-                backgroundImage:
-                  "repeating-linear-gradient(-45deg, transparent, transparent 4px, rgba(0,0,0,0.2) 4px, rgba(0,0,0,0.2) 8px)",
-              }}
-            />
-          </div>
-        </div>
+      {/* Speed lines overlay */}
+      <div className="absolute inset-0 pointer-events-none">
+        <svg className="w-full h-full animate-spin-slow opacity-20" viewBox="0 0 400 400" fill="none">
+          {Array.from({ length: 48 }, (_, i) => {
+            const angle = (i * 7.5 * Math.PI) / 180;
+            return (
+              <line
+                key={i}
+                x1="200" y1="200"
+                x2={200 + 200 * Math.cos(angle)}
+                y2={200 + 200 * Math.sin(angle)}
+                stroke="#E53E3E"
+                strokeWidth={i % 8 === 0 ? 2 : 0.5}
+                opacity={i % 8 === 0 ? 0.6 : 0.2}
+              />
+            );
+          })}
+        </svg>
       </div>
 
-      {/* ステップ進行 — コマ風 */}
-      <div className="w-full max-w-xs space-y-2.5">
-        {STEPS.map((step, i) => {
-          const done = i < activeStep;
-          const current = i === activeStep;
+      {/* Flash effect on step change */}
+      {flash && (
+        <div className="absolute inset-0 bg-white/10 z-10 pointer-events-none loading-flash" />
+      )}
 
-          return (
+      {/* Main content */}
+      <div className="relative z-20 w-full max-w-xs">
+        {/* Featured poster showcase */}
+        <div className="relative mx-auto w-48 h-64 mb-6">
+          {/* Frame border */}
+          <div className="absolute inset-0 border-[3px] border-white shadow-[6px_6px_0_rgba(229,62,62,0.5)] z-10 pointer-events-none">
+            <div className="absolute -top-1 -left-1 w-4 h-4 border-l-2 border-t-2 border-red-500" />
+            <div className="absolute -top-1 -right-1 w-4 h-4 border-r-2 border-t-2 border-red-500" />
+            <div className="absolute -bottom-1 -left-1 w-4 h-4 border-l-2 border-b-2 border-red-500" />
+            <div className="absolute -bottom-1 -right-1 w-4 h-4 border-r-2 border-b-2 border-red-500" />
+          </div>
+
+          {/* Poster images with crossfade */}
+          {featuredPosters.map((name, i) => (
             <div
-              key={i}
-              className={`flex items-center gap-3 px-3 py-2 border-2 transition-all duration-300 ${
-                current
-                  ? "border-red-500/50 bg-red-500/5 shadow-[2px_2px_0_rgba(229,62,62,0.3)] step-slide-in"
-                  : done
-                    ? "border-white/5 bg-white/[0.02]"
-                    : "border-white/5"
-              }`}
+              key={name}
+              className="absolute inset-0 transition-opacity duration-700"
+              style={{ opacity: i === featuredIdx ? 1 : 0 }}
             >
-              <div className="shrink-0 w-6 h-6 flex items-center justify-center">
-                {done ? (
-                  <span className="w-5 h-5 bg-emerald-500 flex items-center justify-center text-white text-[10px] font-black step-check-in">
-                    ✓
-                  </span>
-                ) : current ? (
-                  <div className="relative w-5 h-5 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-red-500/30 step-ping" />
-                    <div className="w-3 h-3 bg-red-500 step-glow" />
-                  </div>
-                ) : (
-                  <div className="w-2 h-2 bg-white/15" />
-                )}
-              </div>
+              <Image
+                src={`/images/works/${name}.jpg`}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="192px"
+                priority={i < 2}
+              />
+            </div>
+          ))}
 
-              <div className="flex items-center gap-2">
-                <span className={`${current ? "text-white" : done ? "text-white/30" : "text-white/20"}`}>
-                  {STEP_ICONS_SM[i]}
-                </span>
-                <span
-                  className={`text-sm transition-colors duration-300 ${
-                    done
-                      ? "text-white/30 line-through"
-                      : current
-                        ? "text-white font-black"
-                        : "text-white/20"
+          {/* Scanline overlay */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+            <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-red-500/50 to-transparent scan-line" />
+          </div>
+
+          {/* Halftone overlay */}
+          <div className="absolute inset-0 halftone opacity-[0.06] pointer-events-none z-10" />
+        </div>
+
+        {/* Small poster strip cycling below */}
+        <div className="flex gap-1.5 justify-center mb-6 overflow-hidden">
+          {shuffled.slice(8, 14).map((name, i) => (
+            <div
+              key={name}
+              className="w-10 h-14 relative border border-white/20 shrink-0 poster-float"
+              style={{ animationDelay: `${i * 0.3}s` }}
+            >
+              <Image
+                src={`/images/works/${name}.jpg`}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="40px"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Status terminal */}
+        <div className="border-2 border-white/10 bg-black/60 backdrop-blur-sm px-4 py-3 mb-4">
+          <div className="flex items-center gap-1.5 mb-2">
+            <div className="w-1.5 h-1.5 bg-red-500 step-glow" />
+            <div className="w-1.5 h-1.5 bg-white/20" />
+            <div className="w-1.5 h-1.5 bg-white/20" />
+            <span className="text-[9px] text-white/20 font-bold ml-1.5 uppercase tracking-widest">
+              generating
+            </span>
+          </div>
+          <p key={activeStep} className="text-sm font-black text-red-400 status-text-typing">
+            {STEPS[activeStep].text}
+          </p>
+        </div>
+
+        {/* Progress bar */}
+        <div className="mb-6">
+          <div className="flex justify-between mb-1.5">
+            <span className="text-[10px] text-white/40 font-black uppercase tracking-wider">
+              Progress
+            </span>
+            <span className="text-[10px] text-red-400 font-black">{progress}%</span>
+          </div>
+          <div className="w-full h-2.5 bg-white/5 border-2 border-white/10 overflow-hidden">
+            <div
+              className="h-full transition-all duration-1000 ease-out relative"
+              style={{ width: `${progress}%` }}
+            >
+              <div
+                className="absolute inset-0 bg-red-500"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(-45deg, transparent, transparent 3px, rgba(0,0,0,0.2) 3px, rgba(0,0,0,0.2) 6px)",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Step indicators — compact dots */}
+        <div className="flex items-center justify-center gap-3">
+          {STEPS.map((_, i) => {
+            const done = i < activeStep;
+            const current = i === activeStep;
+            return (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <div
+                  className={`w-3 h-3 transition-all duration-300 ${
+                    current
+                      ? "bg-red-500 step-glow"
+                      : done
+                        ? "bg-emerald-500"
+                        : "bg-white/10"
                   }`}
-                >
-                  {step.text}
+                />
+                <span className={`text-[9px] font-bold ${
+                  current ? "text-red-400" : done ? "text-white/30" : "text-white/15"
+                }`}>
+                  {i + 1}/{STEPS.length}
                 </span>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+
+        <p className="text-center text-[11px] text-white/30 mt-4">
+          約10〜20秒で完成します
+        </p>
       </div>
     </div>
   );

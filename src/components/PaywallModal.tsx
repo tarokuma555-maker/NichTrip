@@ -13,7 +13,7 @@ type PaywallReason =
 const REASON_MESSAGES: Record<PaywallReason, string> = {
   usage_limit: "今月の無料プラン生成回数（3回）を使い切りました。",
   multi_work: "複数作品のミックス巡礼はProプランの機能です。",
-  ai_chat: "AIチャットカスタマイズはProプランの機能です。",
+  ai_chat: "チャットカスタマイズはProプランの機能です。",
   ugc_review: "6件目以降のレビュー閲覧はProプランの機能です。",
   plan_save: "4件目以降のプラン保存はProプランの機能です。",
 };

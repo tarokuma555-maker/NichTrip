@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { HotelItem } from "@/lib/types";
+import { useAuth } from "@/components/AuthProvider";
 
 function HotelIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
@@ -26,6 +27,7 @@ export default function HotelSuggestions({
   lng?: number;
   budget?: string;
 }) {
+  const { isPro } = useAuth();
   const [hotels, setHotels] = useState<HotelItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -80,6 +82,33 @@ export default function HotelSuggestions({
               </div>
             </div>
           ))}
+        </div>
+      </div>
+    );
+  }
+
+  // アフィリエイトリンクがない場合（全件fallback）はPro限定
+  const hasAffiliate = hotels.some((h) => h.source === "rakuten");
+  if (!hasAffiliate && !isPro) {
+    return (
+      <div>
+        <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
+          <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
+          この日のおすすめ宿
+        </h4>
+        <div className="bg-white/5 border-2 border-white/10 p-4 text-center">
+          <p className="text-xs text-white/40 font-bold mb-2">
+            おすすめの宿 {hotels.length}件
+          </p>
+          <p className="text-[11px] text-white/30 mb-3">
+            Proプランで宿泊先の詳細を確認できます
+          </p>
+          <a
+            href="/pricing"
+            className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-3 py-1.5 hover:bg-red-500/10 transition-colors"
+          >
+            Proプランを見る <span className="text-[10px]">&rarr;</span>
+          </a>
         </div>
       </div>
     );
@@ -152,7 +181,7 @@ export default function HotelSuggestions({
                 className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-2.5 py-1
                            hover:bg-red-500/10 transition-colors"
               >
-                予約する
+                {hotel.source === "rakuten" ? "楽天で見る" : "予約を検索"}
                 <span className="text-[10px]">&rarr;</span>
               </a>
             </div>

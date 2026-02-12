@@ -10,8 +10,67 @@ import AuthModal from "./AuthModal";
 import ProBanner from "./ProBanner";
 
 type Phase = "form" | "loading" | "result" | "error";
+type Tab = "new" | "history";
+
+type HistoryEntry = {
+  id: string;
+  keyword: string;
+  departure: string;
+  days: number;
+  createdAt: string;
+  plan: GeneratedPlan;
+};
 
 const SESSION_KEY = "animetrips_plan_state";
+const USAGE_KEY = "animetrips_usage";
+const HISTORY_KEY = "animetrips_plan_history";
+const MAX_HISTORY = 10;
+
+function loadHistory(): HistoryEntry[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch {}
+  return [];
+}
+
+function saveToHistory(entry: HistoryEntry): void {
+  try {
+    const history = loadHistory();
+    // Avoid duplicate
+    const filtered = history.filter((h) => h.id !== entry.id);
+    filtered.unshift(entry);
+    // Keep max entries
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(filtered.slice(0, MAX_HISTORY)));
+  } catch {}
+}
+
+function getLocalUsage(): { month: string; count: number } {
+  try {
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+    const raw = localStorage.getItem(USAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data.month === currentMonth) {
+        return { month: currentMonth, count: data.count ?? 0 };
+      }
+    }
+    return { month: currentMonth, count: 0 };
+  } catch {
+    return { month: "", count: 0 };
+  }
+}
+
+function incrementLocalUsage(): void {
+  try {
+    const usage = getLocalUsage();
+    localStorage.setItem(
+      USAGE_KEY,
+      JSON.stringify({ month: usage.month, count: usage.count + 1 })
+    );
+  } catch {}
+}
 
 type WorkItem = {
   id: string;
@@ -54,13 +113,17 @@ export default function ConditionForm({
 }) {
   const { isPro } = useAuth();
 
+  const [tab, setTab] = useState<Tab>("new");
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [historyPlan, setHistoryPlan] = useState<HistoryEntry | null>(null);
+
   const [departure, setDeparture] = useState("東京");
-  const [days, setDays] = useState<number | null>(null);
-  const [daysCustom, setDaysCustom] = useState("");
-  const [budget, setBudget] = useState<PlanRequest["budget"] | null>(null);
-  const [budgetMin, setBudgetMin] = useState("");
-  const [budgetMax, setBudgetMax] = useState("");
-  const [companions, setCompanions] = useState<PlanRequest["companions"] | null>(null);
+  const [days, setDays] = useState<number | null>(-1);
+  const [daysCustom, setDaysCustom] = useState("2");
+  const [budget, setBudget] = useState<PlanRequest["budget"] | null>("custom");
+  const [budgetMin, setBudgetMin] = useState("10000");
+  const [budgetMax, setBudgetMax] = useState("50000");
+  const [companions, setCompanions] = useState<PlanRequest["companions"] | null>("custom");
   const [companionsAdults, setCompanionsAdults] = useState(1);
   const [companionsChildren, setCompanionsChildren] = useState(0);
   const [keyword, setKeyword] = useState(work ?? "");
@@ -74,8 +137,8 @@ export default function ConditionForm({
   const [plan, setPlan] = useState<GeneratedPlan | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Usage tracking
-  const [usageUsed, setUsageUsed] = useState(0);
+  // Usage tracking (localStorage as primary, API as secondary)
+  const [usageUsed, setUsageUsed] = useState(() => getLocalUsage().count);
   const [usageLimit, setUsageLimit] = useState(3);
 
   // Paywall / Auth modals
@@ -87,6 +150,11 @@ export default function ConditionForm({
   const [allWorks, setAllWorks] = useState<WorkItem[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestRef = useRef<HTMLDivElement>(null);
+
+  // 履歴を読み込み
+  useEffect(() => {
+    setHistory(loadHistory());
+  }, []);
 
   // sessionStorageから復元
   useEffect(() => {
@@ -128,15 +196,31 @@ export default function ConditionForm({
     [keyword, departure, days, budget, companions]
   );
 
-  // 使用量を取得
+  // 使用量を取得（localStorage優先、API結果と大きい方を採用）
   const fetchUsage = useCallback(() => {
+    const localUsage = getLocalUsage();
     fetch("/api/usage")
       .then((res) => res.json())
       .then((data) => {
-        if (typeof data.used === "number") setUsageUsed(data.used);
+        const serverUsed = typeof data.used === "number" ? data.used : 0;
+        // サーバーとローカルの大きい方を採用（どちらかが正しい値を持っている）
+        const actualUsed = Math.max(serverUsed, localUsage.count);
+        setUsageUsed(actualUsed);
         if (typeof data.limit === "number") setUsageLimit(data.limit);
+        // ローカルを同期
+        if (actualUsed > localUsage.count) {
+          try {
+            localStorage.setItem(
+              USAGE_KEY,
+              JSON.stringify({ month: localUsage.month, count: actualUsed })
+            );
+          } catch {}
+        }
       })
-      .catch(() => {});
+      .catch(() => {
+        // API失敗時はlocalStorageの値を使用
+        setUsageUsed(localUsage.count);
+      });
   }, []);
 
   useEffect(() => {
@@ -200,13 +284,16 @@ export default function ConditionForm({
   const hasWork =
     (isPro && selectedWorks.length > 0) || keyword.trim() !== "";
 
+  const usageLimitReached = !isPro && usageUsed >= usageLimit;
+
   const isReady =
     hasWork &&
     departure.trim() !== "" &&
     effectiveDays !== null &&
     effectiveDays > 0 &&
     isBudgetReady &&
-    isCompanionsReady;
+    isCompanionsReady &&
+    !usageLimitReached;
 
   // サジェストから作品を選択
   function handleSelectWork(w: WorkItem) {
@@ -303,7 +390,21 @@ export default function ConditionForm({
       setPlan(data);
       setPhase("result");
       savePlanToSession(data);
+      incrementLocalUsage();
       setUsageUsed((prev) => prev + 1);
+      // Save to history
+      const entry: HistoryEntry = {
+        id: Date.now().toString(36),
+        keyword: isPro && selectedWorks.length > 0
+          ? selectedWorks.map((w) => w.title).join(" × ")
+          : keyword.trim(),
+        departure: departure.trim(),
+        days: effectiveDays!,
+        createdAt: new Date().toISOString(),
+        plan: data,
+      };
+      saveToHistory(entry);
+      setHistory(loadHistory());
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
       setErrorMsg("通信エラーが発生しました。ネットワークを確認してください。");
@@ -340,9 +441,104 @@ export default function ConditionForm({
     );
   }
 
+  // ---------- History view ----------
+  if (historyPlan) {
+    return (
+      <PlanTimeline
+        plan={historyPlan.plan}
+        keyword={historyPlan.keyword}
+        onReset={() => {
+          setHistoryPlan(null);
+          setTab("history");
+        }}
+        departure={historyPlan.departure}
+      />
+    );
+  }
+
   // ---------- Form / Error ----------
   return (
     <div className="w-full max-w-md mx-auto">
+      {/* Tab switcher */}
+      <div className="flex gap-0 mb-6 border-2 border-white/10 overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setTab("new")}
+          className={`flex-1 py-2.5 text-sm font-black transition-colors ${
+            tab === "new"
+              ? "bg-red-500 text-white"
+              : "bg-white/5 text-white/40 hover:text-white/60"
+          }`}
+        >
+          新規作成
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab("history")}
+          className={`flex-1 py-2.5 text-sm font-black transition-colors relative ${
+            tab === "history"
+              ? "bg-red-500 text-white"
+              : "bg-white/5 text-white/40 hover:text-white/60"
+          }`}
+        >
+          履歴
+          {history.length > 0 && (
+            <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-[10px] font-black bg-white/10 border border-white/20">
+              {history.length}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* History tab */}
+      {tab === "history" && (
+        <div className="space-y-3">
+          {history.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-sm text-white/30 font-bold">まだプランがありません</p>
+              <button
+                type="button"
+                onClick={() => setTab("new")}
+                className="mt-4 text-xs text-red-400 font-black border-2 border-red-500/30 px-4 py-2 hover:bg-red-500/10 transition-colors"
+              >
+                プランを作成する
+              </button>
+            </div>
+          ) : (
+            history.map((entry) => (
+              <button
+                key={entry.id}
+                type="button"
+                onClick={() => {
+                  setHistoryPlan(entry);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className="w-full text-left bg-white/5 border-2 border-white/10 p-4 hover:border-white/30 hover:bg-white/[0.07] transition-all"
+              >
+                <div className="flex items-center justify-between gap-2 mb-1.5">
+                  <span className="text-sm font-black text-white truncate">
+                    {entry.plan.title}
+                  </span>
+                  <span className="text-[10px] text-white/30 font-bold shrink-0">
+                    {new Date(entry.createdAt).toLocaleDateString("ja-JP", { month: "short", day: "numeric" })}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-white/40 font-bold">
+                  <span>{entry.keyword}</span>
+                  <span>|</span>
+                  <span>{entry.departure}発</span>
+                  <span>|</span>
+                  <span>{entry.days === 1 ? "日帰り" : `${entry.days - 1}泊${entry.days}日`}</span>
+                </div>
+              </button>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* New plan form */}
+      {tab === "new" && (
+      <>
       <div className="space-y-6">
         {/* 作品名（検索付き） */}
         <FormSection label="作品名" icon="🎬">
@@ -531,28 +727,12 @@ export default function ConditionForm({
             onSelect={(key) => setBudget(key as PlanRequest["budget"])}
           />
           {budget === "custom" && (
-            <div className="mt-3 flex items-center gap-2">
-              <input
-                type="number"
-                min="0"
-                step="1000"
-                value={budgetMin}
-                onChange={(e) => setBudgetMin(e.target.value)}
-                placeholder="下限"
-                className="manga-input w-24 px-3 py-2.5 text-center"
-              />
-              <span className="text-sm text-white/40 font-black">〜</span>
-              <input
-                type="number"
-                min="0"
-                step="1000"
-                value={budgetMax}
-                onChange={(e) => setBudgetMax(e.target.value)}
-                placeholder="上限"
-                className="manga-input w-24 px-3 py-2.5 text-center"
-              />
-              <span className="text-sm text-white/50 font-bold">円</span>
-            </div>
+            <BudgetSlider
+              min={budgetMin}
+              max={budgetMax}
+              onMinChange={setBudgetMin}
+              onMaxChange={setBudgetMax}
+            />
           )}
         </FormSection>
 
@@ -636,10 +816,30 @@ export default function ConditionForm({
         プランを作成する
       </button>
 
-      {!isReady && (
+      {usageLimitReached ? (
+        <div className="mt-4 text-center space-y-3">
+          <p className="text-xs text-red-400 font-black">
+            今月の無料プラン生成回数を使い切りました
+          </p>
+          <a
+            href="/pricing"
+            className="inline-flex items-center gap-1.5 bg-red-500 text-white text-sm font-black px-6 py-3 border-2 border-red-400/50
+                       shadow-[4px_4px_0_rgba(0,0,0,0.4)] hover:shadow-[2px_2px_0_rgba(0,0,0,0.4)] hover:translate-x-0.5 hover:translate-y-0.5
+                       transition-all duration-200"
+          >
+            Proプランに登録する
+            <span className="text-xs">&rarr;</span>
+          </a>
+          <p className="text-[11px] text-white/30">
+            月額480円で無制限にプラン生成できます
+          </p>
+        </div>
+      ) : !isReady ? (
         <p className="mt-2 text-center text-xs text-white/30 font-bold">
           すべての項目を入力すると生成できます
         </p>
+      ) : null}
+      </>
       )}
 
       {/* Paywall Modal */}
@@ -755,6 +955,125 @@ function CounterRow({
           +
         </button>
         <span className="text-sm text-white/40 font-bold">人</span>
+      </div>
+    </div>
+  );
+}
+
+const BUDGET_STEP = 5000;
+const BUDGET_MIN_LIMIT = 5000;
+const BUDGET_MAX_LIMIT = 300000;
+
+function BudgetSlider({
+  min,
+  max,
+  onMinChange,
+  onMaxChange,
+}: {
+  min: string;
+  max: string;
+  onMinChange: (v: string) => void;
+  onMaxChange: (v: string) => void;
+}) {
+  const minVal = parseInt(min) || 10000;
+  const maxVal = parseInt(max) || 50000;
+
+  // 初期値セット
+  useEffect(() => {
+    if (!min) onMinChange("10000");
+    if (!max) onMaxChange("50000");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function stepMin(delta: number) {
+    const next = Math.min(
+      Math.max(BUDGET_MIN_LIMIT, minVal + delta * BUDGET_STEP),
+      maxVal - BUDGET_STEP
+    );
+    onMinChange(String(next));
+  }
+
+  function stepMax(delta: number) {
+    const next = Math.min(
+      BUDGET_MAX_LIMIT,
+      Math.max(minVal + BUDGET_STEP, maxVal + delta * BUDGET_STEP)
+    );
+    onMaxChange(String(next));
+  }
+
+  const barLeft = ((minVal - BUDGET_MIN_LIMIT) / (BUDGET_MAX_LIMIT - BUDGET_MIN_LIMIT)) * 100;
+  const barRight = ((BUDGET_MAX_LIMIT - maxVal) / (BUDGET_MAX_LIMIT - BUDGET_MIN_LIMIT)) * 100;
+
+  function formatYen(v: number) {
+    if (v >= 10000) {
+      const man = v / 10000;
+      return Number.isInteger(man) ? `${man}万円` : `${man.toFixed(1)}万円`;
+    }
+    return `${v.toLocaleString()}円`;
+  }
+
+  return (
+    <div className="mt-3 space-y-3">
+      {/* 下限 */}
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-white/50 w-8 shrink-0 font-bold">下限</span>
+        <button
+          type="button"
+          onClick={() => stepMin(-1)}
+          className="w-8 h-8 bg-white/5 border-2 border-white/10 text-white/70
+                     hover:border-white/30 flex items-center justify-center text-lg font-black"
+        >
+          -
+        </button>
+        <span className="flex-1 text-center text-sm text-white font-black">
+          {formatYen(minVal)}
+        </span>
+        <button
+          type="button"
+          onClick={() => stepMin(1)}
+          className="w-8 h-8 bg-white/5 border-2 border-white/10 text-white/70
+                     hover:border-white/30 flex items-center justify-center text-lg font-black"
+        >
+          +
+        </button>
+      </div>
+
+      {/* ビジュアルバー */}
+      <div className="relative h-2 bg-white/5 border border-white/10">
+        <div
+          className="absolute top-0 bottom-0 bg-red-500/60"
+          style={{ left: `${barLeft}%`, right: `${barRight}%` }}
+        />
+      </div>
+
+      {/* 上限 */}
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-white/50 w-8 shrink-0 font-bold">上限</span>
+        <button
+          type="button"
+          onClick={() => stepMax(-1)}
+          className="w-8 h-8 bg-white/5 border-2 border-white/10 text-white/70
+                     hover:border-white/30 flex items-center justify-center text-lg font-black"
+        >
+          -
+        </button>
+        <span className="flex-1 text-center text-sm text-white font-black">
+          {formatYen(maxVal)}
+        </span>
+        <button
+          type="button"
+          onClick={() => stepMax(1)}
+          className="w-8 h-8 bg-white/5 border-2 border-white/10 text-white/70
+                     hover:border-white/30 flex items-center justify-center text-lg font-black"
+        >
+          +
+        </button>
+      </div>
+
+      {/* ラベル */}
+      <div className="flex justify-between text-[10px] text-white/30 font-bold">
+        <span>{formatYen(BUDGET_MIN_LIMIT)}</span>
+        <span>{formatYen(BUDGET_MAX_LIMIT)}</span>
       </div>
     </div>
   );

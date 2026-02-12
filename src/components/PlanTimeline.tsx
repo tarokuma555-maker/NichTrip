@@ -9,6 +9,8 @@ import TransportOptions from "./TransportOptions";
 import HotelSuggestions from "./HotelSuggestions";
 import { useAuth } from "@/components/AuthProvider";
 import ProBanner from "./ProBanner";
+import { getWorkVisual, hasPoster } from "@/lib/work-visuals";
+import Image from "next/image";
 
 type TransportMode = "train" | "car" | "walk" | "taxi";
 
@@ -117,6 +119,21 @@ const TRANSPORT_ICON_MAP: Record<TransportMode, React.ReactNode> = {
   walk: <IconWalk className="w-4 h-4" />,
   taxi: <IconTaxi className="w-4 h-4" />,
 };
+
+/**
+ * 住所から目的地名を抽出（都道府県+市区町村レベル）
+ */
+function extractDestination(address: string | undefined, fallback: string): string {
+  if (!address) return fallback;
+  // 「〇〇県〇〇市」「〇〇府〇〇市」「東京都〇〇区」のパターンを抽出
+  const m = address.match(/^(.+?[都道府県])(.+?[市区町村])/);
+  if (m) return m[1] + m[2]; // 例: "神奈川県鎌倉市"
+  // 都道府県だけでも取れれば使う
+  const m2 = address.match(/^(.+?[都道府県])/);
+  if (m2) return m2[1];
+  // マッチしない場合はfallback
+  return fallback;
+}
 
 /**
  * アクセス文言から所要時間（分）を抽出
@@ -255,14 +272,32 @@ export default function PlanTimeline({
     mapRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
+  const visual = getWorkVisual(keyword);
+  const showPoster = hasPoster(keyword);
+
   let spotCounter = 0;
+  const dest = extractDestination(plan.days[0]?.spots[0]?.address, keyword);
 
   return (
     <div className="w-full max-w-2xl mx-auto">
       {/* ===== プランヘッダー ===== */}
       <div className="text-center mb-10">
-        <p className="inline-block bg-red-500/10 text-red-400 text-xs font-black px-3 py-1 border-2 border-red-500/30 mb-3">
-          Generated Plan
+        {/* アニメポスター */}
+        {showPoster && (
+          <div className="relative w-32 h-44 mx-auto mb-4 border-[3px] border-white shadow-[4px_4px_0_rgba(229,62,62,0.4)]">
+            <Image
+              src={visual.image}
+              alt={keyword}
+              fill
+              className="object-cover"
+              sizes="128px"
+              priority
+            />
+          </div>
+        )}
+
+        <p className="inline-block bg-red-500/10 text-red-400 text-xs font-black px-3 py-1 border-2 border-red-500/30 mb-2">
+          {keyword}
         </p>
         <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 leading-tight">
           {plan.title}
@@ -277,6 +312,9 @@ export default function PlanTimeline({
           <MetaBadge icon={<IconPin className="w-3.5 h-3.5" />} text={`全${allSpots.length}スポット`} />
         </div>
       </div>
+
+      {/* ===== 上部: 旅行サービス広告 ===== */}
+      <TravelAds departure={departure} destination={dest} />
 
       {/* ===== 無料プランの制限 + Pro誘導 ===== */}
       <FreeLimitsBanner />
@@ -307,13 +345,11 @@ export default function PlanTimeline({
 
       {/* ===== アフィリエイト: 行き方 ===== */}
       {departure && (
-        <div className="mb-8">
-          <TransportOptions
-            from={departure}
-            to={plan.days[0]?.spots[0]?.address?.split(/[都道府県市区町村]/)?.[0] ?? keyword}
-            companions={companions}
-          />
-        </div>
+        <TransportOptions
+          from={departure}
+          to={extractDestination(plan.days[0]?.spots[0]?.address, keyword)}
+          companions={companions}
+        />
       )}
 
       {/* ===== 日程タイムライン ===== */}
@@ -454,6 +490,9 @@ export default function PlanTimeline({
         )}
       </div>
 
+      {/* ===== 下部: 旅行サービス広告 ===== */}
+      <TravelAds departure={departure} destination={dest} />
+
       {/* ===== シェア ===== */}
       <div className="mt-12">
         <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
@@ -486,6 +525,86 @@ function MetaBadge({ icon, text }: { icon: React.ReactNode; text: string }) {
       <span className="text-white/40">{icon}</span>
       <span>{text}</span>
     </span>
+  );
+}
+
+function TravelAds({ departure, destination }: { departure?: string; destination: string }) {
+  const { isPro } = useAuth();
+  if (isPro) return null;
+
+  const ads = [
+    {
+      icon: <IconHotel className="w-5 h-5" />,
+      title: "宿泊予約",
+      desc: `${destination}周辺のホテル・旅館を検索`,
+      url: `https://www.google.com/search?q=${encodeURIComponent(destination + ' ホテル 旅館 予約')}`,
+      cta: "宿を検索する",
+      color: "text-red-400 border-red-500/30 hover:bg-red-500/10",
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path d="M12 2L4 7v4l8-3 8 3V7l-8-5zM4 11l8 3 8-3M4 11v4l8 5 8-5v-4" />
+        </svg>
+      ),
+      title: "航空券",
+      desc: departure ? `${departure} → ${destination} のフライトを検索` : "航空券を検索",
+      url: "https://www.aviasales.com/?marker=594814",
+      cta: "航空券を検索",
+      color: "text-blue-400 border-blue-500/30 hover:bg-blue-500/10",
+    },
+    {
+      icon: <IconCar className="w-5 h-5" />,
+      title: "レンタカー",
+      desc: "自由に聖地をめぐるならレンタカーが便利",
+      url: "https://www.discovercars.com/",
+      cta: "レンタカーを探す",
+      color: "text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10",
+    },
+    {
+      icon: <IconTaxi className="w-5 h-5" />,
+      title: "タクシー配車",
+      desc: "駅から聖地スポットへの移動に便利",
+      url: "https://m.uber.com/",
+      cta: "Uberで配車",
+      color: "text-yellow-400 border-yellow-500/30 hover:bg-yellow-500/10",
+    },
+  ];
+
+  return (
+    <div className="mt-12">
+      <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
+        <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+        </svg>
+        旅行に役立つサービス
+      </h3>
+      <div className="grid grid-cols-2 gap-3">
+        {ads.map((ad, i) => (
+          <a
+            key={i}
+            href={ad.url}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className={`block border-2 p-3 transition-colors ${ad.color}`}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="opacity-60">{ad.icon}</span>
+              <span className="text-xs font-black">{ad.title}</span>
+            </div>
+            <p className="text-[10px] text-white/40 leading-relaxed mb-2">
+              {ad.desc}
+            </p>
+            <span className="text-[11px] font-black">
+              {ad.cta} &rarr;
+            </span>
+          </a>
+        ))}
+      </div>
+      <p className="text-[9px] text-white/20 mt-2 text-center">
+        AD — Proプランで広告を非表示にできます
+      </p>
+    </div>
   );
 }
 

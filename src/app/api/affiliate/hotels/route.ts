@@ -91,9 +91,9 @@ async function fetchRakutenHotels(params: {
       rating: info.reviewAverage ?? null,
       imageUrl: info.hotelImageUrl ?? info.hotelThumbnailUrl ?? null,
       features,
-      bookingUrl:
-        info.hotelInformationUrl ??
-        buildRakutenSearchUrl(info.hotelName ?? params.keyword ?? ''),
+      bookingUrl: info.hotelNo
+        ? `https://hotel.travel.rakuten.co.jp/hinfo/${info.hotelNo}/`
+        : buildRakutenSearchUrl(info.hotelName ?? params.keyword ?? ''),
       source: 'rakuten' as const,
     };
   }).filter(Boolean) as HotelItem[];
@@ -132,7 +132,7 @@ JSON配列のみ出力。余計な説明やマークダウンは不要。`;
       rating: null,
       imageUrl: null,
       features: h.features ?? [],
-      bookingUrl: buildRakutenSearchUrl(keyword),
+      bookingUrl: `https://www.google.com/search?q=${encodeURIComponent((h.name ?? keyword) + ' 予約')}`,
       source: 'fallback' as const,
     }));
   } catch {
