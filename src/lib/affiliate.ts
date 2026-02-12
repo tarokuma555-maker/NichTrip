@@ -136,8 +136,35 @@ export function getTransportIcon(type: string): string {
   }
 }
 
-/** 楽天トラベル検索ページへのフォールバックURL */
-export function buildRakutenSearchUrl(keyword: string): string {
-  const encodedKeyword = encodeURIComponent(keyword);
-  return `https://search.travel.rakuten.co.jp/ds/hotellist/search?f_keyword=${encodedKeyword}`;
+/** Booking.com アフィリエイトURL（tp.media経由） */
+export function buildBookingAffiliateUrl(
+  location: string,
+  checkin?: string,
+  checkout?: string,
+  adults?: number
+): string {
+  const marker = getMarker();
+  const projectId = process.env.TRAVELPAYOUTS_PROJECT_ID ?? '';
+  const dest = encodeURIComponent(location);
+  const bookingUrl = `https://www.booking.com/searchresults.ja.html?ss=${dest}${
+    checkin ? `&checkin=${checkin}` : ''
+  }${checkout ? `&checkout=${checkout}` : ''}${
+    adults ? `&group_adults=${adults}` : ''
+  }`;
+  if (!marker) return bookingUrl;
+  return `https://tp.media/r?marker=${marker}${
+    projectId ? `&trs=${projectId}` : ''
+  }&p=504&u=${encodeURIComponent(bookingUrl)}`;
+}
+
+/** Booking.com ホテル名検索URL（tp.media経由） */
+export function buildBookingHotelUrl(hotelName: string, area?: string): string {
+  const marker = getMarker();
+  const projectId = process.env.TRAVELPAYOUTS_PROJECT_ID ?? '';
+  const query = area ? `${hotelName} ${area}` : hotelName;
+  const bookingUrl = `https://www.booking.com/searchresults.ja.html?ss=${encodeURIComponent(query)}`;
+  if (!marker) return bookingUrl;
+  return `https://tp.media/r?marker=${marker}${
+    projectId ? `&trs=${projectId}` : ''
+  }&p=504&u=${encodeURIComponent(bookingUrl)}`;
 }

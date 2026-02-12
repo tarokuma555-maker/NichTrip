@@ -127,5 +127,5 @@ export type HotelItem = {
   imageUrl: string | null;
   features: string[];
   bookingUrl: string;
-  source: 'rakuten' | 'fallback';
+  source: 'booking' | 'rakuten' | 'fallback';
 };

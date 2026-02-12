@@ -88,7 +88,7 @@ export default function HotelSuggestions({
   }
 
   // アフィリエイトリンクがない場合（全件fallback）はPro限定
-  const hasAffiliate = hotels.some((h) => h.source === "rakuten");
+  const hasAffiliate = hotels.some((h) => h.source === "booking" || h.source === "rakuten");
   if (!hasAffiliate && !isPro) {
     return (
       <div>
@@ -181,9 +181,12 @@ export default function HotelSuggestions({
                 className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-2.5 py-1
                            hover:bg-red-500/10 transition-colors"
               >
-                {hotel.source === "rakuten" ? "楽天で見る" : "予約を検索"}
+                {hotel.source === "booking" ? "料金を比較する" : "予約する"}
                 <span className="text-[10px]">&rarr;</span>
               </a>
+              {hotel.source === "booking" && (
+                <p className="text-[9px] text-white/25 mt-1">powered by Booking.com</p>
+              )}
             </div>
           </div>
         ))}

@@ -537,8 +537,8 @@ function TravelAds({ departure, destination }: { departure?: string; destination
       icon: <IconHotel className="w-5 h-5" />,
       title: "宿泊予約",
       desc: `${destination}周辺のホテル・旅館を検索`,
-      url: `https://www.google.com/search?q=${encodeURIComponent(destination + ' ホテル 旅館 予約')}`,
-      cta: "宿を検索する",
+      url: `https://www.booking.com/searchresults.ja.html?ss=${encodeURIComponent(destination)}`,
+      cta: "Booking.comで探す",
       color: "text-red-400 border-red-500/30 hover:bg-red-500/10",
     },
     {
