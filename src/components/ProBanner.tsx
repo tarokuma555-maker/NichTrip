@@ -18,6 +18,7 @@ export default function ProBanner({
   const router = useRouter();
   const [showAuth, setShowAuth] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   if (isPro) return null;
 
@@ -27,14 +28,20 @@ export default function ProBanner({
       return;
     }
     setLoading(true);
+    setError("");
     try {
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
       const data = await res.json();
-      if (res.ok && data.url) {
+      if (!res.ok) {
+        setError(data.error ?? "決済ページの作成に失敗しました");
+        return;
+      }
+      if (data.url) {
         window.location.href = data.url;
+      } else {
+        setError("決済URLの取得に失敗しました");
       }
     } catch {
-      // fallback to pricing page
       router.push("/pricing");
     } finally {
       setLoading(false);
@@ -80,6 +87,12 @@ export default function ProBanner({
         <p className="text-sm font-bold text-white/80 mb-1">
           {message ?? "複数の作品をミックスして巡礼プランを作成"}
         </p>
+
+        {error && (
+          <div className="mb-3 bg-red-500/10 border border-red-500/30 px-3 py-2 text-xs text-red-400 font-bold text-left">
+            {error}
+          </div>
+        )}
 
         <ul className="space-y-1 mb-4">
           <li className="flex items-center gap-2 text-xs text-white/50">

@@ -16,6 +16,6 @@ export function getStripe(): Stripe {
 }
 
 export const PRICE_IDS = {
-  promo: process.env.STRIPE_PRICE_PROMO_ID ?? '',
-  regular: process.env.STRIPE_PRICE_REGULAR_ID ?? '',
+  promo: process.env.STRIPE_PRICE_ID_PROMO ?? process.env.STRIPE_PRICE_PROMO_ID ?? '',
+  regular: process.env.STRIPE_PRICE_ID_REGULAR ?? process.env.STRIPE_PRICE_REGULAR_ID ?? '',
 };

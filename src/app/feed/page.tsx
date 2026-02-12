@@ -26,19 +26,32 @@ export default function FeedPage() {
     ? reviews.slice(0, FREE_POST_LIMIT)
     : reviews;
 
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+
   async function handleUpgrade() {
     if (!user) {
       setShowAuth(true);
       return;
     }
+    setCheckoutLoading(true);
+    setCheckoutError("");
     try {
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
       const data = await res.json();
+      if (!res.ok) {
+        setCheckoutError(data.error ?? "決済ページの作成に失敗しました");
+        return;
+      }
       if (data.url) {
         window.location.href = data.url;
+      } else {
+        setCheckoutError("決済URLの取得に失敗しました");
       }
     } catch {
-      // silent
+      setCheckoutError("通信エラーが発生しました");
+    } finally {
+      setCheckoutLoading(false);
     }
   }
 
@@ -108,13 +121,22 @@ export default function FeedPage() {
                       残り{reviews.length - FREE_POST_LIMIT}件の投稿
                     </p>
 
+                    {checkoutError && (
+                      <div className="mb-4 bg-red-500/10 border border-red-500/30 px-3 py-2 text-xs text-red-400 font-bold">
+                        {checkoutError}
+                      </div>
+                    )}
+
                     <button
                       onClick={handleUpgrade}
-                      className="w-full py-3 bg-red-500 text-white text-sm font-black border-2 border-red-400/50
-                                 shadow-[3px_3px_0_rgba(0,0,0,0.3)] hover:shadow-[1px_1px_0_rgba(0,0,0,0.3)]
-                                 hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-150"
+                      disabled={checkoutLoading}
+                      className={`w-full py-3 text-sm font-black border-2 transition-all duration-150 ${
+                        checkoutLoading
+                          ? "bg-white/10 text-white/30 border-white/10 cursor-not-allowed"
+                          : "bg-red-500 text-white border-red-400/50 shadow-[3px_3px_0_rgba(0,0,0,0.3)] hover:shadow-[1px_1px_0_rgba(0,0,0,0.3)] hover:translate-x-0.5 hover:translate-y-0.5"
+                      }`}
                     >
-                      {user ? "プロプランに登録" : "ログインして始める"}
+                      {checkoutLoading ? "処理中..." : user ? "プロプランに登録" : "ログインして始める"}
                     </button>
 
                     <p className="text-[11px] text-white/20 mt-3">
