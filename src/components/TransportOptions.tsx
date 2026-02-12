@@ -3,6 +3,53 @@
 import { useState, useEffect } from "react";
 import type { TransportOption } from "@/lib/types";
 
+/* ===== Transport SVG Icons (outline) ===== */
+const TRANSPORT_ICONS: Record<string, React.ReactNode> = {
+  flight: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path d="M12 2L4 7v4l8-3 8 3V7l-8-5zM4 11l8 3 8-3M4 11v4l8 5 8-5v-4" />
+    </svg>
+  ),
+  shinkansen: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <rect x="4" y="3" width="16" height="14" rx="2" />
+      <path d="M4 11h16M12 3v8" />
+      <circle cx="8" cy="19" r="1" /><circle cx="16" cy="19" r="1" />
+      <path d="M6 17l-2 4M18 17l2 4" />
+    </svg>
+  ),
+  train: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <rect x="4" y="3" width="16" height="14" rx="2" />
+      <path d="M4 11h16M12 3v8" />
+      <circle cx="8" cy="19" r="1" /><circle cx="16" cy="19" r="1" />
+      <path d="M6 17l-2 4M18 17l2 4" />
+    </svg>
+  ),
+  bus: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <rect x="4" y="3" width="16" height="16" rx="2" />
+      <path d="M4 11h16M4 7h16" />
+      <circle cx="7.5" cy="15.5" r="1.5" /><circle cx="16.5" cy="15.5" r="1.5" />
+    </svg>
+  ),
+  car: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path d="M5 17h14M5 17a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h8l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2M5 17a1 1 0 100 2 1 1 0 000-2zm14 0a1 1 0 100 2 1 1 0 000-2z" />
+    </svg>
+  ),
+  taxi: (
+    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path d="M5 17h14M5 17a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h8l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2M5 17a1 1 0 100 2 1 1 0 000-2zm14 0a1 1 0 100 2 1 1 0 000-2z" />
+      <rect x="10" y="1" width="4" height="3" rx="1" />
+    </svg>
+  ),
+};
+
+function getTransportIcon(type: string): React.ReactNode {
+  return TRANSPORT_ICONS[type] || TRANSPORT_ICONS.train;
+}
+
 export default function TransportOptions({
   from,
   to,
@@ -47,7 +94,9 @@ export default function TransportOptions({
     return (
       <div>
         <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
-          <span>🚃</span>
+          <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+          </svg>
           おすすめの行き方
         </h3>
         <div className="space-y-3">
@@ -69,7 +118,9 @@ export default function TransportOptions({
   return (
     <div>
       <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
-        <span>🚃</span>
+        <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+        </svg>
         おすすめの行き方
       </h3>
       <div className="space-y-3">
@@ -78,23 +129,20 @@ export default function TransportOptions({
             key={idx}
             className="bg-white/5 border-2 border-white/10 p-4 relative overflow-hidden"
           >
-            {/* おすすめバッジ */}
             {idx === 0 && (
               <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-black px-2.5 py-1">
                 おすすめ
               </span>
             )}
 
-            {/* ヘッダー: アイコン + 名前 + 所要時間 */}
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-xl">{opt.icon}</span>
+              <span className="text-white/60">{getTransportIcon(opt.type)}</span>
               <span className="text-sm font-black text-white">{opt.name}</span>
               <span className="text-xs text-white/40 ml-auto shrink-0">
                 {opt.duration}
               </span>
             </div>
 
-            {/* 料金 + 乗り換え */}
             <div className="flex items-center gap-3 mb-2">
               <span className="text-base font-black text-red-400">
                 {opt.price}
@@ -111,12 +159,10 @@ export default function TransportOptions({
               )}
             </div>
 
-            {/* おすすめポイント */}
             <p className="text-xs text-white/50 mb-3 leading-relaxed">
               {opt.recommendation}
             </p>
 
-            {/* CTA */}
             {opt.type === "taxi" ? (
               <p className="text-[11px] text-white/30 font-bold">
                 GOアプリやDiDiで配車できます

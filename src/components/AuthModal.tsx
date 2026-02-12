@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { createSupabaseBrowser } from "@/lib/supabase-browser";
 
 type Tab = "login" | "signup";
@@ -29,6 +30,9 @@ export default function AuthModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const supabase = createSupabaseBrowser();
 
@@ -81,7 +85,9 @@ export default function AuthModal({
     setLoading(false);
   }
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div
       className="fixed inset-0 z-[100] overflow-y-auto bg-black/70"
       onClick={(e) => {
@@ -197,6 +203,7 @@ export default function AuthModal({
         </button>
       </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

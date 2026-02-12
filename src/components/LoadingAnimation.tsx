@@ -2,11 +2,59 @@
 
 import { useState, useEffect } from "react";
 
+/* ===== SVG Outline Icons ===== */
+function IconSearch({ className = "w-8 h-8" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconRoute({ className = "w-8 h-8" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <circle cx="6" cy="6" r="3" />
+      <circle cx="18" cy="18" r="3" />
+      <path d="M6 9v2a4 4 0 004 4h4a4 4 0 004-4V9" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function IconFood({ className = "w-8 h-8" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path d="M3 3v7a4 4 0 004 4h2" />
+      <path d="M7 3v4" />
+      <path d="M3 7h8" />
+      <path d="M9 14v8" />
+      <path d="M18 3v18" />
+      <path d="M18 3a3 3 0 013 3v1a3 3 0 01-3 3" />
+    </svg>
+  );
+}
+
+function IconSparkle({ className = "w-8 h-8" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8L12 2z" />
+    </svg>
+  );
+}
+
 const STEPS = [
-  { emoji: "🔍", text: "聖地データを検索中...", pct: 25 },
-  { emoji: "🗾", text: "最適なルートを計算中...", pct: 50 },
-  { emoji: "🍱", text: "周辺グルメを調査中...", pct: 75 },
-  { emoji: "✨", text: "プランを仕上げています...", pct: 95 },
+  { icon: <IconSearch className="w-10 h-10" />, text: "聖地データを検索中...", pct: 25 },
+  { icon: <IconRoute className="w-10 h-10" />, text: "最適なルートを計算中...", pct: 50 },
+  { icon: <IconFood className="w-10 h-10" />, text: "周辺グルメを調査中...", pct: 75 },
+  { icon: <IconSparkle className="w-10 h-10" />, text: "プランを仕上げています...", pct: 95 },
+];
+
+const STEP_ICONS_SM = [
+  <IconSearch key="s" className="w-4 h-4" />,
+  <IconRoute key="r" className="w-4 h-4" />,
+  <IconFood key="f" className="w-4 h-4" />,
+  <IconSparkle key="sp" className="w-4 h-4" />,
 ];
 
 export default function LoadingAnimation() {
@@ -74,11 +122,11 @@ export default function LoadingAnimation() {
             {/* アイコン */}
             <div className="text-center">
               <span
-                className={`text-4xl block transition-transform duration-300 ${
+                className={`block text-white transition-transform duration-300 ${
                   panelFlash ? "scale-125" : "scale-100"
                 }`}
               >
-                {STEPS[activeStep].emoji}
+                {STEPS[activeStep].icon}
               </span>
             </div>
           </div>
@@ -153,7 +201,9 @@ export default function LoadingAnimation() {
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-base">{step.emoji}</span>
+                <span className={`${current ? "text-white" : done ? "text-white/30" : "text-white/20"}`}>
+                  {STEP_ICONS_SM[i]}
+                </span>
                 <span
                   className={`text-sm transition-colors duration-300 ${
                     done

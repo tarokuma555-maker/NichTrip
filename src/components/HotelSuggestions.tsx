@@ -3,6 +3,18 @@
 import { useState, useEffect } from "react";
 import type { HotelItem } from "@/lib/types";
 
+function HotelIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path d="M3 21V7a2 2 0 012-2h14a2 2 0 012 2v14" />
+      <path d="M3 11h18" />
+      <path d="M9 5v6M15 5v6" />
+      <rect x="6" y="14" width="4" height="4" rx="0.5" />
+      <rect x="14" y="14" width="4" height="4" rx="0.5" />
+    </svg>
+  );
+}
+
 export default function HotelSuggestions({
   keyword,
   lat,
@@ -52,7 +64,7 @@ export default function HotelSuggestions({
     return (
       <div>
         <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
-          <span>🏨</span>
+          <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
           この日のおすすめ宿
         </h4>
         <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
@@ -76,7 +88,7 @@ export default function HotelSuggestions({
   return (
     <div>
       <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
-        <span>🏨</span>
+        <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
         この日のおすすめ宿
       </h4>
       <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
@@ -97,7 +109,7 @@ export default function HotelSuggestions({
               </div>
             ) : (
               <div className="h-28 bg-white/5 border-b-2 border-white/10 flex items-center justify-center">
-                <span className="text-3xl opacity-20">🏨</span>
+                <span className="text-white/20"><HotelIcon className="w-10 h-10" /></span>
               </div>
             )}
 

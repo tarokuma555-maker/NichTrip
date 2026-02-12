@@ -103,49 +103,79 @@ export default function SpotCard({
             {/* 区切り線 */}
             <div className="border-t-2 border-white/10" />
 
+            {/* ロケーション写真（Street View） */}
+            {spot.lat && spot.lng && (
+              <div className="relative w-full h-40 bg-black/40 border-2 border-white/10 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://maps.googleapis.com/maps/api/streetview?size=600x300&location=${spot.lat},${spot.lng}&fov=90&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ""}`}
+                  alt={spot.name}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2">
+                  <p className="text-[10px] text-white/50 font-bold">Street View</p>
+                </div>
+              </div>
+            )}
+
             {/* アニメシーン + 差し絵 */}
             {spot.anime_scene && (
               <div className="bg-red-500/10 border-2 border-red-500/20 p-3">
-                {/* 差し絵イラスト（漫画コマ風） */}
-                <div className="relative w-full h-32 mb-3 bg-black/40 border-2 border-white/10 overflow-hidden">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    {/* 集中線背景 */}
-                    <div className="absolute inset-0 speed-lines-bg opacity-20" />
-                    {/* シーン描写テキスト */}
-                    <div className="relative text-center px-4">
-                      <p className="text-xs text-white/30 font-black tracking-wider mb-1">
-                        SCENE
-                      </p>
-                      <p className="text-sm text-white/80 font-bold leading-relaxed">
-                        {spot.anime_scene}
-                      </p>
-                      {spot.episode && (
-                        <p className="text-[11px] text-red-400/60 mt-1 font-bold">
-                          {spot.episode}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                {/* シーン描写 */}
+                <div className="relative w-full mb-3 bg-black/40 border-2 border-white/10 overflow-hidden p-4">
+                  {/* 集中線背景 */}
+                  <div className="absolute inset-0 speed-lines-bg opacity-20" />
                   {/* コマ枠の角装飾 */}
                   <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-red-500/40" />
                   <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-red-500/40" />
                   <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-red-500/40" />
                   <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-red-500/40" />
+                  {/* シーン描写テキスト */}
+                  <div className="relative text-center">
+                    <p className="text-xs text-white/30 font-black tracking-wider mb-1">
+                      SCENE
+                    </p>
+                    <p className="text-sm text-white/80 font-bold leading-relaxed">
+                      {spot.anime_scene}
+                    </p>
+                    {spot.episode && (
+                      <p className="text-[11px] text-red-400/60 mt-1 font-bold">
+                        {spot.episode}
+                      </p>
+                    )}
+                  </div>
                 </div>
+
+                {/* アニメシーン画像検索リンク */}
+                <a
+                  href={`https://www.google.com/search?q=${encodeURIComponent((workTitle ?? "") + " " + spot.name + " 聖地 アニメ シーン")}&tbm=isch`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1.5 text-[11px] font-black text-red-400 border border-red-500/30 px-2.5 py-1.5
+                             hover:bg-red-500/10 transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  シーン画像を検索
+                  <span className="text-[10px]">&rarr;</span>
+                </a>
               </div>
             )}
 
             {/* アクセス */}
-            <DetailRow icon="🚃" label="アクセス" value={spot.access} />
+            <DetailRow icon={<AccessIcon />} label="アクセス" value={spot.access} />
 
             {/* ヒント */}
-            <DetailRow icon="💡" label="ヒント" value={spot.tips} />
+            <DetailRow icon={<TipsIcon />} label="ヒント" value={spot.tips} />
 
             {/* グルメ */}
             {spot.nearby_food && (
               <div className="bg-white/5 border-2 border-white/10 p-3">
                 <div className="flex items-start gap-2">
-                  <span className="text-sm mt-px">🍴</span>
+                  <span className="text-white/60 mt-px"><FoodIcon /></span>
                   <div>
                     <p className="text-xs text-white/40 mb-0.5 font-bold">近くのグルメ</p>
                     <p className="text-sm font-black text-white">
@@ -183,18 +213,50 @@ function DetailRow({
   label,
   value,
 }: {
-  icon: string;
+  icon: React.ReactNode;
   label: string;
   value: string;
 }) {
   return (
     <div className="flex items-start gap-2">
-      <span className="text-sm mt-px">{icon}</span>
+      <span className="text-white/60 mt-px">{icon}</span>
       <div>
         <p className="text-xs text-white/40 font-bold">{label}</p>
         <p className="text-sm text-white/70 leading-relaxed">{value}</p>
       </div>
     </div>
+  );
+}
+
+function AccessIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <rect x="4" y="3" width="16" height="14" rx="2" />
+      <path d="M4 11h16M12 3v8" />
+      <circle cx="8" cy="19" r="1" /><circle cx="16" cy="19" r="1" />
+      <path d="M6 17l-2 4M18 17l2 4" />
+    </svg>
+  );
+}
+
+function TipsIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path d="M9 21h6M12 3a6 6 0 014 10.5V17H8v-3.5A6 6 0 0112 3z" />
+    </svg>
+  );
+}
+
+function FoodIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path d="M3 3v7a4 4 0 004 4h2" />
+      <path d="M7 3v4" />
+      <path d="M3 7h8" />
+      <path d="M9 14v8" />
+      <path d="M18 3v18" />
+      <path d="M18 3a3 3 0 013 3v1a3 3 0 01-3 3" />
+    </svg>
   );
 }
 

@@ -12,12 +12,111 @@ import ProBanner from "./ProBanner";
 
 type TransportMode = "train" | "car" | "walk" | "taxi";
 
-const TRANSPORT_MODES: { key: TransportMode; label: string; icon: string }[] = [
-  { key: "train", label: "電車", icon: "🚃" },
-  { key: "car", label: "車", icon: "🚗" },
-  { key: "walk", label: "徒歩", icon: "🚶" },
-  { key: "taxi", label: "タクシー", icon: "🚕" },
+const TRANSPORT_MODES: { key: TransportMode; label: string }[] = [
+  { key: "train", label: "電車" },
+  { key: "car", label: "車" },
+  { key: "walk", label: "徒歩" },
+  { key: "taxi", label: "タクシー" },
 ];
+
+/* ===== SVG Outline Icons ===== */
+
+function IconTrain({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <rect x="4" y="3" width="16" height="14" rx="2" />
+      <path d="M4 11h16" />
+      <path d="M12 3v8" />
+      <circle cx="8" cy="19" r="1" />
+      <circle cx="16" cy="19" r="1" />
+      <path d="M6 17l-2 4M18 17l2 4" />
+    </svg>
+  );
+}
+
+function IconCar({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path d="M5 17h14M5 17a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h8l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2M5 17a1 1 0 100 2 1 1 0 000-2zm14 0a1 1 0 100 2 1 1 0 000-2z" />
+    </svg>
+  );
+}
+
+function IconWalk({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <circle cx="12" cy="4" r="2" />
+      <path d="M14 8l-2 4-3 3 2 5M10 12l-3 3-2 5M14 8l3 5" />
+    </svg>
+  );
+}
+
+function IconTaxi({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path d="M5 17h14M5 17a2 2 0 01-2-2V9a2 2 0 012-2h1l2-3h8l2 3h1a2 2 0 012 2v6a2 2 0 01-2 2M5 17a1 1 0 100 2 1 1 0 000-2zm14 0a1 1 0 100 2 1 1 0 000-2z" />
+      <rect x="10" y="1" width="4" height="3" rx="1" />
+    </svg>
+  );
+}
+
+function IconMoney({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+    </svg>
+  );
+}
+
+function IconSeason({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <circle cx="12" cy="12" r="5" />
+      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+    </svg>
+  );
+}
+
+function IconPin({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  );
+}
+
+function IconMap({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z" />
+      <path d="M8 2v16M16 6v16" />
+    </svg>
+  );
+}
+
+function IconShare({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+    </svg>
+  );
+}
+
+function IconHotel({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path d="M3 21h18M3 7v14M21 7v14M6 7V4a1 1 0 011-1h10a1 1 0 011 1v3M9 21v-4h6v4M9 10h.01M15 10h.01M9 14h.01M15 14h.01" />
+    </svg>
+  );
+}
+
+const TRANSPORT_ICON_MAP: Record<TransportMode, React.ReactNode> = {
+  train: <IconTrain className="w-4 h-4" />,
+  car: <IconCar className="w-4 h-4" />,
+  walk: <IconWalk className="w-4 h-4" />,
+  taxi: <IconTaxi className="w-4 h-4" />,
+};
 
 /**
  * アクセス文言から所要時間（分）を抽出
@@ -44,20 +143,18 @@ function extractDuration(access: string): string | null {
 function getTransportInfo(
   access: string,
   mode: TransportMode
-): { icon: string; text: string; detail: string } {
+): { text: string; detail: string } {
   const durationStr = extractDuration(access);
   const minutes = extractMinutes(access);
 
   switch (mode) {
     case "train":
       return {
-        icon: "🚃",
         text: durationStr ?? access,
         detail: access,
       };
     case "car":
       return {
-        icon: "🚗",
         text: minutes
           ? `車で約${Math.max(5, minutes - 5)}〜${minutes + 5}分`
           : "車でのルート",
@@ -65,7 +162,6 @@ function getTransportInfo(
       };
     case "walk":
       return {
-        icon: "🚶",
         text: minutes
           ? `徒歩約${minutes * 3}〜${minutes * 4}分`
           : "徒歩ルート",
@@ -73,7 +169,6 @@ function getTransportInfo(
       };
     case "taxi":
       return {
-        icon: "🚕",
         text: minutes
           ? `タクシーで約${Math.max(3, minutes - 5)}〜${minutes}分`
           : "タクシーでの移動",
@@ -95,7 +190,7 @@ function TransportConnector({
 
   return (
     <div className="flex items-start gap-2 py-2 pl-3">
-      <span className="text-base">{info.icon}</span>
+      <span className="text-white/40 mt-0.5">{TRANSPORT_ICON_MAP[mode]}</span>
       <div className="min-w-0">
         <span className="text-xs text-white/60 font-bold">{info.text}</span>
         {mode === "train" && info.detail !== info.text && (
@@ -167,7 +262,7 @@ export default function PlanTimeline({
       {/* ===== プランヘッダー ===== */}
       <div className="text-center mb-10">
         <p className="inline-block bg-red-500/10 text-red-400 text-xs font-black px-3 py-1 border-2 border-red-500/30 mb-3">
-          AI Generated Plan
+          Generated Plan
         </p>
         <h2 className="text-2xl sm:text-3xl font-black text-white mb-3 leading-tight">
           {plan.title}
@@ -177,9 +272,9 @@ export default function PlanTimeline({
         </p>
 
         <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
-          <MetaBadge emoji="💰" text={plan.total_budget_estimate} />
-          <MetaBadge emoji="🌸" text={plan.best_season} />
-          <MetaBadge emoji="📍" text={`全${allSpots.length}スポット`} />
+          <MetaBadge icon={<IconMoney className="w-3.5 h-3.5" />} text={plan.total_budget_estimate} />
+          <MetaBadge icon={<IconSeason className="w-3.5 h-3.5" />} text={plan.best_season} />
+          <MetaBadge icon={<IconPin className="w-3.5 h-3.5" />} text={`全${allSpots.length}スポット`} />
         </div>
       </div>
 
@@ -204,7 +299,6 @@ export default function PlanTimeline({
                 }
               `}
             >
-              <span>{m.icon}</span>
               <span>{m.label}</span>
             </button>
           ))}
@@ -301,7 +395,10 @@ export default function PlanTimeline({
               <>
                 <div className="flex items-center gap-3 mt-6 ml-4 sm:ml-6 pl-8 sm:pl-10">
                   <div className="flex-1 border-t-2 border-dashed border-white/10" />
-                  <span className="text-xs text-white/30 shrink-0 font-bold">🏨 宿泊</span>
+                  <span className="text-xs text-white/30 shrink-0 font-bold flex items-center gap-1.5">
+                    <IconHotel className="w-3.5 h-3.5" />
+                    宿泊
+                  </span>
                   <div className="flex-1 border-t-2 border-dashed border-white/10" />
                 </div>
                 <div className="mt-4 ml-4 sm:ml-6 pl-8 sm:pl-10">
@@ -321,10 +418,9 @@ export default function PlanTimeline({
       {/* ===== マップ ===== */}
       <div ref={mapRef} className="mt-12">
         <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
-          <span>🗺️</span>
+          <IconMap className="w-5 h-5 text-white/60" />
           ルートマップ
           <span className="text-xs font-normal text-white/40 ml-2">
-            {TRANSPORT_MODES.find((m) => m.key === transportMode)?.icon}{" "}
             {TRANSPORT_MODES.find((m) => m.key === transportMode)?.label}モード
           </span>
         </h3>
@@ -361,7 +457,7 @@ export default function PlanTimeline({
       {/* ===== シェア ===== */}
       <div className="mt-12">
         <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
-          <span>📤</span>
+          <IconShare className="w-5 h-5 text-white/60" />
           プランを共有
         </h3>
         <ShareButton plan={plan} keyword={keyword} />
@@ -384,10 +480,10 @@ export default function PlanTimeline({
 
 /* ========== サブコンポーネント ========== */
 
-function MetaBadge({ emoji, text }: { emoji: string; text: string }) {
+function MetaBadge({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
     <span className="inline-flex items-center gap-1.5 bg-white/5 text-white/60 text-xs font-bold px-3 py-1.5 border border-white/10">
-      <span>{emoji}</span>
+      <span className="text-white/40">{icon}</span>
       <span>{text}</span>
     </span>
   );
@@ -399,10 +495,10 @@ function FreeLimitsBanner() {
   if (isPro) return null;
 
   const limits = [
-    { icon: "🔄", free: "プラン生成 月3回まで", pro: "無制限" },
-    { icon: "🎬", free: "1作品のみ", pro: "最大3作品ミックス" },
-    { icon: "📸", free: "レビュー閲覧 5件/スポット", pro: "無制限" },
-    { icon: "💾", free: "プラン保存 3件まで", pro: "無制限" },
+    { free: "プラン生成 月3回まで", pro: "無制限" },
+    { free: "1作品のみ", pro: "最大3作品ミックス" },
+    { free: "レビュー閲覧 5件/スポット", pro: "無制限" },
+    { free: "プラン保存 3件まで", pro: "無制限" },
   ];
 
   return (
@@ -418,7 +514,9 @@ function FreeLimitsBanner() {
       <div className="p-4 space-y-2.5">
         {limits.map((item, i) => (
           <div key={i} className="flex items-center gap-3">
-            <span className="text-sm shrink-0">{item.icon}</span>
+            <span className="shrink-0 w-4 h-4 border border-white/20 flex items-center justify-center text-white/20 text-[8px]">
+              —
+            </span>
             <div className="flex-1 min-w-0">
               <span className="text-xs text-white/40 line-through">{item.free}</span>
             </div>

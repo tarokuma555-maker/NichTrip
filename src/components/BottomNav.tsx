@@ -11,18 +11,6 @@ export default function BottomNav() {
   // 管理画面では非表示
   if (pathname?.startsWith("/admin")) return null;
 
-  function handleShare() {
-    if (typeof navigator !== "undefined" && navigator.share) {
-      navigator.share({
-        title: "AnimeTrips",
-        text: "AIがつくるアニメ聖地巡礼プラン",
-        url: window.location.href,
-      }).catch(() => {});
-    } else if (typeof navigator !== "undefined" && navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href).catch(() => {});
-    }
-  }
-
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-[60] bg-[#0a0a0a] border-t-2 border-white/10 pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-center justify-around h-14 max-w-lg mx-auto">
@@ -53,15 +41,17 @@ export default function BottomNav() {
           <span className="text-[10px] font-bold">プラン作成</span>
         </button>
 
-        {/* シェア */}
+        {/* みんなの巡礼 */}
         <button
-          onClick={handleShare}
-          className="flex flex-col items-center justify-center gap-0.5 w-full h-full text-white/40 hover:text-white/60 transition-colors"
+          onClick={() => router.push("/feed")}
+          className={`flex flex-col items-center justify-center gap-0.5 w-full h-full transition-colors ${
+            pathname === "/feed" ? "text-red-400" : "text-white/40 hover:text-white/60"
+          }`}
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <span className="text-[10px] font-bold">シェア</span>
+          <span className="text-[10px] font-bold">レポート</span>
         </button>
 
         {/* Pro */}
