@@ -148,12 +148,11 @@ export function buildBookingAffiliateUrl(
   checkout?: string,
   adults?: number
 ): string {
-  const dest = encodeURIComponent(location);
-  const bookingUrl = `https://www.booking.com/searchresults.ja.html?ss=${dest}${
-    checkin ? `&checkin=${checkin}` : ''
-  }${checkout ? `&checkout=${checkout}` : ''}${
-    adults ? `&group_adults=${adults}` : ''
-  }`;
+  // 生の文字列で組み立て、encodeURIComponentは最後の1回だけ
+  let bookingUrl = `https://www.booking.com/searchresults.ja.html?ss=${location}`;
+  if (checkin) bookingUrl += `&checkin=${checkin}`;
+  if (checkout) bookingUrl += `&checkout=${checkout}`;
+  if (adults) bookingUrl += `&group_adults=${adults}`;
   if (!isBookingAffiliateEnabled()) return bookingUrl;
   const marker = getMarker();
   const projectId = process.env.TRAVELPAYOUTS_PROJECT_ID ?? '';
@@ -165,7 +164,8 @@ export function buildBookingAffiliateUrl(
 /** Booking.com ホテル名検索URL（tp.media経由、未参加時は直リンク） */
 export function buildBookingHotelUrl(hotelName: string, area?: string): string {
   const query = area ? `${hotelName} ${area}` : hotelName;
-  const bookingUrl = `https://www.booking.com/searchresults.ja.html?ss=${encodeURIComponent(query)}`;
+  // 生の文字列で組み立て、encodeURIComponentは最後の1回だけ
+  const bookingUrl = `https://www.booking.com/searchresults.ja.html?ss=${query}`;
   if (!isBookingAffiliateEnabled()) return bookingUrl;
   const marker = getMarker();
   const projectId = process.env.TRAVELPAYOUTS_PROJECT_ID ?? '';
