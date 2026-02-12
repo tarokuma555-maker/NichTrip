@@ -38,10 +38,6 @@ function getMarker(): string {
   return process.env.TRAVELPAYOUTS_MARKER ?? '';
 }
 
-function getRakutenAffiliateId(): string {
-  return process.env.RAKUTEN_AFFILIATE_ID ?? '';
-}
-
 /** Aviasales フライト検索URL */
 export function buildFlightUrl(
   from: string,
@@ -142,11 +138,6 @@ export function getTransportIcon(type: string): string {
 
 /** 楽天トラベル検索ページへのフォールバックURL */
 export function buildRakutenSearchUrl(keyword: string): string {
-  const affiliateId = getRakutenAffiliateId();
   const encodedKeyword = encodeURIComponent(keyword);
-  const searchUrl = `https://search.travel.rakuten.co.jp/ds/hotellist/search?f_keyword=${encodedKeyword}`;
-  if (affiliateId) {
-    return `https://hb.afl.rakuten.co.jp/hgc/${affiliateId}/?pc=${encodeURIComponent(searchUrl)}`;
-  }
-  return searchUrl;
+  return `https://search.travel.rakuten.co.jp/ds/hotellist/search?f_keyword=${encodedKeyword}`;
 }

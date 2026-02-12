@@ -60,6 +60,7 @@ const STEP_ICONS_SM = [
 export default function LoadingAnimation() {
   const [activeStep, setActiveStep] = useState(0);
   const [panelFlash, setPanelFlash] = useState(false);
+  const [textKey, setTextKey] = useState(0);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -67,6 +68,7 @@ export default function LoadingAnimation() {
         if (prev < STEPS.length - 1) {
           setPanelFlash(true);
           setTimeout(() => setPanelFlash(false), 300);
+          setTextKey((k) => k + 1);
           return prev + 1;
         }
         return prev;
@@ -80,7 +82,7 @@ export default function LoadingAnimation() {
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4">
       {/* 漫画パネル風ビジュアル */}
-      <div className="relative w-full max-w-xs mb-8">
+      <div className="relative w-full max-w-xs mb-6">
         {/* 集中線の背景 */}
         <div className="relative w-full aspect-square max-w-[200px] mx-auto overflow-hidden">
           <svg
@@ -119,6 +121,11 @@ export default function LoadingAnimation() {
             <div className="absolute -bottom-1 -left-1 w-3 h-3 border-l-2 border-b-2 border-red-500" />
             <div className="absolute -bottom-1 -right-1 w-3 h-3 border-r-2 border-b-2 border-red-500" />
 
+            {/* スキャンライン効果 */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-red-500/30 to-transparent scan-line" />
+            </div>
+
             {/* アイコン */}
             <div className="text-center">
               <span
@@ -135,10 +142,26 @@ export default function LoadingAnimation() {
           <div className="absolute inset-0 halftone-red opacity-[0.04] pointer-events-none" />
         </div>
 
-        {/* 吹き出し風テキスト */}
-        <div className="relative mt-4 bg-white text-black px-4 py-2.5 text-center mx-8">
-          <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-r-[8px] border-b-[8px] border-l-transparent border-r-transparent border-b-white" />
-          <p className="text-sm font-black">プランを作成中...</p>
+        {/* ステータステキスト — ターミナル風 */}
+        <div className="mt-5 mx-4">
+          <div className="border-2 border-white/10 bg-black/40 px-4 py-3">
+            {/* ターミナルヘッダー */}
+            <div className="flex items-center gap-1.5 mb-2">
+              <div className="w-1.5 h-1.5 bg-red-500" />
+              <div className="w-1.5 h-1.5 bg-white/20" />
+              <div className="w-1.5 h-1.5 bg-white/20" />
+              <span className="text-[9px] text-white/20 font-bold ml-1.5 uppercase tracking-widest">
+                generating
+              </span>
+            </div>
+            {/* タイピングテキスト */}
+            <p
+              key={textKey}
+              className="text-sm font-black text-red-400 status-text-typing"
+            >
+              {STEPS[activeStep].text}
+            </p>
+          </div>
         </div>
       </div>
 

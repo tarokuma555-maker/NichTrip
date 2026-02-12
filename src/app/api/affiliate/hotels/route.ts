@@ -92,7 +92,6 @@ async function fetchRakutenHotels(params: {
       imageUrl: info.hotelImageUrl ?? info.hotelThumbnailUrl ?? null,
       features,
       bookingUrl:
-        info.affiliateUrl ??
         info.hotelInformationUrl ??
         buildRakutenSearchUrl(info.hotelName ?? params.keyword ?? ''),
       source: 'rakuten' as const,

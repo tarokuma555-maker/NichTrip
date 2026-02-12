@@ -108,7 +108,7 @@ function buildMultiWorkPrompt(
           `  アクセス: ${s.access_info}`
       )
       .join('\n');
-    spotsSection += `\n### ${title}\n${spotsInfo || '登録スポットなし（AIの知識で補完）'}\n`;
+    spotsSection += `\n### ${title}\n${spotsInfo || '登録スポットなし（自動で補完）'}\n`;
   });
 
   return `あなたは日本のアニメ聖地巡礼・ニッチ旅行の専門プランナーです。
