@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/components/AuthProvider";
 import PricingCard from "@/components/PricingCard";
 import AuthModal from "@/components/AuthModal";
 
@@ -12,6 +13,26 @@ export default function PricingContent() {
   const canceled = searchParams.get("canceled") === "true";
   const [showAuth, setShowAuth] = useState(false);
   const t = useTranslations("Pricing");
+  const { isPro, refreshPro, user } = useAuth();
+  const pollingRef = useRef(false);
+
+  // 決済成功後、Webhook処理完了を待ってPro状態を更新
+  useEffect(() => {
+    if (!success || !user || isPro || pollingRef.current) return;
+    pollingRef.current = true;
+
+    let attempts = 0;
+    const maxAttempts = 15; // 最大15回（約30秒）
+    const interval = setInterval(async () => {
+      attempts++;
+      await refreshPro();
+      if (attempts >= maxAttempts) {
+        clearInterval(interval);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [success, user, isPro, refreshPro]);
 
   const faqItems = [
     { q: t("faqQ1"), a: t("faqA1") },
@@ -25,13 +46,28 @@ export default function PricingContent() {
       <main className="max-w-4xl mx-auto px-4 sm:px-5 py-12 pb-20">
         {/* 成功メッセージ */}
         {success && (
-          <div className="mb-8 bg-emerald-500/10 border-2 border-emerald-500/30 p-4 text-center">
-            <p className="text-emerald-400 font-black text-sm">
-              {t("successMessage")}
-            </p>
-            <p className="text-xs text-white/40 mt-1">
-              {t("successSub")}
-            </p>
+          <div className={`mb-8 border-2 p-4 text-center ${
+            isPro
+              ? "bg-emerald-500/10 border-emerald-500/30"
+              : "bg-white/5 border-white/10"
+          }`}>
+            {isPro ? (
+              <>
+                <p className="text-emerald-400 font-black text-sm">
+                  {t("successMessage")}
+                </p>
+                <p className="text-xs text-white/40 mt-1">
+                  {t("successSub")}
+                </p>
+              </>
+            ) : (
+              <div className="flex items-center justify-center gap-3">
+                <div className="w-4 h-4 border-2 border-white/20 border-t-red-500 rounded-full animate-spin" />
+                <p className="text-white/50 font-bold text-sm">
+                  {t("activating")}
+                </p>
+              </div>
+            )}
           </div>
         )}
 
