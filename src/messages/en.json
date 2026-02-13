@@ -160,7 +160,8 @@
     "proRequired": "View hotel details with Pro Plan",
     "viewProPlan": "View Pro Plan",
     "compareRates": "Compare Rates",
-    "book": "Book"
+    "book": "Book",
+    "otherSites": "Search on other sites"
   },
   "Transport": {
     "recommendedWay": "Getting There",
@@ -169,13 +170,14 @@
     "direct": "Direct",
     "viewTicket": "View Tickets",
     "uberTaxi": "Book with Uber",
+    "bookBus": "Search Buses",
     "bookViaCompany": "Book via transport company websites"
   },
   "TravelAds": {
     "title": "Useful Travel Services",
     "hotelTitle": "Accommodation",
     "hotelDesc": "Search hotels near {destination}",
-    "hotelCta": "Search on Booking.com",
+    "hotelCta": "Search Hotels",
     "flightTitle": "Flights",
     "flightDesc": "Search flights {from} → {to}",
     "flightDescSimple": "Search flights",
@@ -186,6 +188,12 @@
     "taxiTitle": "Taxi/Ride",
     "taxiDesc": "Easy travel from station to sacred spots",
     "taxiCta": "Book with Uber",
+    "busTitle": "Highway Bus",
+    "busDesc": "Travel affordably by night/highway bus",
+    "busCta": "Search Buses",
+    "tourTitle": "Tours",
+    "tourDesc": "Search for affordable tour packages",
+    "tourCta": "Search Tours",
     "adNote": "AD — Go ad-free with Pro Plan"
   },
   "FreeLimits": {

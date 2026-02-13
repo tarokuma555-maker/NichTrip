@@ -160,7 +160,8 @@
     "proRequired": "升级Pro计划查看住宿详情",
     "viewProPlan": "查看Pro计划",
     "compareRates": "比较价格",
-    "book": "预订"
+    "book": "预订",
+    "otherSites": "在其他网站搜索"
   },
   "Transport": {
     "recommendedWay": "推荐出行方式",
@@ -169,13 +170,14 @@
     "direct": "直达",
     "viewTicket": "查看车票",
     "uberTaxi": "使用Uber叫车",
+    "bookBus": "搜索高速巴士",
     "bookViaCompany": "可在各交通公司网站预订"
   },
   "TravelAds": {
     "title": "实用旅行服务",
     "hotelTitle": "住宿预订",
     "hotelDesc": "搜索{destination}周边的酒店和旅馆",
-    "hotelCta": "在Booking.com搜索",
+    "hotelCta": "搜索酒店",
     "flightTitle": "机票",
     "flightDesc": "搜索 {from} → {to} 的航班",
     "flightDescSimple": "搜索机票",
@@ -186,6 +188,12 @@
     "taxiTitle": "叫车服务",
     "taxiDesc": "从车站到圣地景点的便捷出行",
     "taxiCta": "使用Uber叫车",
+    "busTitle": "高速巴士",
+    "busDesc": "乘坐夜行巴士·高速巴士经济出行",
+    "busCta": "搜索巴士",
+    "tourTitle": "旅行团",
+    "tourDesc": "搜索优惠旅行套餐",
+    "tourCta": "搜索旅行团",
     "adNote": "AD — Pro计划可去除广告"
   },
   "FreeLimits": {

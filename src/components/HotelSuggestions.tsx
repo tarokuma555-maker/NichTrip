@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { HotelItem } from "@/lib/types";
 import { useAuth } from "@/components/AuthProvider";
+import { getRandomHotelAffiliates } from "@/lib/a8-affiliates";
+import A8ImpressionPixel from "@/components/A8ImpressionPixel";
 
 function HotelIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
@@ -34,6 +36,7 @@ export default function HotelSuggestions({
   const [hotels, setHotels] = useState<HotelItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const a8Hotels = useMemo(() => getRandomHotelAffiliates(3), []);
 
   useEffect(() => {
     if (!keyword && !lat) {
@@ -194,6 +197,28 @@ export default function HotelSuggestions({
             </div>
           </div>
         ))}
+      </div>
+
+      {/* A8 hotel affiliate links */}
+      <div className="mt-3">
+        <p className="text-[11px] text-white/40 font-bold mb-2">{t("otherSites")}</p>
+        <div className="flex gap-2 flex-wrap relative">
+          {a8Hotels.map((af) => (
+            <a
+              key={af.id}
+              href={af.linkUrl}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-[11px] font-bold text-white/60 border border-white/15 px-2.5 py-1.5
+                         hover:bg-white/5 hover:text-white/80 transition-colors"
+            >
+              {af.name}
+            </a>
+          ))}
+          {a8Hotels.map((af) => (
+            <A8ImpressionPixel key={`imp-${af.id}`} url={af.impTagUrl} />
+          ))}
+        </div>
       </div>
     </div>
   );

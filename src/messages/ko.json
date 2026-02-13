@@ -160,7 +160,8 @@
     "proRequired": "Pro 플랜으로 숙소 상세 정보를 확인할 수 있습니다",
     "viewProPlan": "Pro 플랜 보기",
     "compareRates": "요금 비교",
-    "book": "예약"
+    "book": "예약",
+    "otherSites": "다른 사이트에서 검색"
   },
   "Transport": {
     "recommendedWay": "추천 이동 방법",
@@ -169,13 +170,14 @@
     "direct": "직통",
     "viewTicket": "티켓 보기",
     "uberTaxi": "Uber 택시 호출",
+    "bookBus": "고속버스 검색",
     "bookViaCompany": "각 교통회사 사이트에서 예약할 수 있습니다"
   },
   "TravelAds": {
     "title": "여행에 도움되는 서비스",
     "hotelTitle": "숙박 예약",
     "hotelDesc": "{destination} 주변의 호텔·료칸 검색",
-    "hotelCta": "Booking.com에서 찾기",
+    "hotelCta": "숙소 검색",
     "flightTitle": "항공권",
     "flightDesc": "{from} → {to} 항공편 검색",
     "flightDescSimple": "항공권 검색",
@@ -186,6 +188,12 @@
     "taxiTitle": "택시 호출",
     "taxiDesc": "역에서 성지 스팟까지의 이동에 편리",
     "taxiCta": "Uber로 호출",
+    "busTitle": "고속버스",
+    "busDesc": "야간버스·고속버스로 저렴하게 이동",
+    "busCta": "버스 검색",
+    "tourTitle": "투어",
+    "tourDesc": "알뜰한 투어 패키지 검색",
+    "tourCta": "투어 검색",
     "adNote": "AD — Pro 플랜으로 광고를 숨길 수 있습니다"
   },
   "FreeLimits": {

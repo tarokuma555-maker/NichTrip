@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import type { TransportOption } from "@/lib/types";
+import { getBusAffiliate } from "@/lib/a8-affiliates";
+import A8ImpressionPixel from "@/components/A8ImpressionPixel";
 
 /* ===== Transport SVG Icons (outline) ===== */
 const TRANSPORT_ICONS: Record<string, React.ReactNode> = {
@@ -65,6 +67,7 @@ export default function TransportOptions({
   const [options, setOptions] = useState<TransportOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const a8Bus = useMemo(() => getBusAffiliate(), []);
 
   useEffect(() => {
     if (!from || !to) {
@@ -178,6 +181,20 @@ export default function TransportOptions({
                 {t("uberTaxi")}
                 <span className="text-[10px]">&rarr;</span>
               </a>
+            ) : opt.type === "bus" ? (
+              <span className="relative">
+                <a
+                  href={a8Bus.linkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  className="inline-flex items-center gap-1.5 text-xs font-black text-purple-400 border-2 border-purple-500/30 px-3 py-1.5
+                             hover:bg-purple-500/10 transition-colors"
+                >
+                  {t("bookBus")}
+                  <span className="text-[10px]">&rarr;</span>
+                </a>
+                <A8ImpressionPixel url={a8Bus.impTagUrl} />
+              </span>
             ) : opt.type === "flight" ? (
               <a
                 href={opt.bookingUrl || "https://www.aviasales.com/"}

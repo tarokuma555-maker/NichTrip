@@ -12,6 +12,8 @@ import ProBanner from "./ProBanner";
 import { getWorkVisual, hasPoster } from "@/lib/work-visuals";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { getRandomHotelAffiliates, getRandomRentalCarAffiliates, getBusAffiliate, getRandomTourAffiliates } from "@/lib/a8-affiliates";
+import A8ImpressionPixel from "@/components/A8ImpressionPixel";
 
 type TransportMode = "train" | "car" | "walk" | "taxi";
 
@@ -535,13 +537,19 @@ function MetaBadge({ icon, text }: { icon: React.ReactNode; text: string }) {
 function TravelAds({ departure, destination }: { departure?: string; destination: string }) {
   const t = useTranslations("TravelAds");
 
+  const a8Hotel = useMemo(() => getRandomHotelAffiliates(1)[0], []);
+  const a8Rental = useMemo(() => getRandomRentalCarAffiliates(1)[0], []);
+  const a8Bus = useMemo(() => getBusAffiliate(), []);
+  const a8Tour = useMemo(() => getRandomTourAffiliates(1)[0], []);
+
   const ads = [
     {
       icon: <IconHotel className="w-5 h-5" />,
       title: t("hotelTitle"),
       desc: t("hotelDesc", { destination }),
-      url: `https://www.booking.com/searchresults.ja.html?ss=${encodeURIComponent(destination)}&lang=ja`,
-      cta: t("hotelCta"),
+      url: a8Hotel.linkUrl,
+      impUrl: a8Hotel.impTagUrl,
+      cta: `${t("hotelCta")}（${a8Hotel.name}）`,
       color: "text-red-400 border-red-500/30 hover:bg-red-500/10",
     },
     {
@@ -560,8 +568,9 @@ function TravelAds({ departure, destination }: { departure?: string; destination
       icon: <IconCar className="w-5 h-5" />,
       title: t("rentalTitle"),
       desc: t("rentalDesc"),
-      url: "https://www.discovercars.com/",
-      cta: t("rentalCta"),
+      url: a8Rental.linkUrl,
+      impUrl: a8Rental.impTagUrl,
+      cta: `${t("rentalCta")}（${a8Rental.name}）`,
       color: "text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10",
     },
     {
@@ -572,10 +581,39 @@ function TravelAds({ departure, destination }: { departure?: string; destination
       cta: t("taxiCta"),
       color: "text-yellow-400 border-yellow-500/30 hover:bg-yellow-500/10",
     },
+    {
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <rect x="4" y="3" width="16" height="16" rx="2" />
+          <path d="M4 11h16M4 7h16" />
+          <circle cx="7.5" cy="15.5" r="1.5" /><circle cx="16.5" cy="15.5" r="1.5" />
+        </svg>
+      ),
+      title: t("busTitle"),
+      desc: t("busDesc"),
+      url: a8Bus.linkUrl,
+      impUrl: a8Bus.impTagUrl,
+      cta: t("busCta"),
+      color: "text-purple-400 border-purple-500/30 hover:bg-purple-500/10",
+    },
+    {
+      icon: (
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path d="M3 7l6-4 6 4 6-4v14l-6 4-6-4-6 4V7z" />
+          <path d="M9 3v14M15 7v14" />
+        </svg>
+      ),
+      title: t("tourTitle"),
+      desc: t("tourDesc"),
+      url: a8Tour.linkUrl,
+      impUrl: a8Tour.impTagUrl,
+      cta: t("tourCta"),
+      color: "text-orange-400 border-orange-500/30 hover:bg-orange-500/10",
+    },
   ];
 
   return (
-    <div className="mt-12">
+    <div className="mt-12 relative">
       <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
         <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -604,6 +642,8 @@ function TravelAds({ departure, destination }: { departure?: string; destination
           </a>
         ))}
       </div>
+      {/* A8 impression pixels */}
+      {ads.map((ad, i) => ad.impUrl ? <A8ImpressionPixel key={`imp-${i}`} url={ad.impUrl} /> : null)}
       <p className="text-[9px] text-white/20 mt-2 text-center">
         {t("adNote")}
       </p>

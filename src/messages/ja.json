@@ -160,7 +160,8 @@
     "proRequired": "Proプランで宿泊先の詳細を確認できます",
     "viewProPlan": "Proプランを見る",
     "compareRates": "料金を比較する",
-    "book": "予約する"
+    "book": "予約する",
+    "otherSites": "他の予約サイトで探す"
   },
   "Transport": {
     "recommendedWay": "おすすめの行き方",
@@ -169,13 +170,14 @@
     "direct": "直通",
     "viewTicket": "チケットを見る",
     "uberTaxi": "Uber タクシーで配車",
+    "bookBus": "高速バスを探す",
     "bookViaCompany": "各交通会社のサイトで予約できます"
   },
   "TravelAds": {
     "title": "旅行に役立つサービス",
     "hotelTitle": "宿泊予約",
     "hotelDesc": "{destination}周辺のホテル・旅館を検索",
-    "hotelCta": "Booking.comで探す",
+    "hotelCta": "宿を探す",
     "flightTitle": "航空券",
     "flightDesc": "{from} → {to} のフライトを検索",
     "flightDescSimple": "航空券を検索",
@@ -186,6 +188,12 @@
     "taxiTitle": "タクシー配車",
     "taxiDesc": "駅から聖地スポットへの移動に便利",
     "taxiCta": "Uberで配車",
+    "busTitle": "高速バス",
+    "busDesc": "夜行バス・高速バスでお得に移動",
+    "busCta": "バスを探す",
+    "tourTitle": "ツアー",
+    "tourDesc": "お得なツアーパッケージを検索",
+    "tourCta": "ツアーを探す",
     "adNote": "AD — Proプランで広告を非表示にできます"
   },
   "FreeLimits": {
