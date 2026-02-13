@@ -327,3 +327,165 @@ export function getAffiliatesByCategory(
       return getMixedAffiliates(count);
   }
 }
+
+/* ===== Ad Feed Card Data ===== */
+
+export type AdFeedCardData = {
+  id: string;
+  affiliateId: number;
+  displayName: string;
+  tagline: string;
+  photoUrl: string;
+  description: string;
+  tip1Label: string;
+  tip1Text: string;
+  tip2Label: string;
+  tip2Text: string;
+};
+
+export const AD_FEED_CARDS: AdFeedCardData[] = [
+  {
+    id: "ad-jtb",
+    affiliateId: 7,
+    displayName: "JTB 国内旅行予約",
+    tagline: "聖地近くの宿を最安値で比較",
+    photoUrl: "https://images.unsplash.com/photo-1480796927426-f609979314bd?w=800&h=600&fit=crop&q=80",
+    description: "JTBなら全国の人気エリアのホテル・旅館を簡単比較。聖地巡礼に最適な立地のお宿が見つかります。早期予約割引やポイント還元も充実。",
+    tip1Label: "特典",
+    tip1Text: "早期予約で最大30%OFF。会員登録でポイント2倍キャンペーン中",
+    tip2Label: "おすすめ",
+    tip2Text: "聖地から徒歩圏内のホテルを地図から簡単検索できます",
+  },
+  {
+    id: "ad-airtrip-hotel",
+    affiliateId: 1,
+    displayName: "エアトリ 国内ホテル",
+    tagline: "最安値保証で格安ホテルを即予約",
+    photoUrl: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&h=600&fit=crop&q=80",
+    description: "国内最大級の宿泊比較サイト。聖地巡礼の旅にぴったりのホテルが見つかります。当日予約OK、キャンセル無料プランも多数。",
+    tip1Label: "特典",
+    tip1Text: "アプリ限定クーポンで最大5,000円OFF",
+    tip2Label: "便利",
+    tip2Text: "地図検索で聖地スポットの近くの宿がすぐ見つかる",
+  },
+  {
+    id: "ad-yahoo-travel",
+    affiliateId: 3,
+    displayName: "Yahoo!トラベル 宿泊予約",
+    tagline: "PayPayポイントが貯まる&使える",
+    photoUrl: "https://images.unsplash.com/photo-1522199710521-72d69614c702?w=800&h=600&fit=crop&q=80",
+    description: "Yahoo!トラベルならPayPayポイントがたっぷり貯まる。聖地の近くで泊まれる宿泊施設を豊富なクチコミと一緒にチェック。",
+    tip1Label: "特典",
+    tip1Text: "PayPayポイント最大10%還元。日曜日はさらにお得",
+    tip2Label: "便利",
+    tip2Text: "Yahoo! IDでかんたんログイン。予約もスムーズ",
+  },
+  {
+    id: "ad-travelist",
+    affiliateId: 2,
+    displayName: "トラベリスト ホテル比較",
+    tagline: "厳選ホテルを最安値で比較・予約",
+    photoUrl: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&h=600&fit=crop&q=80",
+    description: "トラベリストは厳選されたホテルだけを掲載。価格比較が簡単で、旅行プランに合った最安値の宿が見つかります。",
+    tip1Label: "特典",
+    tip1Text: "初回予約で500円OFFクーポンプレゼント",
+    tip2Label: "人気",
+    tip2Text: "アニメの聖地周辺ホテルの特集ページあり",
+  },
+  {
+    id: "ad-bigholiday",
+    affiliateId: 4,
+    displayName: "ビッグホリデー 国内ツアー",
+    tagline: "航空券+宿泊のセットがお得",
+    photoUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109db05?w=800&h=600&fit=crop&q=80",
+    description: "航空券と宿泊がセットでお得なパッケージツアー。聖地巡礼の遠征旅行にぴったり。全国各地への格安ツアーが充実。",
+    tip1Label: "お得",
+    tip1Text: "航空券+宿泊セットで個別予約より最大40%お得",
+    tip2Label: "便利",
+    tip2Text: "出発地と目的地を選ぶだけで最安プランが見つかる",
+  },
+  {
+    id: "ad-earthcar",
+    affiliateId: 16,
+    displayName: "EARTHCAR レンタカー",
+    tagline: "聖地巡礼ドライブに最適",
+    photoUrl: "https://images.unsplash.com/photo-1449965408869-ebd3fee7710d?w=800&h=600&fit=crop&q=80",
+    description: "格安レンタカーで聖地を自由に巡ろう。車でしか行けない聖地スポットも効率的に回れます。24時間いつでもネット予約OK。",
+    tip1Label: "価格",
+    tip1Text: "業界最安級！12時間2,000円台から利用可能",
+    tip2Label: "便利",
+    tip2Text: "主要駅・空港近くに店舗多数。乗り捨てプランもあり",
+  },
+  {
+    id: "ad-okinawa-tourist",
+    affiliateId: 11,
+    displayName: "沖縄ツーリスト 宿泊予約",
+    tagline: "沖縄聖地巡礼なら地元のプロへ",
+    photoUrl: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800&h=600&fit=crop&q=80",
+    description: "沖縄に強い沖縄ツーリスト。沖縄を舞台にしたアニメの聖地巡礼に最適な宿泊プランが見つかります。離島ツアーも充実。",
+    tip1Label: "限定",
+    tip1Text: "沖縄の離島ホテルも豊富に取り揃え",
+    tip2Label: "おすすめ",
+    tip2Text: "レンタカー付きプランでドライブ聖地巡礼も楽々",
+  },
+  {
+    id: "ad-yumeyado",
+    affiliateId: 17,
+    displayName: "ゆめやど 温泉旅館予約",
+    tagline: "巡礼の疲れを癒す温泉宿",
+    photoUrl: "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800&h=600&fit=crop&q=80",
+    description: "聖地巡礼の後は温泉でゆったり。全国の厳選された温泉旅館を特別プランでご案内。お得な平日限定プランも多数。",
+    tip1Label: "特典",
+    tip1Text: "平日限定の特別価格プランが充実。1人旅プランも",
+    tip2Label: "こだわり",
+    tip2Text: "口コミ高評価の温泉宿だけを厳選掲載",
+  },
+  {
+    id: "ad-nihon-ryokou",
+    affiliateId: 21,
+    displayName: "日本旅行 赤い風船",
+    tagline: "安心の老舗旅行会社で予約",
+    photoUrl: "https://images.unsplash.com/photo-1493780474015-ba834fd0ce2f?w=800&h=600&fit=crop&q=80",
+    description: "日本旅行の「赤い風船」ブランドで安心の旅行予約。JR+宿泊のセットプランが特にお得。新幹線で聖地巡礼するなら最適。",
+    tip1Label: "お得",
+    tip1Text: "JRセットプランで新幹線+宿泊がお得に。Web限定割引も",
+    tip2Label: "安心",
+    tip2Text: "老舗旅行会社ならではのサポート体制で安心の旅を",
+  },
+  {
+    id: "ad-tabirai-activity",
+    affiliateId: 15,
+    displayName: "たびらい アクティビティ",
+    tagline: "聖地で特別な体験を予約",
+    photoUrl: "https://images.unsplash.com/photo-1530521954074-e64f6810b32d?w=800&h=600&fit=crop&q=80",
+    description: "聖地巡礼をもっと楽しく。現地のアクティビティや体験プランを事前予約。SUP、カヤック、着物体験など人気体験が多数。",
+    tip1Label: "人気",
+    tip1Text: "体験・アクティビティの種類が豊富。当日予約OKも多数",
+    tip2Label: "おすすめ",
+    tip2Text: "聖地の近くで楽しめるアクティビティをエリアで検索",
+  },
+  {
+    id: "ad-skyticket",
+    affiliateId: 20,
+    displayName: "skyticket レンタカー",
+    tagline: "全国のレンタカーを一括比較",
+    photoUrl: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=600&fit=crop&q=80",
+    description: "全国のレンタカー会社を一括比較して最安値で予約。聖地が点在するエリアの巡礼ドライブに最適。格安プランが充実。",
+    tip1Label: "比較",
+    tip1Text: "大手〜格安まで一括比較。最安値がすぐわかる",
+    tip2Label: "便利",
+    tip2Text: "空港・主要駅から乗れる格安プランが人気",
+  },
+  {
+    id: "ad-ikenohira",
+    affiliateId: 8,
+    displayName: "池の平ホテル＆リゾーツ",
+    tagline: "白樺湖リゾートでアニメコラボ",
+    photoUrl: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&h=600&fit=crop&q=80",
+    description: "白樺湖のリゾートホテル。アニメとのコラボイベントも開催される人気スポット。家族旅行にもカップル旅にもおすすめ。",
+    tip1Label: "注目",
+    tip1Text: "アニメコラボ企画を定期開催。限定グッズも",
+    tip2Label: "施設",
+    tip2Text: "温泉・プール・遊園地が揃うオールインワンリゾート",
+  },
+];

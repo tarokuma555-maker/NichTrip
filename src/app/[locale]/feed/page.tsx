@@ -5,10 +5,9 @@ import { useTranslations, useLocale } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
 import AuthModal from "@/components/AuthModal";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
-import TravelBanner from "@/components/ads/TravelBanner";
+import AdFeedCard from "@/components/ads/AdFeedCard";
+import { AD_FEED_CARDS } from "@/lib/a8-affiliates";
 import type { SpotReview } from "@/lib/types";
-
-const AD_CATEGORIES = ["hotel", "activity", "tour", "rental_car"] as const;
 
 const FREE_POST_LIMIT = 3;
 
@@ -132,13 +131,10 @@ export default function FeedPage() {
               {visibleReviews.map((review, idx) => (
                 <div key={review.id}>
                   <FeedCard review={review} />
-                  {(idx + 1) % 5 === 0 && idx < visibleReviews.length - 1 && (
+                  {/* 2枚目の後に広告カード1枚挿入 */}
+                  {idx === 1 && (
                     <div className="my-4">
-                      <TravelBanner
-                        variant="card"
-                        category={AD_CATEGORIES[Math.floor(idx / 5) % AD_CATEGORIES.length]}
-                        maxItems={1}
-                      />
+                      <AdFeedCard ad={AD_FEED_CARDS[0]} />
                     </div>
                   )}
                 </div>
@@ -192,6 +188,18 @@ export default function FeedPage() {
                     </p>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Paywall下の広告カードセクション */}
+            {showPaywall && (
+              <div className="mt-6 space-y-4">
+                <div className="text-center mb-4">
+                  <p className="text-xs text-white/20 font-bold">─── おすすめ旅行サイト ───</p>
+                </div>
+                {AD_FEED_CARDS.slice(1).map((ad) => (
+                  <AdFeedCard key={ad.id} ad={ad} />
+                ))}
               </div>
             )}
           </div>

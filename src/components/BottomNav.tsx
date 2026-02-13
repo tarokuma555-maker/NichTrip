@@ -13,7 +13,6 @@ const DISMISS_KEY = "animetrips_nav_ad_dismissed";
 
 function NavAdBar() {
   const { isPro } = useAuth();
-  const tDesc = useTranslations("AffiliateDesc");
   const [dismissed, setDismissed] = useState(true);
   const affiliates = useMemo(() => getRandomHotelAffiliates(4), []);
 
@@ -29,19 +28,19 @@ function NavAdBar() {
   if (isPro || dismissed || affiliates.length === 0) return null;
 
   return (
-    <div className="relative bg-red-500/5 border-t border-red-500/10 h-[30px] overflow-hidden flex items-center">
-      <div className="nav-ad-scroll flex items-center gap-8 whitespace-nowrap pl-4">
+    <div className="relative bg-gradient-to-r from-red-500/10 via-amber-500/10 to-red-500/10 border-t border-red-500/15 h-[38px] overflow-hidden flex items-center">
+      <div className="nav-ad-scroll flex items-center gap-6 whitespace-nowrap pl-4">
         {[...affiliates, ...affiliates].map((af, i) => (
           <a
             key={`${af.id}-${i}`}
             href={af.linkUrl}
             target="_blank"
             rel="noopener noreferrer nofollow"
-            className="inline-flex items-center gap-1.5 text-[10px] text-white/30 hover:text-red-400/60 transition-colors shrink-0"
+            className="inline-flex items-center gap-1.5 text-xs text-white/35 hover:text-red-400/70 transition-colors shrink-0"
           >
-            <CategoryIcon category={af.category} className="w-3 h-3 opacity-50" />
+            <CategoryIcon category={af.category} className="w-3.5 h-3.5 opacity-50" />
             <span className="font-bold">{af.name}</span>
-            <span className="text-white/20">{tDesc(af.descKey)}</span>
+            <span className="text-white/20">●</span>
           </a>
         ))}
       </div>
@@ -69,7 +68,7 @@ function NavAdBar() {
       ))}
       <style jsx>{`
         .nav-ad-scroll {
-          animation: navAdScroll 20s linear infinite;
+          animation: navAdScroll 30s linear infinite;
         }
         @keyframes navAdScroll {
           0% { transform: translateX(0); }

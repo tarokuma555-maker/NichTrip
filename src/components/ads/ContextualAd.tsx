@@ -73,7 +73,7 @@ export default function ContextualAd({
 
   useEffect(() => {
     if (context === "loading") {
-      const timer = setTimeout(() => setShow(true), 3000);
+      const timer = setTimeout(() => setShow(true), 2000);
       return () => clearTimeout(timer);
     }
   }, [context]);

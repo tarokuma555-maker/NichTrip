@@ -848,7 +848,7 @@ export default function ConditionForm({
         </p>
       ) : null}
 
-      <TravelBanner variant="inline" category="hotel" maxItems={2} title={t("adHotelSuggest")} />
+      <TravelBanner variant="card" category="hotel" maxItems={2} title={t("adHotelSuggest")} />
       </>
       )}
 

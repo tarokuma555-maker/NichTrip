@@ -73,11 +73,11 @@ function HorizontalBanner({
   tDesc: TransFn;
 }) {
   return (
-    <section className="py-6">
-      <div className="border-t border-b border-white/10 bg-gradient-to-r from-red-500/5 via-transparent to-red-500/5 px-4 py-4">
+    <section className="py-8 sm:py-10">
+      <div className="border-t border-b border-red-500/30 bg-gradient-to-r from-red-500/15 via-red-500/5 to-red-500/15 px-4 py-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-2 mb-3">
-            <p className="text-[10px] text-white/25 font-bold">
+            <p className="text-sm sm:text-base font-black text-white/70">
               {title || t("defaultTitle")}
             </p>
             <span className="text-[9px] text-white/15">PR</span>
@@ -89,13 +89,13 @@ function HorizontalBanner({
                 href={af.linkUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                className={`flex items-center gap-3 shrink-0 border-2 px-4 py-3 transition-colors ${CATEGORY_COLORS[af.category]}`}
+                className={`flex items-center gap-3 shrink-0 border-2 border-l-3 border-l-red-500/50 bg-white/[0.07] hover:bg-white/10 hover:scale-[1.02] transition-all duration-200 px-4 py-3 ${CATEGORY_COLORS[af.category]}`}
               >
                 <span className="opacity-60">
                   <CategoryIcon category={af.category} className="w-5 h-5" />
                 </span>
                 <div className="min-w-0">
-                  <span className="text-xs font-black block">{af.name}</span>
+                  <span className="text-sm font-black block">{af.name}</span>
                   <span className="text-[10px] text-white/40 block whitespace-nowrap">
                     {tDesc(af.descKey)}
                   </span>
@@ -129,10 +129,13 @@ function CardBanner({
     <section className="py-8 sm:py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {title && (
-          <h3 className="text-sm font-black text-white/60 mb-3 flex items-center gap-2">
-            {title}
-            <span className="text-[9px] text-white/20 font-normal ml-auto">PR</span>
-          </h3>
+          <>
+            <h3 className="text-sm font-black text-white/60 mb-3 flex items-center gap-2">
+              {title}
+              <span className="text-[9px] text-white/20 font-normal ml-auto">PR</span>
+            </h3>
+            <div className="w-12 h-0.5 bg-red-500/30 mb-3"></div>
+          </>
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 relative">
           {affiliates.map((af) => (
@@ -141,7 +144,7 @@ function CardBanner({
               href={af.linkUrl}
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className={`block border-2 p-4 transition-colors ${CATEGORY_COLORS[af.category]}`}
+              className={`block border-2 p-4 bg-white/[0.07] shadow-[4px_4px_0_rgba(229,62,62,0.2)] hover:-translate-y-0.5 transition-all duration-200 ${CATEGORY_COLORS[af.category]}`}
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="opacity-60">
@@ -152,7 +155,7 @@ function CardBanner({
               <p className="text-[10px] text-white/40 leading-relaxed mb-3">
                 {tDesc(af.descKey)}
               </p>
-              <span className="text-[11px] font-black">
+              <span className="text-xs font-black bg-red-500/10 px-2 py-1">
                 {t(CATEGORY_CTA_KEYS[af.category] || "viewSite")} &rarr;
               </span>
             </a>
