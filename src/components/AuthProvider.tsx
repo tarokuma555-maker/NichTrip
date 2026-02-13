@@ -71,13 +71,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
       try {
+        // まずDBを確認（高速）
         const { data } = await supabase
           .from("subscriptions")
           .select("status")
           .eq("user_id", userId)
           .in("status", ["active", "trialing"])
           .maybeSingle();
-        setIsPro(!!data);
+        if (data) {
+          setIsPro(true);
+          return;
+        }
+        // DBに無ければStripeに直接確認（Webhook未到達のリカバリ）
+        try {
+          const res = await fetch("/api/stripe/verify", { method: "POST" });
+          const result = await res.json();
+          setIsPro(!!result.isPro);
+        } catch {
+          setIsPro(false);
+        }
       } catch {
         setIsPro(false);
       }
@@ -112,23 +124,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, [supabase, checkProStatus]);
 
-  // Stripe決済後のポーリング: sessionStorageにフラグがあればどのページでもポーリング
+  // Stripe決済後のポーリング: /api/stripe/verify でStripe本体に確認 & DB同期
   const startPolling = useCallback(
-    (userId: string) => {
+    () => {
       if (pollingRef.current) return;
       setProActivating(true);
       let attempts = 0;
-      const maxAttempts = 30; // 最大30回（約60秒）
+      const maxAttempts = 20; // 最大20回（約60秒）
       pollingRef.current = setInterval(async () => {
         attempts++;
         try {
-          const { data } = await supabase
-            .from("subscriptions")
-            .select("status")
-            .eq("user_id", userId)
-            .in("status", ["active", "trialing"])
-            .maybeSingle();
-          if (data) {
+          const res = await fetch("/api/stripe/verify", { method: "POST" });
+          const data = await res.json();
+          if (data.isPro) {
             setIsPro(true);
             setProActivating(false);
             try { sessionStorage.removeItem(CHECKOUT_PENDING_KEY); } catch {}
@@ -145,9 +153,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             pollingRef.current = null;
           }
         }
-      }, 2000);
+      }, 3000);
     },
-    [supabase]
+    []
   );
 
   // マウント時 & ユーザー変更時にcheckout pendingフラグを確認
@@ -155,7 +163,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!user || isPro) return;
     try {
       if (sessionStorage.getItem(CHECKOUT_PENDING_KEY) === "true") {
-        startPolling(user.id);
+        startPolling();
       }
     } catch {}
     return () => {
