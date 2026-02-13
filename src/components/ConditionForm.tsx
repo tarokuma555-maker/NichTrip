@@ -242,6 +242,17 @@ export default function ConditionForm({
       .catch(() => {});
   }, []);
 
+  // Pro: work パラメータがある場合、チップとして初期選択
+  useEffect(() => {
+    if (isPro && work && allWorks.length > 0 && selectedWorks.length === 0) {
+      const found = allWorks.find((w) => w.title === work);
+      if (found) {
+        setSelectedWorks([found]);
+        setKeyword("");
+      }
+    }
+  }, [isPro, work, allWorks]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // 外側クリックでサジェスト閉じる
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -302,7 +313,7 @@ export default function ConditionForm({
 
   // サジェストから作品を選択
   function handleSelectWork(w: WorkItem) {
-    if (isPro && !work) {
+    if (isPro) {
       // Pro: 複数作品モード
       if (selectedWorks.some((sw) => sw.id === w.id)) return;
       if (selectedWorks.length >= 3) return;
@@ -550,11 +561,6 @@ export default function ConditionForm({
       <div className="space-y-6">
         {/* 作品名（検索付き） */}
         <FormSection label={t("workLabel")} icon="🎬">
-          {work ? (
-            <div className="manga-input px-4 py-3 text-white font-bold">
-              {work}
-            </div>
-          ) : (
             <div ref={suggestRef} className="relative">
               {/* Pro: 選択済み作品チップ */}
               {isPro && selectedWorks.length > 0 && (
@@ -614,7 +620,7 @@ export default function ConditionForm({
               )}
 
               {/* Pro 誘導バナー */}
-              {!isPro && !work && (
+              {!isPro && (
                 <ProBanner
                   variant="inline"
                   message={t("proMixBanner")}
@@ -681,7 +687,6 @@ export default function ConditionForm({
                 </div>
               )}
             </div>
-          )}
         </FormSection>
 
         {/* 出発地 */}
