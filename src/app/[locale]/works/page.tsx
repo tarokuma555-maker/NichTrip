@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { getAllWorks } from "@/lib/works-data";
 import WorksGrid from "@/components/works/WorksGrid";
+import TravelBanner from "@/components/ads/TravelBanner";
 
 const BASE_URL = "https://animetrips.app";
 
@@ -52,6 +53,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale,
       type: "website",
     },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${BASE_URL}/api/og?type=work&title=${encodeURIComponent(t("title"))}`],
+    },
   };
 }
 
@@ -68,6 +75,7 @@ export default function WorksPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <WorksGrid works={works} />
+      <TravelBanner variant="horizontal" category="mixed" />
     </div>
   );
 }
