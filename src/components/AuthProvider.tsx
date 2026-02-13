@@ -47,29 +47,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const supabase = createSupabaseBrowser();
 
   // 開発者用: URLパラメータ or localStorage で Pro 強制モード
-  // スマホ: ?dev_pro=true で ON / ?dev_pro=false で OFF
-  const checkDevOverride = useCallback(() => {
+  // ?dev_pro=true → Pro強制ON / ?dev_pro=false → Pro強制OFF / ?dev_pro=reset → 通常判定に戻す
+  const checkDevOverride = useCallback((): "force_pro" | "force_free" | null => {
     try {
       const params = new URLSearchParams(window.location.search);
       const devPro = params.get("dev_pro");
       if (devPro === "true") {
         localStorage.setItem("dev_force_pro", "true");
+        localStorage.removeItem("dev_force_free");
       } else if (devPro === "false") {
+        localStorage.setItem("dev_force_free", "true");
         localStorage.removeItem("dev_force_pro");
+      } else if (devPro === "reset") {
+        localStorage.removeItem("dev_force_pro");
+        localStorage.removeItem("dev_force_free");
       }
-      return localStorage.getItem("dev_force_pro") === "true";
+      if (localStorage.getItem("dev_force_pro") === "true") return "force_pro";
+      if (localStorage.getItem("dev_force_free") === "true") return "force_free";
+      return null;
     } catch {
-      return false;
+      return null;
     }
   }, []);
 
   const checkProStatus = useCallback(
     async (userId: string) => {
       // 開発者オーバーライド
-      if (checkDevOverride()) {
-        setIsPro(true);
-        return;
-      }
+      const devOverride = checkDevOverride();
+      if (devOverride === "force_pro") { setIsPro(true); return; }
+      if (devOverride === "force_free") { setIsPro(false); return; }
       try {
         // まずDBを確認（高速）
         const { data } = await supabase
@@ -101,8 +107,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session: s } }) => {
       setSession(s);
       setUser(s?.user ?? null);
-      if (checkDevOverride()) {
+      const devOverride = checkDevOverride();
+      if (devOverride === "force_pro") {
         setIsPro(true);
+      } else if (devOverride === "force_free") {
+        setIsPro(false);
       } else if (s?.user) {
         checkProStatus(s.user.id);
       }
