@@ -10,10 +10,10 @@ export default function PlanPage() {
     <div className="min-h-screen bg-[#0a0a0a]">
       {/* ヘッダー */}
       <header className="bg-black/80 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-5 h-14 flex items-center">
+        <div className="max-w-3xl mx-auto px-4 sm:px-5 h-14 flex items-center flex-nowrap min-w-0">
           <Link
             href="/"
-            className="flex items-center gap-2 text-white/60 hover:text-red-400 transition-colors"
+            className="flex items-center gap-2 text-white/60 hover:text-red-400 transition-colors shrink-0"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />

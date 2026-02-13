@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
 import { getRandomHotelAffiliates, type A8Affiliate } from "@/lib/a8-affiliates";
+import { CategoryIcon } from "@/components/ads/CategoryIcons";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -130,36 +131,43 @@ export default function PaywallModal({
 
         {/* 控えめな旅行サイトリンク */}
         {!isPro && (
-          <div className="mt-4 pt-3 border-t border-white/5 relative">
-            <p className="text-[10px] text-white/20 mb-2">{t("adRecommended")}</p>
-            <div className="flex gap-2 justify-center flex-wrap">
-              {a8Links.map((af: A8Affiliate) => (
-                <a
-                  key={af.id}
-                  href={af.linkUrl}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  className="text-[10px] text-white/30 hover:text-red-400/60 transition-colors"
-                >
-                  {af.name}
-                </a>
-              ))}
-            </div>
-            {a8Links.map((af: A8Affiliate) => (
-              <img
-                key={`imp-${af.id}`}
-                src={af.impTagUrl}
-                width={1}
-                height={1}
-                alt=""
-                loading="lazy"
-                aria-hidden="true"
-                style={{ border: "none", position: "absolute", visibility: "hidden" }}
-              />
-            ))}
-          </div>
+          <PaywallAdLinks links={a8Links} label={t("adRecommended")} />
         )}
       </div>
+    </div>
+  );
+}
+
+function PaywallAdLinks({ links, label }: { links: A8Affiliate[]; label: string }) {
+  return (
+    <div className="mt-4 pt-3 border-t border-white/5 relative">
+      <p className="text-[10px] text-white/20 mb-2">{label}</p>
+      <div className="flex gap-2 justify-center flex-wrap">
+        {links.map((af) => (
+          <a
+            key={af.id}
+            href={af.linkUrl}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="inline-flex items-center gap-1.5 text-[10px] text-white/30 hover:text-red-400/60 border border-white/10 px-2 py-1 transition-colors"
+          >
+            <CategoryIcon category={af.category} className="w-3 h-3 opacity-50" />
+            <span className="font-bold">{af.name}</span>
+          </a>
+        ))}
+      </div>
+      {links.map((af) => (
+        <img
+          key={`imp-${af.id}`}
+          src={af.impTagUrl}
+          width={1}
+          height={1}
+          alt=""
+          loading="lazy"
+          aria-hidden="true"
+          style={{ border: "none", position: "absolute", visibility: "hidden" }}
+        />
+      ))}
     </div>
   );
 }

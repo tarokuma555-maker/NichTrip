@@ -6,6 +6,7 @@ import type { HotelItem } from "@/lib/types";
 import { useAuth } from "@/components/AuthProvider";
 import { getRandomHotelAffiliates } from "@/lib/a8-affiliates";
 import A8ImpressionPixel from "@/components/A8ImpressionPixel";
+import { IconHotel } from "@/components/ads/CategoryIcons";
 
 function HotelIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
@@ -31,6 +32,7 @@ export default function HotelSuggestions({
   budget?: string;
 }) {
   const t = useTranslations("Hotel");
+  const tDesc = useTranslations("AffiliateDesc");
   const locale = useLocale();
   const { isPro } = useAuth();
   const [hotels, setHotels] = useState<HotelItem[]>([]);
@@ -202,6 +204,7 @@ export default function HotelSuggestions({
       {/* A8 hotel affiliate links — 料金比較セクション */}
       <div className="mt-4 bg-white/[0.03] border border-white/10 p-3 relative">
         <p className="text-[11px] text-white/50 font-black mb-2.5 flex items-center gap-1.5">
+          <IconHotel className="w-4 h-4 opacity-60" />
           {t("otherSites")}
           <span className="text-[9px] text-white/20 font-normal">PR</span>
         </p>
@@ -212,11 +215,14 @@ export default function HotelSuggestions({
               href={af.linkUrl}
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className="flex items-center gap-1.5 text-[11px] font-bold text-white/60 border border-white/15 px-2.5 py-2
+              className="flex items-start gap-2 text-[11px] font-bold text-white/60 border border-white/15 px-2.5 py-2
                          hover:bg-red-500/5 hover:text-red-400 hover:border-red-500/30 transition-colors"
             >
-              <span className="truncate">{af.name}</span>
-              <span className="text-red-400/60 shrink-0">&rarr;</span>
+              <IconHotel className="w-3.5 h-3.5 opacity-40 shrink-0 mt-0.5" />
+              <div className="min-w-0">
+                <span className="block truncate font-black">{af.name}</span>
+                <span className="block text-[9px] text-white/30 truncate">{tDesc(af.descKey)}</span>
+              </div>
             </a>
           ))}
         </div>

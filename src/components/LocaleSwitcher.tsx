@@ -44,7 +44,8 @@ export default function LocaleSwitcher() {
       <button
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-1 px-2 py-1 text-[11px] font-black text-white/50
-                   border border-white/10 hover:text-white/80 hover:border-white/30 transition-colors"
+                   border border-white/10 hover:text-white/80 hover:border-white/30 transition-colors
+                   whitespace-nowrap shrink-0"
       >
         <span>{LOCALE_FLAGS[locale]}</span>
         <span>{t(locale)}</span>

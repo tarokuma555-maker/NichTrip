@@ -11,6 +11,7 @@ import {
   type A8Affiliate,
 } from "@/lib/a8-affiliates";
 import { useAuth } from "@/components/AuthProvider";
+import { CategoryIcon, CATEGORY_COLORS } from "@/components/ads/CategoryIcons";
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -66,6 +67,7 @@ export default function ContextualAd({
 }) {
   const { isPro } = useAuth();
   const t = useTranslations("Ads");
+  const tDesc = useTranslations("AffiliateDesc");
   const affiliates = useMemo(() => getContextAffiliates(context), [context]);
   const [show, setShow] = useState(context !== "loading");
 
@@ -95,12 +97,18 @@ export default function ContextualAd({
             href={af.linkUrl}
             target="_blank"
             rel="noopener noreferrer nofollow"
-            className="flex items-center gap-3 bg-white/5 border border-white/10 px-3 py-2.5
-                       hover:border-red-500/30 hover:bg-white/[0.07] transition-colors"
+            className={`flex items-center gap-3 border-2 px-3 py-2.5 transition-colors ${CATEGORY_COLORS[af.category]}`}
           >
-            <span className="text-xs font-black text-white/70">{af.name}</span>
-            <span className="text-[10px] text-white/30 flex-1 truncate">{af.fullName}</span>
-            <span className="text-[11px] font-black text-red-400 shrink-0">&rarr;</span>
+            <span className="opacity-60 shrink-0">
+              <CategoryIcon category={af.category} className="w-5 h-5" />
+            </span>
+            <div className="flex-1 min-w-0">
+              <span className="text-xs font-black block">{af.name}</span>
+              <span className="text-[10px] text-white/40 truncate block">
+                {tDesc(af.descKey)}
+              </span>
+            </div>
+            <span className="text-[11px] font-black shrink-0">&rarr;</span>
           </a>
         ))}
       </div>

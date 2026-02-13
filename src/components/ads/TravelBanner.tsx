@@ -4,17 +4,9 @@ import { useMemo, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { getAffiliatesByCategory, type A8Affiliate } from "@/lib/a8-affiliates";
 import { useAuth } from "@/components/AuthProvider";
+import { CategoryIcon, CATEGORY_COLORS } from "@/components/ads/CategoryIcons";
 
 /* eslint-disable @next/next/no-img-element */
-
-const CATEGORY_ICONS: Record<string, string> = {
-  hotel: "\u{1F3E8}",
-  tour: "\u{1F30D}",
-  rental_car: "\u{1F697}",
-  activity: "\u{1F3AF}",
-  transport: "\u{1F68C}",
-  mixed: "\u{2708}\u{FE0F}",
-};
 
 function ImpPixel({ url }: { url: string }) {
   return (
@@ -30,6 +22,14 @@ function ImpPixel({ url }: { url: string }) {
   );
 }
 
+const CATEGORY_CTA_KEYS: Record<string, string> = {
+  hotel: "ctaHotel",
+  tour: "ctaTour",
+  rental_car: "ctaCar",
+  transport: "ctaBus",
+  activity: "ctaActivity",
+};
+
 export default function TravelBanner({
   variant,
   category = "mixed",
@@ -43,6 +43,7 @@ export default function TravelBanner({
 }) {
   const { isPro } = useAuth();
   const t = useTranslations("Ads");
+  const tDesc = useTranslations("AffiliateDesc");
   const affiliates = useMemo(
     () => getAffiliatesByCategory(category, maxItems),
     [category, maxItems]
@@ -50,44 +51,56 @@ export default function TravelBanner({
 
   if (isPro || affiliates.length === 0) return null;
 
-  if (variant === "horizontal") return <HorizontalBanner affiliates={affiliates} title={title} t={t} />;
-  if (variant === "card") return <CardBanner affiliates={affiliates} title={title} category={category} t={t} />;
-  if (variant === "inline") return <InlineBanner affiliates={affiliates} title={title} />;
-  if (variant === "floating") return <FloatingBanner affiliates={affiliates} t={t} />;
+  if (variant === "horizontal") return <HorizontalBanner affiliates={affiliates} title={title} t={t} tDesc={tDesc} />;
+  if (variant === "card") return <CardBanner affiliates={affiliates} title={title} t={t} tDesc={tDesc} />;
+  if (variant === "inline") return <InlineBanner affiliates={affiliates} title={title} tDesc={tDesc} />;
+  if (variant === "floating") return <FloatingBanner affiliates={affiliates} tDesc={tDesc} />;
   return null;
 }
+
+type TransFn = ReturnType<typeof useTranslations>;
 
 /* ===== Horizontal Banner ===== */
 function HorizontalBanner({
   affiliates,
   title,
   t,
+  tDesc,
 }: {
   affiliates: A8Affiliate[];
   title?: string;
-  t: ReturnType<typeof useTranslations>;
+  t: TransFn;
+  tDesc: TransFn;
 }) {
   return (
-    <section className="py-8 sm:py-12">
-      <div className="relative border-t border-b border-red-500/20 bg-gradient-to-r from-red-500/10 via-transparent to-red-500/10 px-4 py-4">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-black text-white/70 truncate">
+    <section className="py-6">
+      <div className="border-t border-b border-white/10 bg-gradient-to-r from-red-500/5 via-transparent to-red-500/5 px-4 py-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-2 mb-3">
+            <p className="text-[10px] text-white/25 font-bold">
               {title || t("defaultTitle")}
             </p>
-            <p className="text-[10px] text-white/30 mt-0.5">PR</p>
+            <span className="text-[9px] text-white/15">PR</span>
           </div>
-          <div className="flex gap-2 flex-wrap justify-center">
+          <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-1">
             {affiliates.map((af) => (
               <a
                 key={af.id}
                 href={af.linkUrl}
                 target="_blank"
                 rel="noopener noreferrer nofollow"
-                className="text-[11px] font-bold text-red-400 border border-red-500/30 px-3 py-1.5
-                           hover:bg-red-500/10 transition-colors whitespace-nowrap"
+                className={`flex items-center gap-3 shrink-0 border-2 px-4 py-3 transition-colors ${CATEGORY_COLORS[af.category]}`}
               >
-                {af.name} &rarr;
+                <span className="opacity-60">
+                  <CategoryIcon category={af.category} className="w-5 h-5" />
+                </span>
+                <div className="min-w-0">
+                  <span className="text-xs font-black block">{af.name}</span>
+                  <span className="text-[10px] text-white/40 block whitespace-nowrap">
+                    {tDesc(af.descKey)}
+                  </span>
+                </div>
+                <span className="text-[11px] font-black shrink-0 ml-2">&rarr;</span>
               </a>
             ))}
           </div>
@@ -104,20 +117,19 @@ function HorizontalBanner({
 function CardBanner({
   affiliates,
   title,
-  category,
   t,
+  tDesc,
 }: {
   affiliates: A8Affiliate[];
   title?: string;
-  category: string;
-  t: ReturnType<typeof useTranslations>;
+  t: TransFn;
+  tDesc: TransFn;
 }) {
   return (
     <section className="py-8 sm:py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {title && (
           <h3 className="text-sm font-black text-white/60 mb-3 flex items-center gap-2">
-            <span>{CATEGORY_ICONS[category] || CATEGORY_ICONS.mixed}</span>
             {title}
             <span className="text-[9px] text-white/20 font-normal ml-auto">PR</span>
           </h3>
@@ -129,18 +141,19 @@ function CardBanner({
               href={af.linkUrl}
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className="block bg-white/5 border-2 border-white/10 p-4
-                         hover:border-red-500/30 hover:bg-white/[0.07] transition-colors"
+              className={`block border-2 p-4 transition-colors ${CATEGORY_COLORS[af.category]}`}
             >
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-base">{CATEGORY_ICONS[af.category]}</span>
-                <span className="text-xs font-black text-white/80">{af.name}</span>
+                <span className="opacity-60">
+                  <CategoryIcon category={af.category} className="w-5 h-5" />
+                </span>
+                <span className="text-xs font-black">{af.name}</span>
               </div>
               <p className="text-[10px] text-white/40 leading-relaxed mb-3">
-                {af.fullName}
+                {tDesc(af.descKey)}
               </p>
-              <span className="text-[11px] font-black text-red-400">
-                {t("viewSite")} &rarr;
+              <span className="text-[11px] font-black">
+                {t(CATEGORY_CTA_KEYS[af.category] || "viewSite")} &rarr;
               </span>
             </a>
           ))}
@@ -157,9 +170,11 @@ function CardBanner({
 function InlineBanner({
   affiliates,
   title,
+  tDesc,
 }: {
   affiliates: A8Affiliate[];
   title?: string;
+  tDesc: TransFn;
 }) {
   return (
     <div className="mt-4 mb-4 relative">
@@ -168,16 +183,19 @@ function InlineBanner({
           {title} <span className="text-white/15">PR</span>
         </p>
       )}
-      <div className="flex gap-3 flex-wrap">
+      <div className="flex gap-2 flex-wrap">
         {affiliates.map((af) => (
           <a
             key={af.id}
             href={af.linkUrl}
             target="_blank"
             rel="noopener noreferrer nofollow"
-            className="text-[11px] text-red-400/60 hover:text-red-400 transition-colors"
+            className={`inline-flex items-center gap-2 border px-3 py-1.5 text-[11px] font-bold transition-colors ${CATEGORY_COLORS[af.category]}`}
           >
-            &rarr; {af.name}
+            <CategoryIcon category={af.category} className="w-3.5 h-3.5 opacity-60" />
+            <span className="font-black">{af.name}</span>
+            <span className="text-white/30 hidden sm:inline text-[10px]">{tDesc(af.descKey)}</span>
+            <span className="shrink-0">&rarr;</span>
           </a>
         ))}
       </div>
@@ -191,10 +209,10 @@ function InlineBanner({
 /* ===== Floating Banner ===== */
 function FloatingBanner({
   affiliates,
-  t,
+  tDesc,
 }: {
   affiliates: A8Affiliate[];
-  t: ReturnType<typeof useTranslations>;
+  tDesc: TransFn;
 }) {
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -223,7 +241,10 @@ function FloatingBanner({
   return (
     <div className="fixed bottom-16 left-0 right-0 z-40 px-3 pb-1">
       <div className="max-w-md mx-auto bg-black/90 border border-red-500/20 backdrop-blur-sm
-                      flex items-center gap-2 px-3 py-2 shadow-lg relative">
+                      flex items-center gap-3 px-4 py-2.5 shadow-lg relative">
+        <span className="opacity-60 shrink-0">
+          <CategoryIcon category={af.category} className="w-4 h-4 text-red-400" />
+        </span>
         <a
           href={af.linkUrl}
           target="_blank"
@@ -231,9 +252,9 @@ function FloatingBanner({
           className="flex-1 flex items-center gap-2 min-w-0"
         >
           <span className="text-[11px] font-bold text-white/60 truncate">
-            {t("floatingText")}
+            {tDesc(af.descKey)}
           </span>
-          <span className="text-[11px] font-black text-red-400 shrink-0">
+          <span className="text-[11px] font-black text-red-400 shrink-0 whitespace-nowrap">
             {af.name} &rarr;
           </span>
         </a>
