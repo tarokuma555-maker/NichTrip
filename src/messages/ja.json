@@ -26,7 +26,7 @@
   },
   "TopPage": {
     "badge": "Anime Pilgrimage Planner",
-    "heroSub": "あの聖地へ、<highlight>物語の世界</highlight>へ。<br/>聖地巡礼プランを提案します。",
+    "heroSub": "あの聖地へ、<highlight>物語の世界</highlight>へ。<br></br>聖地巡礼プランを提案します。",
     "heroCta": "Start Your Journey",
     "scrollDown": "Scroll Down",
     "aboutConcept": "AnimeTripsとは<accent>?</accent>",
@@ -75,7 +75,7 @@
     "worksCount": "{count}作品",
     "ctaHeading1": "あの場所へ、",
     "ctaHeading2": "会いに行こう。",
-    "ctaSub": "好きな作品を選ぶだけ。<br/>聖地巡礼の旅プランを<mbr/>自動で作成します。",
+    "ctaSub": "好きな作品を選ぶだけ。<br></br>聖地巡礼の旅プランを<mbr></mbr>自動で作成します。",
     "perMonth": "/月"
   },
   "ConditionForm": {

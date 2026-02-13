@@ -26,7 +26,7 @@
   },
   "TopPage": {
     "badge": "Anime Pilgrimage Planner",
-    "heroSub": "To those sacred places, to the <highlight>world of the story</highlight>.<br/>We plan your anime pilgrimage.",
+    "heroSub": "To those sacred places, to the <highlight>world of the story</highlight>.<br></br>We plan your anime pilgrimage.",
     "heroCta": "Start Your Journey",
     "scrollDown": "Scroll Down",
     "aboutConcept": "What is AnimeTrips<accent>?</accent>",
@@ -75,7 +75,7 @@
     "worksCount": "{count} works",
     "ctaHeading1": "To that place,",
     "ctaHeading2": "let's go see it.",
-    "ctaSub": "Just pick your favorite work.<br/>We'll auto-create your<mbr/> pilgrimage plan.",
+    "ctaSub": "Just pick your favorite work.<br></br>We'll auto-create your<mbr></mbr> pilgrimage plan.",
     "perMonth": "/mo"
   },
   "ConditionForm": {

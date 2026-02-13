@@ -26,7 +26,7 @@
   },
   "TopPage": {
     "badge": "Anime Pilgrimage Planner",
-    "heroSub": "그 성지로, <highlight>이야기의 세계</highlight>로.<br/>성지순례 플랜을 제안합니다.",
+    "heroSub": "그 성지로, <highlight>이야기의 세계</highlight>로.<br></br>성지순례 플랜을 제안합니다.",
     "heroCta": "Start Your Journey",
     "scrollDown": "Scroll Down",
     "aboutConcept": "AnimeTrips란<accent>?</accent>",
@@ -75,7 +75,7 @@
     "worksCount": "{count}작품",
     "ctaHeading1": "그 장소로,",
     "ctaHeading2": "만나러 가자.",
-    "ctaSub": "좋아하는 작품을 선택하기만 하면.<br/>성지순례 여행 플랜을<mbr/> 자동으로 작성합니다.",
+    "ctaSub": "좋아하는 작품을 선택하기만 하면.<br></br>성지순례 여행 플랜을<mbr></mbr> 자동으로 작성합니다.",
     "perMonth": "/월"
   },
   "ConditionForm": {

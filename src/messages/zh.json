@@ -26,7 +26,7 @@
   },
   "TopPage": {
     "badge": "Anime Pilgrimage Planner",
-    "heroSub": "前往那些圣地，前往<highlight>故事的世界</highlight>。<br/>为您推荐圣地巡礼计划。",
+    "heroSub": "前往那些圣地，前往<highlight>故事的世界</highlight>。<br></br>为您推荐圣地巡礼计划。",
     "heroCta": "Start Your Journey",
     "scrollDown": "Scroll Down",
     "aboutConcept": "什么是AnimeTrips<accent>？</accent>",
@@ -75,7 +75,7 @@
     "worksCount": "{count}部作品",
     "ctaHeading1": "前往那个地方，",
     "ctaHeading2": "去看看吧。",
-    "ctaSub": "只需选择喜欢的作品。<br/>自动为您创建<mbr/>圣地巡礼计划。",
+    "ctaSub": "只需选择喜欢的作品。<br></br>自动为您创建<mbr></mbr>圣地巡礼计划。",
     "perMonth": "/月"
   },
   "ConditionForm": {
