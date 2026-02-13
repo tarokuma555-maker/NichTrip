@@ -71,6 +71,7 @@
     "worksPickup": "热门作品 — 点击创建计划",
     "searchPlaceholder": "搜索作品名...",
     "noWorksFound": "未找到匹配作品",
+    "viewAllWorks": "查看全部作品",
     "allWorksDesc": "所有支持作品 — 点击创建计划",
     "worksCount": "{count}部作品",
     "ctaHeading1": "前往那个地方，",
@@ -441,5 +442,32 @@
     "en": "English",
     "zh": "中文",
     "ko": "한국어"
+  },
+  "Works": {
+    "title": "全部动漫作品",
+    "metaDesc": "AnimeTrips收录的全部{count}部作品的圣地巡礼指南。",
+    "searchPlaceholder": "按作品名搜索...",
+    "filterAll": "全部",
+    "spots": "{count}处",
+    "showMore": "显示更多",
+    "noResults": "未找到相关作品",
+    "totalWorks": "共{count}部作品"
+  },
+  "WorkDetail": {
+    "pilgrimageGuide": "圣地巡礼指南",
+    "spotsCount": "{count}处圣地",
+    "createPlan": "创建巡礼计划",
+    "mapTitle": "圣地地图",
+    "spotListTitle": "圣地列表",
+    "sceneLabel": "动漫场景",
+    "episodeLabel": "出场集数",
+    "accessLabel": "交通方式",
+    "locateOnMap": "在地图上显示",
+    "routeCta": "AI自动生成最佳路线",
+    "routeCtaDesc": "只需输入出发地、天数和预算，即可获得最佳巡礼计划",
+    "routeCtaButton": "创建计划",
+    "relatedWorks": "同地区的作品",
+    "adTitle": "预订旅行",
+    "backToList": "返回作品列表"
   }
 }

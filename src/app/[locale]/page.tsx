@@ -1,5 +1,5 @@
 import MangaTopPage from "@/components/MangaTopPage";
-import spotsData from "../../../data/pilgrimage-spots.json";
+import { getAllWorks } from "@/lib/works-data";
 
 // 人気Top10（ポスター付きカード表示）
 const FEATURED_TITLES = new Set([
@@ -15,11 +15,12 @@ const FEATURED_TITLES = new Set([
   "君の名は。",
 ]);
 
-const allWorks = spotsData.map((w) => ({
-  title: w.work_title,
-  title_en: w.work_title_en,
-  year: w.work_year,
-  genre: w.work_genre,
+const allWorks = getAllWorks().map((w) => ({
+  slug: w.slug,
+  title: w.title,
+  title_en: w.title_en,
+  year: w.year,
+  genre: w.genre,
   spotCount: w.spots.length,
 }));
 

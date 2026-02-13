@@ -1,10 +1,11 @@
 "use client";
 
 import { useRef } from "react";
-import { useRouter } from "next/navigation";
+import { Link } from "@/i18n/navigation";
 import { getWorkVisual } from "@/lib/work-visuals";
 
 type Work = {
+  slug: string;
   title: string;
   title_en: string;
   year: number;
@@ -13,7 +14,6 @@ type Work = {
 };
 
 export default function PopularWorks({ works }: { works: Work[] }) {
-  const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   function scroll(dir: "left" | "right") {
@@ -60,20 +60,16 @@ export default function PopularWorks({ works }: { works: Work[] }) {
           const visual = getWorkVisual(work.title);
 
           return (
-            <button
-              key={work.title}
-              onClick={() =>
-                router.push(
-                  `/plan?theme=pilgrimage&work=${encodeURIComponent(work.title)}`
-                )
-              }
+            <Link
+              key={work.slug}
+              href={`/works/${work.slug}`}
               className="group snap-start shrink-0 w-52 rounded-xl overflow-hidden bg-white
                          border-[3px] border-navy/20
                          shadow-[4px_4px_0px_0px_rgba(26,54,93,0.15)]
                          hover:shadow-[6px_6px_0px_0px_rgba(26,54,93,0.25)]
                          hover:-translate-x-0.5 hover:-translate-y-1
                          hover:border-accent
-                         transition-all duration-200 text-left"
+                         transition-all duration-200 text-left block"
             >
               {/* ポスター画像ヘッダー */}
               <div className="relative h-64 overflow-hidden">
@@ -130,7 +126,7 @@ export default function PopularWorks({ works }: { works: Work[] }) {
                   </span>
                 </div>
               </div>
-            </button>
+            </Link>
           );
         })}
       </div>

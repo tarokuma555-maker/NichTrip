@@ -71,6 +71,7 @@
     "worksPickup": "Popular Works — Tap to create a plan",
     "searchPlaceholder": "Search by title...",
     "noWorksFound": "No matching works found",
+    "viewAllWorks": "View All Works",
     "allWorksDesc": "All Supported Works — Tap to create a plan",
     "worksCount": "{count} works",
     "ctaHeading1": "To that place,",
@@ -441,5 +442,32 @@
     "en": "English",
     "zh": "中文",
     "ko": "한국어"
+  },
+  "Works": {
+    "title": "All Anime Works",
+    "metaDesc": "Pilgrimage guide for all {count} anime works featured on AnimeTrips.",
+    "searchPlaceholder": "Search by title...",
+    "filterAll": "All",
+    "spots": "{count} spots",
+    "showMore": "Show More",
+    "noResults": "No results found",
+    "totalWorks": "{count} Works"
+  },
+  "WorkDetail": {
+    "pilgrimageGuide": "Pilgrimage Guide",
+    "spotsCount": "{count} Sacred Spots",
+    "createPlan": "Create Pilgrimage Plan",
+    "mapTitle": "Sacred Spots Map",
+    "spotListTitle": "Spot List",
+    "sceneLabel": "Anime Scene",
+    "episodeLabel": "Episode",
+    "accessLabel": "Access",
+    "locateOnMap": "Show on Map",
+    "routeCta": "Auto-generate the best route with AI",
+    "routeCtaDesc": "Just enter your departure, days, and budget for the perfect plan",
+    "routeCtaButton": "Create Plan",
+    "relatedWorks": "Related Works in Same Area",
+    "adTitle": "Book Your Trip",
+    "backToList": "Back to All Works"
   }
 }

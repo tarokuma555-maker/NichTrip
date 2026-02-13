@@ -71,6 +71,7 @@
     "worksPickup": "인기 작품 — 탭하여 플랜 작성",
     "searchPlaceholder": "작품명으로 검색...",
     "noWorksFound": "해당 작품을 찾을 수 없습니다",
+    "viewAllWorks": "전체 작품 보기",
     "allWorksDesc": "전체 대응 작품 — 탭하여 플랜 작성",
     "worksCount": "{count}작품",
     "ctaHeading1": "그 장소로,",
@@ -441,5 +442,32 @@
     "en": "English",
     "zh": "中文",
     "ko": "한국어"
+  },
+  "Works": {
+    "title": "전체 애니메이션 작품",
+    "metaDesc": "AnimeTrips에 수록된 전체 {count}작품의 성지순례 가이드.",
+    "searchPlaceholder": "작품명으로 검색...",
+    "filterAll": "전체",
+    "spots": "{count}곳",
+    "showMore": "더 보기",
+    "noResults": "결과가 없습니다",
+    "totalWorks": "전체 {count}작품"
+  },
+  "WorkDetail": {
+    "pilgrimageGuide": "성지순례 가이드",
+    "spotsCount": "{count}곳의 성지",
+    "createPlan": "순례 플랜 만들기",
+    "mapTitle": "성지 지도",
+    "spotListTitle": "성지 스팟 목록",
+    "sceneLabel": "애니메이션 장면",
+    "episodeLabel": "등장 화수",
+    "accessLabel": "교통편",
+    "locateOnMap": "지도에서 보기",
+    "routeCta": "AI로 최적 루트 자동 생성",
+    "routeCtaDesc": "출발지, 일수, 예산만 입력하면 최적의 순례 플랜을 제안합니다",
+    "routeCtaButton": "플랜 만들기",
+    "relatedWorks": "같은 지역의 작품",
+    "adTitle": "여행 예약은 여기서",
+    "backToList": "작품 목록으로 돌아가기"
   }
 }

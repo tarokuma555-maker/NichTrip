@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getWorkVisual } from "@/lib/work-visuals";
 import { useAuth } from "@/components/AuthProvider";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import UserMenu from "@/components/UserMenu";
 import TravelBanner from "@/components/ads/TravelBanner";
@@ -14,6 +15,7 @@ import TravelBanner from "@/components/ads/TravelBanner";
 gsap.registerPlugin(ScrollTrigger);
 
 type Work = {
+  slug: string;
   title: string;
   title_en: string;
   year: number;
@@ -337,20 +339,15 @@ function AboutSection() {
    ポスターカード（画像読み込みエラー対応付き）
    ================================================================ */
 function PosterCard({ work }: { work: Work }) {
-  const router = useRouter();
   const visual = getWorkVisual(work.title);
   const [imgError, setImgError] = useState(false);
 
   return (
-    <button
-      onClick={() =>
-        router.push(
-          `/plan?theme=pilgrimage&work=${encodeURIComponent(work.title)}`
-        )
-      }
+    <Link
+      href={`/works/${work.slug}`}
       className="group relative overflow-hidden text-left rounded-lg
                  border border-white/10 hover:border-red-500/60
-                 transition-colors duration-200"
+                 transition-colors duration-200 block"
     >
       <div className="relative aspect-[2/3] overflow-hidden rounded-lg">
         {/* グラデーション背景（プレースホルダー兼フォールバック） */}
@@ -386,7 +383,7 @@ function PosterCard({ work }: { work: Work }) {
           </div>
         </div>
       </div>
-    </button>
+    </Link>
   );
 }
 
@@ -489,6 +486,21 @@ function PosterGallerySection({ works }: { works: Work[] }) {
             <p className="text-white/30 text-sm">{t("noWorksFound")}</p>
           </div>
         )}
+
+        {/* 全作品一覧リンク */}
+        <div className="text-center mt-8 sm:mt-12">
+          <Link
+            href="/works"
+            className="inline-flex items-center gap-2 text-sm font-black text-white/40
+                       border-2 border-white/10 px-6 py-3
+                       hover:border-red-500/30 hover:text-red-400 transition-colors"
+          >
+            {t("viewAllWorks")}
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -505,7 +517,6 @@ const DECADES = [
 ] as const;
 
 function TitleListSection({ works }: { works: Work[] }) {
-  const router = useRouter();
   const t = useTranslations("TopPage");
   const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState<Record<string, boolean>>({
@@ -635,13 +646,9 @@ function TitleListSection({ works }: { works: Work[] }) {
                 {isOpen && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
                     {group.works.map((work) => (
-                      <button
-                        key={work.title}
-                        onClick={() =>
-                          router.push(
-                            `/plan?theme=pilgrimage&work=${encodeURIComponent(work.title)}`
-                          )
-                        }
+                      <Link
+                        key={work.slug}
+                        href={`/works/${work.slug}`}
                         className="allworks-item group flex items-center gap-3 px-3 py-2.5
                                    bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.06] hover:border-red-500/30
                                    rounded-lg transition-all duration-200 text-left"
@@ -666,7 +673,7 @@ function TitleListSection({ works }: { works: Work[] }) {
                         >
                           <path d="M9 5l7 7-7 7" />
                         </svg>
-                      </button>
+                      </Link>
                     ))}
                   </div>
                 )}
@@ -680,6 +687,21 @@ function TitleListSection({ works }: { works: Work[] }) {
             <p className="text-white/30 text-sm">{t("noWorksFound")}</p>
           </div>
         )}
+
+        {/* 全作品一覧リンク */}
+        <div className="text-center mt-8 sm:mt-12">
+          <Link
+            href="/works"
+            className="inline-flex items-center gap-2 text-sm font-black text-white/40
+                       border-2 border-white/10 px-6 py-3
+                       hover:border-red-500/30 hover:text-red-400 transition-colors"
+          >
+            {t("viewAllWorks")}
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </section>
   );

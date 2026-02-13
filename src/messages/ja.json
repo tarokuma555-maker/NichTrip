@@ -71,6 +71,7 @@
     "worksPickup": "人気作品 — タップしてプランを作成",
     "searchPlaceholder": "作品名で検索...",
     "noWorksFound": "該当する作品が見つかりません",
+    "viewAllWorks": "全作品一覧を見る",
     "allWorksDesc": "対応作品一覧 — タップしてプランを作成",
     "worksCount": "{count}作品",
     "ctaHeading1": "あの場所へ、",
@@ -441,5 +442,32 @@
     "en": "English",
     "zh": "中文",
     "ko": "한국어"
+  },
+  "Works": {
+    "title": "全作品一覧",
+    "metaDesc": "AnimeTripsに収録された全{count}作品の聖地巡礼ガイド。",
+    "searchPlaceholder": "作品名で検索...",
+    "filterAll": "すべて",
+    "spots": "{count}箇所",
+    "showMore": "もっと見る",
+    "noResults": "該当する作品がありません",
+    "totalWorks": "全{count}作品"
+  },
+  "WorkDetail": {
+    "pilgrimageGuide": "聖地巡礼ガイド",
+    "spotsCount": "{count}箇所の聖地",
+    "createPlan": "この作品の巡礼プランを作成",
+    "mapTitle": "聖地マップ",
+    "spotListTitle": "聖地スポット一覧",
+    "sceneLabel": "アニメシーン",
+    "episodeLabel": "登場話数",
+    "accessLabel": "アクセス",
+    "locateOnMap": "マップで表示",
+    "routeCta": "AIで最適ルートを自動生成",
+    "routeCtaDesc": "出発地・日数・予算を入力するだけで、最適な巡礼プランを提案します",
+    "routeCtaButton": "プランを作成する",
+    "relatedWorks": "同じエリアの作品",
+    "adTitle": "旅行の予約はこちら",
+    "backToList": "作品一覧に戻る"
   }
 }
