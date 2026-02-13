@@ -290,7 +290,9 @@
     "access": "交通",
     "tips": "提示",
     "nearbyFood": "附近美食",
-    "viewOnMap": "在Google Map查看"
+    "viewOnMap": "在Google Map查看",
+    "af_31": "在Retty搜索",
+    "af_32": "在一休.com预约"
   },
   "Share": {
     "shareX": "分享到X",

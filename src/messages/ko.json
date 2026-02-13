@@ -290,7 +290,9 @@
     "access": "접근",
     "tips": "팁",
     "nearbyFood": "근처 맛집",
-    "viewOnMap": "Google Map에서 보기"
+    "viewOnMap": "Google Map에서 보기",
+    "af_31": "Retty에서 검색",
+    "af_32": "일휴닷컴 예약"
   },
   "Share": {
     "shareX": "X에서 공유",

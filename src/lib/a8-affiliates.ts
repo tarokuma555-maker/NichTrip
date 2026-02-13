@@ -6,7 +6,7 @@ export type A8Affiliate = {
   linkUrl: string;
   impTagUrl: string;
   reward: string;
-  category: "hotel" | "tour" | "transport" | "rental_car" | "activity";
+  category: "hotel" | "tour" | "transport" | "rental_car" | "activity" | "restaurant";
 };
 
 export const HOTEL_AFFILIATES: A8Affiliate[] = [
@@ -251,6 +251,29 @@ export const RENTAL_CAR_AFFILIATES: A8Affiliate[] = [
   },
 ];
 
+export const RESTAURANT_AFFILIATES: A8Affiliate[] = [
+  {
+    id: 31,
+    name: "Retty",
+    fullName: "Retty（レストラン予約）",
+    descKey: "af_31",
+    linkUrl: "https://px.a8.net/svt/ejp?a8mat=4AXA8F+GAG0EY+4EI4+BWVTE",
+    impTagUrl: "https://www12.a8.net/0.gif?a8mat=4AXA8F+GAG0EY+4EI4+BWVTE",
+    reward: "200円",
+    category: "restaurant",
+  },
+  {
+    id: 32,
+    name: "一休.com",
+    fullName: "一休.com レストラン",
+    descKey: "af_32",
+    linkUrl: "https://px.a8.net/svt/ejp?a8mat=4AXA8F+FXCH3U+1OK+NX736",
+    impTagUrl: "https://www11.a8.net/0.gif?a8mat=4AXA8F+FXCH3U+1OK+NX736",
+    reward: "1%",
+    category: "restaurant",
+  },
+];
+
 export const ACTIVITY_AFFILIATES: A8Affiliate[] = [
   {
     id: 15,
@@ -296,6 +319,10 @@ export function getRandomTourAffiliates(count: number): A8Affiliate[] {
 
 export function getActivityAffiliates(): A8Affiliate[] {
   return ACTIVITY_AFFILIATES;
+}
+
+export function getRestaurantAffiliates(): A8Affiliate[] {
+  return RESTAURANT_AFFILIATES;
 }
 
 export function getMixedAffiliates(count: number): A8Affiliate[] {

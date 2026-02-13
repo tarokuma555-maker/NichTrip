@@ -290,7 +290,9 @@
     "access": "アクセス",
     "tips": "ヒント",
     "nearbyFood": "近くのグルメ",
-    "viewOnMap": "Google Mapで見る"
+    "viewOnMap": "Google Mapで見る",
+    "af_31": "Rettyで探す",
+    "af_32": "一休.comで予約"
   },
   "Share": {
     "shareX": "Xでシェア",

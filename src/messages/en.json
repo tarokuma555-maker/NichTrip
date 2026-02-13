@@ -290,7 +290,9 @@
     "access": "Access",
     "tips": "Tips",
     "nearbyFood": "Nearby Food",
-    "viewOnMap": "View on Google Maps"
+    "viewOnMap": "View on Google Maps",
+    "af_31": "Search on Retty",
+    "af_32": "Book on Ikyu.com"
   },
   "Share": {
     "shareX": "Share on X",

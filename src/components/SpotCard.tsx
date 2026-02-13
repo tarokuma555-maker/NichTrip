@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import type { PlanSpot } from "@/lib/types";
+import { RESTAURANT_AFFILIATES } from "@/lib/a8-affiliates";
+import A8ImpressionPixel from "@/components/A8ImpressionPixel";
 import UGCSection from "./UGCSection";
 
 export default function SpotCard({
@@ -186,21 +188,39 @@ export default function SpotCard({
                     <p className="text-xs text-white/40 mt-0.5">
                       {spot.nearby_food.genre} / {spot.nearby_food.budget}
                     </p>
-                    <a
-                      href={`https://www.google.com/maps/search/${encodeURIComponent(spot.nearby_food.name + " " + (spot.address ?? ""))}/@${spot.lat},${spot.lng},15z`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-flex items-center gap-1 mt-2 text-[11px] font-black text-red-400 border border-red-500/30 px-2.5 py-1
-                                 hover:bg-red-500/10 transition-colors"
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                        <circle cx="12" cy="10" r="3" />
-                      </svg>
-                      {t("viewOnMap")}
-                      <span className="text-[10px]">&rarr;</span>
-                    </a>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {RESTAURANT_AFFILIATES.map((af) => (
+                        <span key={af.id} className="relative">
+                          <a
+                            href={af.linkUrl}
+                            target="_blank"
+                            rel="noopener noreferrer nofollow"
+                            onClick={(e) => e.stopPropagation()}
+                            className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border border-red-500/30 px-2.5 py-1
+                                       hover:bg-red-500/10 transition-colors"
+                          >
+                            <RestaurantSearchIcon />
+                            {t(`af_${af.id}`)}
+                            <span className="text-[10px]">&rarr;</span>
+                          </a>
+                          <A8ImpressionPixel url={af.impTagUrl} />
+                        </span>
+                      ))}
+                      <a
+                        href={`https://www.google.com/maps/search/${encodeURIComponent(spot.nearby_food.name + " " + (spot.address ?? ""))}/@${spot.lat},${spot.lng},15z`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="inline-flex items-center gap-1 text-[11px] font-black text-white/40 border border-white/20 px-2.5 py-1
+                                   hover:bg-white/10 transition-colors"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        {t("viewOnMap")}
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -294,6 +314,15 @@ function PinIcon() {
         d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
         clipRule="evenodd"
       />
+    </svg>
+  );
+}
+
+function RestaurantSearchIcon() {
+  return (
+    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <circle cx="11" cy="11" r="8" />
+      <path d="M21 21l-4.35-4.35" />
     </svg>
   );
 }
