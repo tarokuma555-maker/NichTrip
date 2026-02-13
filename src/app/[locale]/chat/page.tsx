@@ -161,7 +161,7 @@ export default function ChatPage() {
       </header>
 
       {/* メッセージエリア */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto pb-32">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto pb-44">
         <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
           {/* 初期メッセージ（制限未到達時） */}
           {messages.length === 0 && !limitReached && (
@@ -250,7 +250,7 @@ export default function ChatPage() {
 
       {/* 入力エリア */}
       {!limitReached && (
-        <div className="fixed bottom-14 left-0 right-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-sm border-t-2 border-white/10 pb-[env(safe-area-inset-bottom)]">
+        <div className="fixed bottom-24 left-0 right-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-sm border-t-2 border-white/10 pb-[env(safe-area-inset-bottom)]">
           <div className="max-w-2xl mx-auto px-4 py-3">
             <form
               onSubmit={(e) => {
