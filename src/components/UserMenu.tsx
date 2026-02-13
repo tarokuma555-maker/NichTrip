@@ -29,7 +29,7 @@ export default function UserMenu({ className = "" }: { className?: string }) {
       <>
         <button
           onClick={() => setShowAuth(true)}
-          className={`text-[11px] font-black text-white/50 border border-white/10 px-2.5 py-1
+          className={`text-[10px] sm:text-[11px] font-black text-white/50 border border-white/10 px-1.5 sm:px-2.5 py-1
                      hover:text-white hover:border-white/30 transition-colors whitespace-nowrap shrink-0 ${className}`}
         >
           {t("login")}

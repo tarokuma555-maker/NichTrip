@@ -43,12 +43,12 @@ export default function LocaleSwitcher() {
     <div ref={ref} className="relative ml-2">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1 px-2 py-1 text-[11px] font-black text-white/50
+        className="flex items-center gap-1 px-1.5 sm:px-2 py-1 text-[10px] sm:text-[11px] font-black text-white/50
                    border border-white/10 hover:text-white/80 hover:border-white/30 transition-colors
                    whitespace-nowrap shrink-0"
       >
         <span>{LOCALE_FLAGS[locale]}</span>
-        <span>{t(locale)}</span>
+        <span className="hidden sm:inline">{t(locale)}</span>
         <svg
           className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`}
           fill="none"

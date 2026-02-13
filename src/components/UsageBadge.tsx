@@ -69,7 +69,7 @@ export default function UsageBadge({ className = "" }: { className?: string }) {
   if (isPro) {
     return (
       <span
-        className={`inline-flex items-center gap-1 bg-red-500/10 border border-red-500/30 text-red-400 text-[11px] font-black px-2 py-0.5 whitespace-nowrap ${className}`}
+        className={`inline-flex items-center gap-1 bg-red-500/10 border border-red-500/30 text-red-400 text-[10px] sm:text-[11px] font-black px-1.5 sm:px-2 py-0.5 whitespace-nowrap ${className}`}
       >
         Pro
       </span>
@@ -88,7 +88,7 @@ export default function UsageBadge({ className = "" }: { className?: string }) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1 text-[11px] font-black px-2 py-0.5 border whitespace-nowrap ${colorClass} ${className}`}
+      className={`inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-black px-1.5 sm:px-2 py-0.5 border whitespace-nowrap ${colorClass} ${className}`}
     >
       {t("remaining", { count: remaining })}
     </span>

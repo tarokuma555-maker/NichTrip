@@ -13,14 +13,14 @@ export default function PlanPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-5 h-14 flex items-center flex-nowrap min-w-0">
           <Link
             href="/"
-            className="flex items-center gap-2 text-white/60 hover:text-red-400 transition-colors shrink-0"
+            className="flex items-center gap-1 sm:gap-2 text-white/60 hover:text-red-400 transition-colors shrink-0"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            <span className="text-sm font-medium">{t("backToTop")}</span>
+            <span className="text-xs sm:text-sm font-medium hidden sm:inline">{t("backToTop")}</span>
           </Link>
-          <span className="ml-auto text-base font-black text-white">
+          <span className="ml-auto text-sm sm:text-base font-black text-white">
             {t("animeTrips")}
           </span>
           <PlanPageHeader />
