@@ -73,17 +73,19 @@ export default function PopularWorks({ works }: { works: Work[] }) {
             >
               {/* ポスター画像ヘッダー */}
               <div className="relative h-64 overflow-hidden">
+                {/* グラデーション背景（フォールバック） */}
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${visual.gradient}`}
+                />
                 {/* ポスター画像 */}
-                {visual.image ? (
+                {visual.image && (
                   <img
                     src={visual.image}
                     alt={work.title}
                     className="absolute inset-0 w-full h-full object-cover
                                group-hover:scale-105 transition-transform duration-300"
-                  />
-                ) : (
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${visual.gradient}`}
+                    loading="lazy"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   />
                 )}
 

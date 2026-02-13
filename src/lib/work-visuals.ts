@@ -446,6 +446,98 @@ export const WORK_VISUALS: Record<string, WorkVisual> = {
     glowColor: "#38bdf8",
     image: "/images/works/suzume.jpg",
   },
+  // --- Unmapped local images ---
+  "化物語": {
+    gradient: "from-purple-700 via-violet-500 to-purple-900",
+    patternSvg: spirals,
+    icon: "🦀",
+    glowColor: "#7c3aed",
+    image: "/images/works/bakemonogatari.jpg",
+  },
+  "ぼっち・ざ・ろっく！": {
+    gradient: "from-pink-500 via-rose-400 to-pink-600",
+    patternSvg: musicLines,
+    icon: "🎸",
+    glowColor: "#ec4899",
+    image: "/images/works/bocchi.jpg",
+  },
+  "CLANNAD": {
+    gradient: "from-amber-400 via-yellow-300 to-amber-500",
+    patternSvg: petals,
+    icon: "🌻",
+    glowColor: "#f59e0b",
+    image: "/images/works/clannad.jpg",
+  },
+  "花咲くいろは": {
+    gradient: "from-pink-400 via-rose-300 to-amber-300",
+    patternSvg: petals,
+    icon: "🌸",
+    glowColor: "#f472b6",
+    image: "/images/works/hanasaku-iroha.jpg",
+  },
+  "氷菓": {
+    gradient: "from-emerald-500 via-teal-400 to-emerald-600",
+    patternSvg: diamonds,
+    icon: "🔍",
+    glowColor: "#10b981",
+    image: "/images/works/hyouka.jpg",
+  },
+  "夏目友人帳": {
+    gradient: "from-green-400 via-lime-300 to-green-500",
+    patternSvg: petals,
+    icon: "🐱",
+    glowColor: "#84cc16",
+    image: "/images/works/natsume-yuujinchou.jpg",
+  },
+  "響け！ユーフォニアム": {
+    gradient: "from-amber-500 via-yellow-400 to-amber-600",
+    patternSvg: musicLines,
+    icon: "🎺",
+    glowColor: "#f59e0b",
+    image: "/images/works/sound-euphonium.jpg",
+  },
+  "たまゆら": {
+    gradient: "from-pink-300 via-rose-200 to-amber-200",
+    patternSvg: cometDots,
+    icon: "📷",
+    glowColor: "#fda4af",
+    image: "/images/works/tamayura.jpg",
+  },
+  "東京リベンジャーズ": {
+    gradient: "from-gray-700 via-slate-600 to-gray-800",
+    patternSvg: crosshatch,
+    icon: "🏍️",
+    glowColor: "#64748b",
+    image: "/images/works/tokyo-revengers.jpg",
+  },
+  "ゆるキャン△": {
+    gradient: "from-sky-400 via-cyan-300 to-blue-400",
+    patternSvg: cometDots,
+    icon: "⛺",
+    glowColor: "#38bdf8",
+    image: "/images/works/yurucamp.jpg",
+  },
+  "機動戦士ガンダム 水星の魔女": {
+    gradient: "from-red-600 via-rose-500 to-red-700",
+    patternSvg: hexagons,
+    icon: "🤖",
+    glowColor: "#ef4444",
+    image: "/images/works/gundam.jpg",
+  },
+  "ガンダム00": {
+    gradient: "from-blue-600 via-indigo-500 to-blue-700",
+    patternSvg: hexagons,
+    icon: "🤖",
+    glowColor: "#3b82f6",
+    image: "/images/works/gundam.jpg",
+  },
+  "ガンダムSEED": {
+    gradient: "from-violet-600 via-purple-500 to-violet-700",
+    patternSvg: hexagons,
+    icon: "🤖",
+    glowColor: "#8b5cf6",
+    image: "/images/works/gundam.jpg",
+  },
 };
 
 const DEFAULT_VISUAL: WorkVisual = {
@@ -456,12 +548,24 @@ const DEFAULT_VISUAL: WorkVisual = {
   image: "",
 };
 
+import { getWorkImage } from "./work-images";
+
 export const POSTER_TITLES = new Set(Object.keys(WORK_VISUALS));
 
 export function hasPoster(title: string): boolean {
-  return POSTER_TITLES.has(title);
+  if (POSTER_TITLES.has(title)) return true;
+  return !!getWorkImage(title);
 }
 
 export function getWorkVisual(title: string): WorkVisual {
-  return WORK_VISUALS[title] ?? DEFAULT_VISUAL;
+  const manual = WORK_VISUALS[title];
+  if (manual) return manual;
+
+  // Check AniList-fetched image as fallback
+  const anilistImage = getWorkImage(title);
+  if (anilistImage) {
+    return { ...DEFAULT_VISUAL, image: anilistImage };
+  }
+
+  return DEFAULT_VISUAL;
 }

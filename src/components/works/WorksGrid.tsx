@@ -155,6 +155,7 @@ export default function WorksGrid({ works }: { works: WorkItem[] }) {
 function WorkCard({ work }: { work: WorkItem }) {
   const t = useTranslations("Works");
   const visual = getWorkVisual(work.title);
+  const [imgError, setImgError] = useState(false);
 
   return (
     <Link
@@ -166,13 +167,14 @@ function WorkCard({ work }: { work: WorkItem }) {
     >
       {/* Image / Gradient */}
       <div className="relative h-40 sm:h-48 overflow-hidden">
-        {visual.image ? (
+        {visual.image && !imgError ? (
           <img
             src={visual.image}
             alt={work.title}
             className="absolute inset-0 w-full h-full object-cover
                        group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
+            onError={() => setImgError(true)}
           />
         ) : (
           <div className={`absolute inset-0 bg-gradient-to-br ${visual.gradient}`} />

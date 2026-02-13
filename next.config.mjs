@@ -10,8 +10,13 @@ const nextConfig = {
   },
 
   images: {
-    // 外部画像を許可する場合はここにドメインを追加
-    remotePatterns: [],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "s4.anilist.co",
+        pathname: "/file/anilistcdn/**",
+      },
+    ],
   },
 
   // セキュリティヘッダー

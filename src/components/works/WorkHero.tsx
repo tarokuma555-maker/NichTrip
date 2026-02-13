@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getWorkVisual } from "@/lib/work-visuals";
@@ -18,7 +19,8 @@ type WorkHeroProps = {
 export default function WorkHero({ work }: WorkHeroProps) {
   const t = useTranslations("WorkDetail");
   const visual = getWorkVisual(work.title);
-  const hasImage = !!visual.image;
+  const [imgError, setImgError] = useState(false);
+  const hasImage = !!visual.image && !imgError;
 
   return (
     <section className="relative w-full min-h-[280px] sm:min-h-[360px] overflow-hidden">
@@ -30,6 +32,7 @@ export default function WorkHero({ work }: WorkHeroProps) {
             src={visual.image}
             alt={work.title}
             className="absolute inset-0 w-full h-full object-cover"
+            onError={() => setImgError(true)}
           />
           {/* Dark overlay on image */}
           <div className="absolute inset-0 bg-black/60" />
