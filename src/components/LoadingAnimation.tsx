@@ -16,10 +16,11 @@ const POSTER_IMAGES = [
 ];
 
 const STEPS = [
-  { key: "step1", pct: 25 },
-  { key: "step2", pct: 50 },
-  { key: "step3", pct: 75 },
-  { key: "step4", pct: 95 },
+  { key: "step1", pct: 20 },
+  { key: "step2", pct: 40 },
+  { key: "step3", pct: 60 },
+  { key: "step4", pct: 80 },
+  { key: "step5", pct: 95 },
 ];
 
 function shuffle<T>(arr: T[]): T[] {

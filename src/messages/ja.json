@@ -76,7 +76,10 @@
     "ctaHeading1": "あの場所へ、",
     "ctaHeading2": "会いに行こう。",
     "ctaSub": "好きな作品を選ぶだけ。<br></br>聖地巡礼の旅プランを<mbr></mbr>自動で作成します。",
-    "perMonth": "/月"
+    "perMonth": "/月",
+    "adHotelNearby": "聖地の近くのホテルを探す",
+    "adTravelPrep": "旅の準備をもっと便利に",
+    "adTourPackage": "パッケージツアーでお得に巡礼"
   },
   "ConditionForm": {
     "newPlan": "新規作成",
@@ -129,7 +132,8 @@
     "departurePlaceholder": "東京",
     "daysPlaceholder": "日数",
     "currencyYen": "{amount}円",
-    "currencyManYen": "{amount}万円"
+    "currencyManYen": "{amount}万円",
+    "adHotelSuggest": "宿泊先も一緒に探しませんか？"
   },
   "PlanTimeline": {
     "transportMode": "Transport Mode",
@@ -152,7 +156,8 @@
     "taxiFareNote": "※料金は距離・時間帯により変動",
     "carDuration": "車で約{min}〜{max}分",
     "walkDuration": "徒歩約{min}〜{max}分",
-    "taxiDuration": "タクシーで約{min}〜{max}分"
+    "taxiDuration": "タクシーで約{min}〜{max}分",
+    "adConvenient": "この旅をもっと便利に"
   },
   "Hotel": {
     "recommended": "この日のおすすめ宿",
@@ -262,13 +267,16 @@
     "faqQ3": "複数作品ミックス巡礼とは？",
     "faqA3": "最大3つのアニメ作品を選択し、それぞれの聖地を地理的に最適化したルートで巡るプランを生成できるPro限定機能です。",
     "faqQ4": "支払い方法は？",
-    "faqA4": "クレジットカード（Visa, Mastercard, JCB, American Express）に対応しています。Stripeの安全な決済システムを利用しています。"
+    "faqA4": "クレジットカード（Visa, Mastercard, JCB, American Express）に対応しています。Stripeの安全な決済システムを利用しています。",
+    "adTravelDeals": "旅行予約でさらにお得に",
+    "adHotelSearch": "聖地巡礼の宿探しはこちら"
   },
   "Loading": {
     "step1": "聖地データを検索中...",
     "step2": "最適なルートを計算中...",
     "step3": "周辺グルメを調査中...",
     "step4": "プランを仕上げています...",
+    "step5": "おすすめ宿情報を取得中...",
     "estimate": "約10〜20秒で完成します"
   },
   "Usage": {
@@ -307,7 +315,8 @@
     "later": "あとで",
     "checkoutError": "決済ページの作成に失敗しました",
     "urlError": "決済URLの取得に失敗しました",
-    "networkError": "通信エラーが発生しました"
+    "networkError": "通信エラーが発生しました",
+    "adRecommended": "おすすめ旅行サイト"
   },
   "Chat": {
     "title": "チャット",
@@ -376,6 +385,17 @@
     "cancel": "キャンセル",
     "tipsLabel": "Tips:",
     "angleLabel": "アングル:"
+  },
+  "Ads": {
+    "defaultTitle": "旅の準備はお済みですか？",
+    "viewSite": "サイトを見る",
+    "floatingText": "聖地の近くの宿を探す",
+    "planFormMsg": "宿泊先も一緒に探しませんか？",
+    "loadingMsg": "プラン生成中... 旅の準備も始めませんか？",
+    "planResultMsg": "この旅をもっと便利に",
+    "pricingMsg": "旅行代はもっと安くなる",
+    "feedMsg": "次の聖地巡礼を計画しよう",
+    "topMsg": "旅行に役立つサービス"
   },
   "Common": {
     "backToTop": "トップへ",

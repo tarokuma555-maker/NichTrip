@@ -76,7 +76,10 @@
     "ctaHeading1": "그 장소로,",
     "ctaHeading2": "만나러 가자.",
     "ctaSub": "좋아하는 작품을 선택하기만 하면.<br></br>성지순례 여행 플랜을<mbr></mbr> 자동으로 작성합니다.",
-    "perMonth": "/월"
+    "perMonth": "/월",
+    "adHotelNearby": "성지 근처 호텔 찾기",
+    "adTravelPrep": "여행 준비를 더 편리하게",
+    "adTourPackage": "패키지 투어로 저렴하게 순례"
   },
   "ConditionForm": {
     "newPlan": "새로 만들기",
@@ -129,7 +132,8 @@
     "departurePlaceholder": "도쿄",
     "daysPlaceholder": "일수",
     "currencyYen": "{amount}엔",
-    "currencyManYen": "{amount}만엔"
+    "currencyManYen": "{amount}만엔",
+    "adHotelSuggest": "숙소도 함께 찾아보세요"
   },
   "PlanTimeline": {
     "transportMode": "교통수단",
@@ -152,7 +156,8 @@
     "taxiFareNote": "※요금은 거리·시간대에 따라 변동",
     "carDuration": "차로 약 {min}〜{max}분",
     "walkDuration": "도보 약 {min}〜{max}분",
-    "taxiDuration": "택시로 약 {min}〜{max}분"
+    "taxiDuration": "택시로 약 {min}〜{max}분",
+    "adConvenient": "여행을 더 편리하게"
   },
   "Hotel": {
     "recommended": "오늘의 추천 숙소",
@@ -262,13 +267,16 @@
     "faqQ3": "다작품 믹스 순례란?",
     "faqA3": "최대 3개의 애니메이션 작품을 선택하여, 각 작품의 성지를 지리적으로 최적화된 루트로 순회하는 플랜을 생성할 수 있는 Pro 전용 기능입니다.",
     "faqQ4": "결제 방법은?",
-    "faqA4": "신용카드 (Visa, Mastercard, JCB, American Express)에 대응하고 있습니다. Stripe의 안전한 결제 시스템을 이용합니다."
+    "faqA4": "신용카드 (Visa, Mastercard, JCB, American Express)에 대응하고 있습니다. Stripe의 안전한 결제 시스템을 이용합니다.",
+    "adTravelDeals": "여행 예약을 더 저렴하게",
+    "adHotelSearch": "성지순례 숙소 찾기"
   },
   "Loading": {
     "step1": "성지 데이터 검색 중...",
     "step2": "최적 루트 계산 중...",
     "step3": "주변 맛집 조사 중...",
     "step4": "플랜을 완성하고 있습니다...",
+    "step5": "추천 숙소 정보 가져오는 중...",
     "estimate": "약 10~20초 소요됩니다"
   },
   "Usage": {
@@ -307,7 +315,8 @@
     "later": "나중에",
     "checkoutError": "결제 페이지 생성에 실패했습니다",
     "urlError": "결제 URL 취득에 실패했습니다",
-    "networkError": "통신 오류가 발생했습니다"
+    "networkError": "통신 오류가 발생했습니다",
+    "adRecommended": "추천 여행 사이트"
   },
   "Chat": {
     "title": "채팅",
@@ -376,6 +385,17 @@
     "cancel": "취소",
     "tipsLabel": "Tips:",
     "angleLabel": "앵글:"
+  },
+  "Ads": {
+    "defaultTitle": "여행 준비 되셨나요?",
+    "viewSite": "사이트 보기",
+    "floatingText": "성지 근처 숙소 찾기",
+    "planFormMsg": "숙소도 함께 찾아보세요",
+    "loadingMsg": "플랜 생성 중... 여행 준비도 시작하세요!",
+    "planResultMsg": "여행을 더 편리하게",
+    "pricingMsg": "여행비를 더 절약하세요",
+    "feedMsg": "다음 성지순례를 계획하세요",
+    "topMsg": "유용한 여행 서비스"
   },
   "Common": {
     "backToTop": "톱으로",

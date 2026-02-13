@@ -9,6 +9,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { useTranslations } from "next-intl";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import UserMenu from "@/components/UserMenu";
+import TravelBanner from "@/components/ads/TravelBanner";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -1003,6 +1004,7 @@ export default function MangaTopPage({
   titleOnlyWorks: Work[];
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations("TopPage");
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -1084,9 +1086,12 @@ export default function MangaTopPage({
       </header>
       <HeroSection />
       <AboutSection />
+      <TravelBanner variant="horizontal" category="hotel" title={t("adHotelNearby")} />
       <ProSection />
       <PlanComparisonSection />
+      <TravelBanner variant="card" category="mixed" maxItems={3} title={t("adTravelPrep")} />
       <PosterGallerySection works={posterWorks} />
+      <TravelBanner variant="horizontal" category="tour" title={t("adTourPackage")} />
       <TitleListSection works={titleOnlyWorks} />
       <CTASection />
     </div>

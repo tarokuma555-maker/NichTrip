@@ -1,8 +1,80 @@
 "use client";
 
+import { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/components/AuthProvider";
+import { getRandomHotelAffiliates } from "@/lib/a8-affiliates";
+
+/* eslint-disable @next/next/no-img-element */
+
+const DISMISS_KEY = "animetrips_nav_ad_dismissed";
+
+function NavAdBar() {
+  const { isPro } = useAuth();
+  const [dismissed, setDismissed] = useState(true);
+  const affiliates = useMemo(() => getRandomHotelAffiliates(4), []);
+
+  useEffect(() => {
+    const ts = sessionStorage.getItem(DISMISS_KEY);
+    if (ts && Date.now() - parseInt(ts, 10) < 24 * 60 * 60 * 1000) {
+      setDismissed(true);
+    } else {
+      setDismissed(false);
+    }
+  }, []);
+
+  if (isPro || dismissed || affiliates.length === 0) return null;
+
+  return (
+    <div className="relative bg-red-500/5 border-t border-red-500/10 h-[30px] overflow-hidden flex items-center">
+      <div className="nav-ad-scroll flex items-center gap-6 whitespace-nowrap pl-4">
+        {[...affiliates, ...affiliates].map((af, i) => (
+          <a
+            key={`${af.id}-${i}`}
+            href={af.linkUrl}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="text-[10px] text-white/30 hover:text-red-400/60 transition-colors shrink-0"
+          >
+            {af.name}
+          </a>
+        ))}
+      </div>
+      <button
+        onClick={() => {
+          setDismissed(true);
+          sessionStorage.setItem(DISMISS_KEY, String(Date.now()));
+        }}
+        className="absolute right-1 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 text-xs px-1 z-10 bg-[#0a0a0a]/80"
+        aria-label="close"
+      >
+        &times;
+      </button>
+      {affiliates.map((af) => (
+        <img
+          key={`imp-${af.id}`}
+          src={af.impTagUrl}
+          width={1}
+          height={1}
+          alt=""
+          loading="lazy"
+          aria-hidden="true"
+          style={{ border: "none", position: "absolute", visibility: "hidden" }}
+        />
+      ))}
+      <style jsx>{`
+        .nav-ad-scroll {
+          animation: navAdScroll 20s linear infinite;
+        }
+        @keyframes navAdScroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
+    </div>
+  );
+}
 
 export default function BottomNav() {
   const pathname = usePathname();
@@ -15,6 +87,7 @@ export default function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-[60] bg-[#0a0a0a] border-t-2 border-white/10 pb-[env(safe-area-inset-bottom)]">
+      <NavAdBar />
       <div className="flex items-center justify-around h-14 max-w-lg mx-auto">
         {/* ホーム */}
         <button

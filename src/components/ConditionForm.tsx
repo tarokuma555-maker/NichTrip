@@ -9,6 +9,8 @@ import PlanTimeline from "./PlanTimeline";
 import PaywallModal from "./PaywallModal";
 import AuthModal from "./AuthModal";
 import ProBanner from "./ProBanner";
+import TravelBanner from "@/components/ads/TravelBanner";
+import ContextualAd from "@/components/ads/ContextualAd";
 
 type Phase = "form" | "loading" | "result" | "error";
 type Tab = "new" | "history";
@@ -426,6 +428,9 @@ export default function ConditionForm({
     return (
       <div className="w-full max-w-md mx-auto">
         <LoadingAnimation />
+        <div className="mt-8">
+          <ContextualAd context="loading" />
+        </div>
       </div>
     );
   }
@@ -842,6 +847,8 @@ export default function ConditionForm({
           {t("fillAll")}
         </p>
       ) : null}
+
+      <TravelBanner variant="inline" category="hotel" maxItems={2} title={t("adHotelSuggest")} />
       </>
       )}
 

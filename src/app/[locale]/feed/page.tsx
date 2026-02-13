@@ -5,7 +5,10 @@ import { useTranslations, useLocale } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
 import AuthModal from "@/components/AuthModal";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import TravelBanner from "@/components/ads/TravelBanner";
 import type { SpotReview } from "@/lib/types";
+
+const AD_CATEGORIES = ["hotel", "activity", "tour", "rental_car"] as const;
 
 const FREE_POST_LIMIT = 3;
 
@@ -126,8 +129,19 @@ export default function FeedPage() {
         ) : (
           <div className="relative">
             <div className="space-y-4">
-              {visibleReviews.map((review) => (
-                <FeedCard key={review.id} review={review} />
+              {visibleReviews.map((review, idx) => (
+                <div key={review.id}>
+                  <FeedCard review={review} />
+                  {(idx + 1) % 5 === 0 && idx < visibleReviews.length - 1 && (
+                    <div className="my-4">
+                      <TravelBanner
+                        variant="card"
+                        category={AD_CATEGORIES[Math.floor(idx / 5) % AD_CATEGORIES.length]}
+                        maxItems={1}
+                      />
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 

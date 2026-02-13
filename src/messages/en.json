@@ -76,7 +76,10 @@
     "ctaHeading1": "To that place,",
     "ctaHeading2": "let's go see it.",
     "ctaSub": "Just pick your favorite work.<br></br>We'll auto-create your<mbr></mbr> pilgrimage plan.",
-    "perMonth": "/mo"
+    "perMonth": "/mo",
+    "adHotelNearby": "Find hotels near sacred spots",
+    "adTravelPrep": "Make trip planning easier",
+    "adTourPackage": "Save with tour packages"
   },
   "ConditionForm": {
     "newPlan": "New Plan",
@@ -129,7 +132,8 @@
     "departurePlaceholder": "Tokyo",
     "daysPlaceholder": "Days",
     "currencyYen": "¥{amount}",
-    "currencyManYen": "¥{amount}"
+    "currencyManYen": "¥{amount}",
+    "adHotelSuggest": "Book accommodation too?"
   },
   "PlanTimeline": {
     "transportMode": "Transport Mode",
@@ -152,7 +156,8 @@
     "taxiFareNote": "Fare varies by distance and time",
     "carDuration": "About {min}–{max} min by car",
     "walkDuration": "About {min}–{max} min on foot",
-    "taxiDuration": "About {min}–{max} min by taxi"
+    "taxiDuration": "About {min}–{max} min by taxi",
+    "adConvenient": "Make your trip more convenient"
   },
   "Hotel": {
     "recommended": "Recommended Hotels",
@@ -262,13 +267,16 @@
     "faqQ3": "What is Multi-Work Mix Pilgrimage?",
     "faqA3": "A Pro-exclusive feature that lets you select up to 3 anime works and generate a geographically optimized route visiting sacred spots from each work.",
     "faqQ4": "What payment methods are accepted?",
-    "faqA4": "We accept credit cards (Visa, Mastercard, JCB, American Express) via Stripe's secure payment system."
+    "faqA4": "We accept credit cards (Visa, Mastercard, JCB, American Express) via Stripe's secure payment system.",
+    "adTravelDeals": "Save more on travel bookings",
+    "adHotelSearch": "Find accommodation for your pilgrimage"
   },
   "Loading": {
     "step1": "Searching sacred spot data...",
     "step2": "Calculating optimal route...",
     "step3": "Researching nearby restaurants...",
     "step4": "Finalizing your plan...",
+    "step5": "Finding recommended hotels...",
     "estimate": "Takes about 10-20 seconds"
   },
   "Usage": {
@@ -307,7 +315,8 @@
     "later": "Maybe later",
     "checkoutError": "Failed to create checkout page",
     "urlError": "Failed to get checkout URL",
-    "networkError": "Network error occurred"
+    "networkError": "Network error occurred",
+    "adRecommended": "Recommended travel sites"
   },
   "Chat": {
     "title": "Chat",
@@ -376,6 +385,17 @@
     "cancel": "Cancel",
     "tipsLabel": "Tips:",
     "angleLabel": "Angle:"
+  },
+  "Ads": {
+    "defaultTitle": "Ready for your trip?",
+    "viewSite": "View Site",
+    "floatingText": "Find hotels near sacred spots",
+    "planFormMsg": "Book accommodation too?",
+    "loadingMsg": "Generating plan... Start preparing your trip!",
+    "planResultMsg": "Make your trip more convenient",
+    "pricingMsg": "Save more on travel",
+    "feedMsg": "Plan your next pilgrimage",
+    "topMsg": "Useful travel services"
   },
   "Common": {
     "backToTop": "Back to Top",

@@ -272,3 +272,33 @@ export function getRandomTourAffiliates(count: number): A8Affiliate[] {
 export function getActivityAffiliates(): A8Affiliate[] {
   return ACTIVITY_AFFILIATES;
 }
+
+export function getMixedAffiliates(count: number): A8Affiliate[] {
+  const all = [
+    ...HOTEL_AFFILIATES,
+    ...TOUR_AFFILIATES,
+    ...RENTAL_CAR_AFFILIATES,
+    ...ACTIVITY_AFFILIATES,
+  ];
+  return pickRandom(all, count);
+}
+
+export function getAffiliatesByCategory(
+  category: "hotel" | "tour" | "transport" | "rental_car" | "activity" | "mixed",
+  count: number
+): A8Affiliate[] {
+  switch (category) {
+    case "hotel":
+      return pickRandom(HOTEL_AFFILIATES, count);
+    case "tour":
+      return pickRandom(TOUR_AFFILIATES, count);
+    case "transport":
+      return TRANSPORT_AFFILIATES.slice(0, count);
+    case "rental_car":
+      return pickRandom(RENTAL_CAR_AFFILIATES, count);
+    case "activity":
+      return ACTIVITY_AFFILIATES.slice(0, count);
+    case "mixed":
+      return getMixedAffiliates(count);
+  }
+}

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
 import PricingCard from "@/components/PricingCard";
 import AuthModal from "@/components/AuthModal";
+import TravelBanner from "@/components/ads/TravelBanner";
 
 export default function PricingContent() {
   const searchParams = useSearchParams();
@@ -82,6 +83,9 @@ export default function PricingContent() {
         {/* プランカード */}
         <PricingCard onNeedAuth={() => setShowAuth(true)} />
 
+        {/* 旅行予約広告 */}
+        <TravelBanner variant="card" category="mixed" maxItems={4} title={t("adTravelDeals")} />
+
         {/* FAQ */}
         <div className="mt-16 max-w-2xl mx-auto">
           <h2 className="text-xl font-black text-white mb-6 text-center">
@@ -103,6 +107,9 @@ export default function PricingContent() {
             ))}
           </div>
         </div>
+
+        {/* 下部バナー */}
+        <TravelBanner variant="horizontal" category="hotel" title={t("adHotelSearch")} />
       </main>
 
       {showAuth && (

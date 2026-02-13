@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useAuth } from "@/components/AuthProvider";
+import { getRandomHotelAffiliates, type A8Affiliate } from "@/lib/a8-affiliates";
+
+/* eslint-disable @next/next/no-img-element */
 
 type PaywallReason =
   | "usage_limit"
@@ -21,9 +24,10 @@ export default function PaywallModal({
   onLogin: () => void;
 }) {
   const t = useTranslations("Paywall");
-  const { user, markCheckoutPending } = useAuth();
+  const { user, isPro, markCheckoutPending } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const a8Links = useMemo(() => getRandomHotelAffiliates(2), []);
 
   const REASON_MESSAGES: Record<PaywallReason, string> = {
     usage_limit: t("usageLimit"),
@@ -123,6 +127,38 @@ export default function PaywallModal({
         >
           {t("later")}
         </button>
+
+        {/* 控えめな旅行サイトリンク */}
+        {!isPro && (
+          <div className="mt-4 pt-3 border-t border-white/5 relative">
+            <p className="text-[10px] text-white/20 mb-2">{t("adRecommended")}</p>
+            <div className="flex gap-2 justify-center flex-wrap">
+              {a8Links.map((af: A8Affiliate) => (
+                <a
+                  key={af.id}
+                  href={af.linkUrl}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  className="text-[10px] text-white/30 hover:text-red-400/60 transition-colors"
+                >
+                  {af.name}
+                </a>
+              ))}
+            </div>
+            {a8Links.map((af: A8Affiliate) => (
+              <img
+                key={`imp-${af.id}`}
+                src={af.impTagUrl}
+                width={1}
+                height={1}
+                alt=""
+                loading="lazy"
+                aria-hidden="true"
+                style={{ border: "none", position: "absolute", visibility: "hidden" }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

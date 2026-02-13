@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { getRandomHotelAffiliates, getRandomRentalCarAffiliates, getBusAffiliate, getRandomTourAffiliates } from "@/lib/a8-affiliates";
 import A8ImpressionPixel from "@/components/A8ImpressionPixel";
+import TravelBanner from "@/components/ads/TravelBanner";
 
 type TransportMode = "train" | "car" | "walk" | "taxi";
 
@@ -451,6 +452,14 @@ export default function PlanTimeline({
                     budget={budget}
                   />
                 </div>
+                {/* Day間のインライン広告 */}
+                <div className="mt-4 ml-4 sm:ml-6 pl-8 sm:pl-10">
+                  <TravelBanner
+                    variant="inline"
+                    category={dayIdx % 2 === 0 ? "hotel" : "rental_car"}
+                    maxItems={2}
+                  />
+                </div>
               </>
             )}
           </div>
@@ -507,6 +516,9 @@ export default function PlanTimeline({
         </h3>
         <ShareButton plan={plan} keyword={keyword} />
       </div>
+
+      {/* ===== 旅をもっと便利に ===== */}
+      <TravelBanner variant="card" category="mixed" maxItems={4} title={t("adConvenient")} />
 
       {/* ===== フッターアクション ===== */}
       <div className="mt-8 space-y-3">

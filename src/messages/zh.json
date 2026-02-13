@@ -76,7 +76,10 @@
     "ctaHeading1": "前往那个地方，",
     "ctaHeading2": "去看看吧。",
     "ctaSub": "只需选择喜欢的作品。<br></br>自动为您创建<mbr></mbr>圣地巡礼计划。",
-    "perMonth": "/月"
+    "perMonth": "/月",
+    "adHotelNearby": "搜索圣地附近的酒店",
+    "adTravelPrep": "让旅行准备更方便",
+    "adTourPackage": "跟团游更划算"
   },
   "ConditionForm": {
     "newPlan": "新建",
@@ -129,7 +132,8 @@
     "departurePlaceholder": "东京",
     "daysPlaceholder": "天数",
     "currencyYen": "{amount}日元",
-    "currencyManYen": "{amount}万日元"
+    "currencyManYen": "{amount}万日元",
+    "adHotelSuggest": "顺便预订住宿？"
   },
   "PlanTimeline": {
     "transportMode": "交通方式",
@@ -152,7 +156,8 @@
     "taxiFareNote": "※费用因距离和时段而异",
     "carDuration": "驾车约{min}〜{max}分钟",
     "walkDuration": "步行约{min}〜{max}分钟",
-    "taxiDuration": "出租车约{min}〜{max}分钟"
+    "taxiDuration": "出租车约{min}〜{max}分钟",
+    "adConvenient": "让旅行更方便"
   },
   "Hotel": {
     "recommended": "今日推荐住宿",
@@ -262,13 +267,16 @@
     "faqQ3": "什么是多作品混合巡礼？",
     "faqA3": "这是Pro专属功能，可以选择最多3部动漫作品，生成地理优化路线来巡访各作品的圣地。",
     "faqQ4": "支持哪些支付方式？",
-    "faqA4": "支持信用卡（Visa、Mastercard、JCB、American Express），通过Stripe安全支付系统处理。"
+    "faqA4": "支持信用卡（Visa、Mastercard、JCB、American Express），通过Stripe安全支付系统处理。",
+    "adTravelDeals": "旅行预订更优惠",
+    "adHotelSearch": "搜索圣地巡礼住宿"
   },
   "Loading": {
     "step1": "正在搜索圣地数据...",
     "step2": "正在计算最佳路线...",
     "step3": "正在调查周边美食...",
     "step4": "正在完善您的计划...",
+    "step5": "正在获取推荐酒店信息...",
     "estimate": "约10-20秒完成"
   },
   "Usage": {
@@ -307,7 +315,8 @@
     "later": "稍后",
     "checkoutError": "创建支付页面失败",
     "urlError": "获取支付URL失败",
-    "networkError": "网络错误"
+    "networkError": "网络错误",
+    "adRecommended": "推荐旅行网站"
   },
   "Chat": {
     "title": "聊天",
@@ -376,6 +385,17 @@
     "cancel": "取消",
     "tipsLabel": "Tips:",
     "angleLabel": "角度:"
+  },
+  "Ads": {
+    "defaultTitle": "旅行准备好了吗？",
+    "viewSite": "查看网站",
+    "floatingText": "搜索圣地附近的酒店",
+    "planFormMsg": "顺便预订住宿？",
+    "loadingMsg": "生成计划中... 开始准备旅行吧！",
+    "planResultMsg": "让旅行更方便",
+    "pricingMsg": "旅行费用可以更省",
+    "feedMsg": "计划下一次圣地巡礼",
+    "topMsg": "实用旅行服务"
   },
   "Common": {
     "backToTop": "返回首页",

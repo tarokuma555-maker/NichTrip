@@ -36,7 +36,7 @@ export default function HotelSuggestions({
   const [hotels, setHotels] = useState<HotelItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const a8Hotels = useMemo(() => getRandomHotelAffiliates(3), []);
+  const a8Hotels = useMemo(() => getRandomHotelAffiliates(4), []);
 
   useEffect(() => {
     if (!keyword && !lat) {
@@ -180,45 +180,49 @@ export default function HotelSuggestions({
                 </div>
               )}
 
-              {/* 予約ボタン */}
-              <a
-                href={hotel.bookingUrl}
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-2.5 py-1
-                           hover:bg-red-500/10 transition-colors"
-              >
-                {hotel.source === "booking" ? t("compareRates") : t("book")}
-                <span className="text-[10px]">&rarr;</span>
-              </a>
-              {hotel.source === "booking" && (
-                <p className="text-[9px] text-white/25 mt-1">powered by Booking.com</p>
-              )}
+              {/* 予約ボタン — A8アフィリエイト優先 */}
+              <div className="flex gap-1.5 flex-wrap relative">
+                <a
+                  href={a8Hotels[idx % a8Hotels.length]?.linkUrl || hotel.bookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-2.5 py-1
+                             hover:bg-red-500/10 transition-colors"
+                >
+                  {t("compareRates")}（{a8Hotels[idx % a8Hotels.length]?.name}）
+                  <span className="text-[10px]">&rarr;</span>
+                </a>
+                <A8ImpressionPixel url={a8Hotels[idx % a8Hotels.length]?.impTagUrl} />
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* A8 hotel affiliate links */}
-      <div className="mt-3">
-        <p className="text-[11px] text-white/40 font-bold mb-2">{t("otherSites")}</p>
-        <div className="flex gap-2 flex-wrap relative">
+      {/* A8 hotel affiliate links — 料金比較セクション */}
+      <div className="mt-4 bg-white/[0.03] border border-white/10 p-3 relative">
+        <p className="text-[11px] text-white/50 font-black mb-2.5 flex items-center gap-1.5">
+          {t("otherSites")}
+          <span className="text-[9px] text-white/20 font-normal">PR</span>
+        </p>
+        <div className="grid grid-cols-2 gap-2">
           {a8Hotels.map((af) => (
             <a
               key={af.id}
               href={af.linkUrl}
               target="_blank"
               rel="noopener noreferrer nofollow"
-              className="text-[11px] font-bold text-white/60 border border-white/15 px-2.5 py-1.5
-                         hover:bg-white/5 hover:text-white/80 transition-colors"
+              className="flex items-center gap-1.5 text-[11px] font-bold text-white/60 border border-white/15 px-2.5 py-2
+                         hover:bg-red-500/5 hover:text-red-400 hover:border-red-500/30 transition-colors"
             >
-              {af.name}
+              <span className="truncate">{af.name}</span>
+              <span className="text-red-400/60 shrink-0">&rarr;</span>
             </a>
           ))}
-          {a8Hotels.map((af) => (
-            <A8ImpressionPixel key={`imp-${af.id}`} url={af.impTagUrl} />
-          ))}
         </div>
+        {a8Hotels.map((af) => (
+          <A8ImpressionPixel key={`imp-${af.id}`} url={af.impTagUrl} />
+        ))}
       </div>
     </div>
   );
