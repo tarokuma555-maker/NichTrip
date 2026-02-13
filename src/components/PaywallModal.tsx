@@ -21,7 +21,7 @@ export default function PaywallModal({
   onLogin: () => void;
 }) {
   const t = useTranslations("Paywall");
-  const { user } = useAuth();
+  const { user, markCheckoutPending } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -49,6 +49,7 @@ export default function PaywallModal({
         return;
       }
       if (data.url) {
+        markCheckoutPending();
         window.location.href = data.url;
       } else {
         setError(t("urlError"));

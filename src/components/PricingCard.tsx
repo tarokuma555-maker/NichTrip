@@ -29,7 +29,7 @@ export default function PricingCard({
   onNeedAuth: () => void;
 }) {
   const t = useTranslations("Pricing");
-  const { user, isPro } = useAuth();
+  const { user, isPro, markCheckoutPending } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -52,6 +52,7 @@ export default function PricingCard({
         return;
       }
       if (data.url) {
+        markCheckoutPending();
         window.location.href = data.url;
       }
     } catch {
