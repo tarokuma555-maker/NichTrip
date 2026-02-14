@@ -5,7 +5,7 @@ import { getAllWorks } from "@/lib/works-data";
 import WorksGrid from "@/components/works/WorksGrid";
 import TravelBanner from "@/components/ads/TravelBanner";
 
-const BASE_URL = "https://animetrips.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips-7bd7.vercel.app";
 
 type Props = {
   params: { locale: string };

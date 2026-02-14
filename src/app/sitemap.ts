@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getAllSlugs } from "@/lib/works-data";
 
-const BASE_URL = "https://animetrips.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips-7bd7.vercel.app";
 const LOCALES = ["ja", "en", "zh", "ko"] as const;
 
 function localeUrl(path: string, locale: string): string {
