@@ -26,6 +26,9 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("description"),
+    verification: {
+      google: "Wvh9ZL0i3orqi-wHYz66vLCym3LIWfcMn3WdbWHbkTE",
+    },
   };
 }
 
