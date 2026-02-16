@@ -6,6 +6,7 @@ import type { PlanSpot } from "@/lib/types";
 import { RESTAURANT_AFFILIATES } from "@/lib/a8-affiliates";
 import A8ImpressionPixel from "@/components/A8ImpressionPixel";
 import UGCSection from "./UGCSection";
+import NearbyHotels from "./NearbyHotels";
 
 export default function SpotCard({
   spot,
@@ -224,6 +225,11 @@ export default function SpotCard({
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* 近くのホテル（楽天トラベル） */}
+            {spot.lat && spot.lng && (
+              <NearbyHotels lat={spot.lat} lng={spot.lng} isExpanded={open} />
             )}
 
             {/* UGC: チェックイン & レビュー */}

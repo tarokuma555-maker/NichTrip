@@ -294,6 +294,11 @@
     "af_31": "Rettyで探す",
     "af_32": "一休.comで予約"
   },
+  "NearbyHotels": {
+    "title": "近くのホテル",
+    "bookOnRakuten": "楽天トラベルで予約",
+    "poweredBy": "Powered by 楽天トラベル"
+  },
   "Share": {
     "shareX": "Xでシェア",
     "saving": "保存中...",

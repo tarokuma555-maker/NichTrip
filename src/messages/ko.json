@@ -294,6 +294,11 @@
     "af_31": "Retty에서 검색",
     "af_32": "일휴닷컴 예약"
   },
+  "NearbyHotels": {
+    "title": "근처 호텔",
+    "bookOnRakuten": "라쿠텐 트래블 예약",
+    "poweredBy": "Powered by Rakuten Travel"
+  },
   "Share": {
     "shareX": "X에서 공유",
     "saving": "저장 중...",

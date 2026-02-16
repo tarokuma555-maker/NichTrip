@@ -294,6 +294,11 @@
     "af_31": "Search on Retty",
     "af_32": "Book on Ikyu.com"
   },
+  "NearbyHotels": {
+    "title": "Nearby Hotels",
+    "bookOnRakuten": "Book on Rakuten Travel",
+    "poweredBy": "Powered by Rakuten Travel"
+  },
   "Share": {
     "shareX": "Share on X",
     "saving": "Saving...",

@@ -294,6 +294,11 @@
     "af_31": "在Retty搜索",
     "af_32": "在一休.com预约"
   },
+  "NearbyHotels": {
+    "title": "附近酒店",
+    "bookOnRakuten": "在乐天旅行预订",
+    "poweredBy": "Powered by 乐天旅行"
+  },
   "Share": {
     "shareX": "分享到X",
     "saving": "保存中...",
