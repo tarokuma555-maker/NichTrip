@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rakutenHotelUrl } from "@/lib/rakuten-affiliate";
 
 const RAKUTEN_API_URL =
   "https://openapi.rakuten.co.jp/engine/api/Travel/SimpleHotelSearch/20170426";
@@ -71,8 +72,11 @@ export async function GET(req: NextRequest) {
       const basic = hotelArr?.[0]?.hotelBasicInfo ?? {};
       const rating = hotelArr?.[1]?.hotelRatingInfo ?? {};
 
+      const hotelNo = Number(basic.hotelNo) || 0;
+      const bookingUrl = rakutenHotelUrl(hotelNo);
+
       return {
-        id: basic.hotelNo ?? 0,
+        id: hotelNo,
         name: basic.hotelName ?? "",
         description: basic.hotelSpecial ?? "",
         minPrice: basic.hotelMinCharge ?? null,
@@ -81,7 +85,7 @@ export async function GET(req: NextRequest) {
         nearestStation: basic.nearestStation ?? "",
         imageUrl: basic.hotelImageUrl ?? null,
         thumbnailUrl: basic.hotelThumbnailUrl ?? null,
-        bookingUrl: basic.planListUrl ?? basic.hotelInformationUrl ?? "",
+        bookingUrl,
         infoUrl: basic.hotelInformationUrl ?? "",
         reviewCount: basic.reviewCount ?? 0,
         reviewAverage: basic.reviewAverage ?? null,

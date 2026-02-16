@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { getRandomHotelAffiliates } from "@/lib/a8-affiliates";
 import A8ImpressionPixel from "@/components/A8ImpressionPixel";
 import { IconHotel } from "@/components/ads/CategoryIcons";
+import { rakutenSearchUrl } from "@/lib/rakuten-affiliate";
 
 type RakutenHotel = {
   id: number;
@@ -187,7 +188,7 @@ export default function HotelSuggestions({
             {keyword} {t("nearbyHotels")}
           </p>
           <a
-            href={`https://travel.rakuten.co.jp/yado/?f_area=${encodeURIComponent(keyword)}`}
+            href={rakutenSearchUrl(keyword)}
             target="_blank"
             rel="noopener noreferrer nofollow"
             className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-3 py-1.5 hover:bg-red-500/10 transition-colors"

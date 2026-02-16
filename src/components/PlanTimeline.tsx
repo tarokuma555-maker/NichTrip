@@ -13,6 +13,7 @@ import { getWorkVisual, hasPoster } from "@/lib/work-visuals";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { getRandomRentalCarAffiliates, getBusAffiliate, getRandomTourAffiliates } from "@/lib/a8-affiliates";
+import { rakutenSearchUrl } from "@/lib/rakuten-affiliate";
 import A8ImpressionPixel from "@/components/A8ImpressionPixel";
 import TravelBanner from "@/components/ads/TravelBanner";
 
@@ -558,7 +559,7 @@ function TravelAds({ departure, destination }: { departure?: string; destination
       icon: <IconHotel className="w-5 h-5" />,
       title: t("hotelTitle"),
       desc: t("hotelDesc", { destination }),
-      url: `https://travel.rakuten.co.jp/yado/?f_area=${encodeURIComponent(destination)}`,
+      url: rakutenSearchUrl(destination),
       cta: t("hotelCta"),
       color: "text-red-400 border-red-500/30 hover:bg-red-500/10",
     },
