@@ -2,7 +2,32 @@
  * 楽天トラベル URL構築ユーティリティ
  */
 
-/** エリアキーワードで楽天トラベル宿検索 */
+/** 都道府県名 → 楽天トラベルURLスラッグ */
+const PREF_SLUG: Record<string, string> = {
+  北海道: "hokkaido", 青森: "aomori", 岩手: "iwate", 宮城: "miyagi",
+  秋田: "akita", 山形: "yamagata", 福島: "fukushima",
+  茨城: "ibaraki", 栃木: "tochigi", 群馬: "gunma", 埼玉: "saitama",
+  千葉: "chiba", 東京: "tokyo", 神奈川: "kanagawa",
+  新潟: "niigata", 富山: "toyama", 石川: "ishikawa", 福井: "fukui",
+  山梨: "yamanashi", 長野: "nagano", 岐阜: "gifu", 静岡: "shizuoka",
+  愛知: "aichi", 三重: "mie",
+  滋賀: "shiga", 京都: "kyoto", 大阪: "osaka", 兵庫: "hyogo",
+  奈良: "nara", 和歌山: "wakayama",
+  鳥取: "tottori", 島根: "shimane", 岡山: "okayama", 広島: "hiroshima",
+  山口: "yamaguchi",
+  徳島: "tokushima", 香川: "kagawa", 愛媛: "ehime", 高知: "kochi",
+  福岡: "fukuoka", 佐賀: "saga", 長崎: "nagasaki", 熊本: "kumamoto",
+  大分: "oita", 宮崎: "miyazaki", 鹿児島: "kagoshima", 沖縄: "okinawa",
+};
+
+/** 地域名から楽天トラベルの宿検索URLを生成 */
 export function rakutenSearchUrl(keyword: string): string {
-  return `https://search.travel.rakuten.co.jp/ds/hotellist/Japan?f_teikei=summary&f_keyword=${encodeURIComponent(keyword)}`;
+  // 都道府県名を抽出してスラッグに変換
+  for (const [pref, slug] of Object.entries(PREF_SLUG)) {
+    if (keyword.includes(pref)) {
+      return `https://travel.rakuten.co.jp/yado/${slug}/`;
+    }
+  }
+  // マッチしない場合は楽天トラベルのトップページ
+  return "https://travel.rakuten.co.jp/yado/";
 }
