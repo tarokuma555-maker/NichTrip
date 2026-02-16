@@ -17,6 +17,7 @@ type RakutenHotel = {
   nearestStation: string;
   imageUrl: string | null;
   bookingUrl: string;
+  infoUrl: string;
   reviewAverage: number | null;
 };
 
@@ -40,12 +41,12 @@ function StarIcon() {
   );
 }
 
-/** hotelSpecialから特徴キーワードを抽出（最大3つ） */
+/** hotelSpecialから特徴キーワードを抽出 */
 function extractFeatures(desc: string): string[] {
   if (!desc) return [];
   const keywords = [
     "温泉", "露天風呂", "大浴場", "朝食", "夕食", "バイキング", "ビュッフェ",
-    "駅近", "駅前", "送迎", "無料駐車場", "駐車場", "Wi-Fi", "禁煙",
+    "駅近", "駅前", "駅直結", "送迎", "無料駐車場", "駐車場", "Wi-Fi", "禁煙",
     "オーシャンビュー", "夜景", "高層階", "和室", "和洋室",
     "ファミリー", "カップル", "ペット", "バリアフリー",
   ];
@@ -70,7 +71,6 @@ export default function HotelSuggestions({
   const tDesc = useTranslations("AffiliateDesc");
   const [hotels, setHotels] = useState<RakutenHotel[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const a8Hotels = useMemo(() => getRandomHotelAffiliates(4), []);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function HotelSuggestions({
       return;
     }
 
-    fetch(`/api/rakuten-hotels?lat=${lat}&lng=${lng}&radius=3&hits=5`)
+    fetch(`/api/rakuten-hotels?lat=${lat}&lng=${lng}&radius=3&hits=4`)
       .then((res) => {
         if (!res.ok) throw new Error();
         return res.json();
@@ -87,23 +87,21 @@ export default function HotelSuggestions({
       .then((data) => {
         if (Array.isArray(data.hotels)) setHotels(data.hotels);
       })
-      .catch(() => {
-        setError(true);
-      })
+      .catch(() => {})
       .finally(() => {
         setLoading(false);
       });
   }, [lat, lng]);
 
-  if (error && a8Hotels.length === 0) return null;
+  return (
+    <div>
+      <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
+        <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
+        {t("recommended")}
+      </h4>
 
-  if (loading) {
-    return (
-      <div>
-        <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
-          <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
-          {t("recommended")}
-        </h4>
+      {/* ローディング */}
+      {loading && (
         <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
           {[1, 2, 3].map((i) => (
             <div
@@ -114,112 +112,121 @@ export default function HotelSuggestions({
               <div className="p-3 space-y-2">
                 <div className="h-4 w-32 bg-white/10" />
                 <div className="h-3 w-20 bg-white/10" />
+                <div className="h-7 bg-white/5" />
               </div>
             </div>
           ))}
         </div>
-      </div>
-    );
-  }
+      )}
 
-  return (
-    <div>
-      <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
-        <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
-        {t("recommended")}
-      </h4>
-
-      {/* 楽天トラベルホテルカード */}
-      {hotels.length > 0 && (
-        <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
-          {hotels.map((hotel) => {
-            const features = extractFeatures(hotel.description);
-            return (
-              <div
-                key={hotel.id}
-                className="w-52 sm:w-60 shrink-0 bg-white/5 border-2 border-white/10 overflow-hidden"
-              >
-                {/* サムネイル */}
-                <div className="relative h-28 bg-black/40 overflow-hidden">
-                  {hotel.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={hotel.imageUrl}
-                      alt={hotel.name}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white/20">
-                      <HotelIcon className="w-10 h-10" />
-                    </div>
-                  )}
-                  {/* Review badge */}
-                  {hotel.reviewAverage && hotel.reviewAverage > 0 && (
-                    <div className="absolute top-1.5 right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 flex items-center gap-0.5">
-                      <StarIcon />
-                      {hotel.reviewAverage.toFixed(1)}
-                    </div>
-                  )}
-                </div>
-
-                {/* 情報 */}
-                <div className="p-3">
-                  <h5 className="text-xs font-black text-white leading-snug line-clamp-2 mb-1.5">
-                    {hotel.name}
-                  </h5>
-
-                  <div className="flex items-center gap-2 mb-1.5">
-                    {hotel.minPrice && (
-                      <span className="text-sm font-black text-red-400">
-                        ¥{hotel.minPrice.toLocaleString()}
-                        <span className="text-[10px] text-white/50 font-bold">〜/泊</span>
-                      </span>
+      {/* ホテルカード（3〜4件） */}
+      {!loading && hotels.length > 0 && (
+        <>
+          <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
+            {hotels.map((hotel) => {
+              const features = extractFeatures(hotel.description);
+              return (
+                <div
+                  key={hotel.id}
+                  className="w-52 sm:w-60 shrink-0 bg-white/5 border-2 border-white/10 overflow-hidden"
+                >
+                  {/* サムネイル */}
+                  <div className="relative h-28 bg-black/40 overflow-hidden border-b-2 border-white/10">
+                    {hotel.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={hotel.imageUrl}
+                        alt={hotel.name}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-white/20">
+                        <HotelIcon className="w-10 h-10" />
+                      </div>
+                    )}
+                    {/* Review badge */}
+                    {hotel.reviewAverage != null && hotel.reviewAverage > 0 && (
+                      <div className="absolute top-1.5 right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 flex items-center gap-0.5">
+                        <StarIcon />
+                        {hotel.reviewAverage.toFixed(1)}
+                      </div>
                     )}
                   </div>
 
-                  <p className="text-[10px] text-white/40 truncate mb-1.5">
-                    {hotel.access || hotel.nearestStation}
-                  </p>
+                  {/* 情報 */}
+                  <div className="p-3">
+                    <h5 className="text-xs font-black text-white leading-snug line-clamp-2 mb-1.5">
+                      {hotel.name}
+                    </h5>
 
-                  {/* 特徴タグ */}
-                  {features.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-2">
-                      {features.map((f) => (
-                        <span
-                          key={f}
-                          className="text-[10px] text-white/40 font-bold bg-white/5 border border-white/10 px-1.5 py-0.5"
-                        >
-                          {f}
+                    {/* 料金 */}
+                    {hotel.minPrice != null && hotel.minPrice > 0 && (
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-sm font-black text-red-400">
+                          ¥{hotel.minPrice.toLocaleString()}
+                          <span className="text-[10px] text-white/50 font-bold">〜/泊</span>
                         </span>
-                      ))}
-                    </div>
-                  )}
+                      </div>
+                    )}
 
-                  {/* 予約ボタン */}
-                  <a
-                    href={hotel.bookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer nofollow"
-                    className="block bg-red-500/10 border border-red-500/30 px-2 py-1.5 text-center
-                               hover:bg-red-500/20 transition-colors"
-                  >
-                    <span className="text-[10px] font-black text-red-400">
-                      {t("bookOnRakuten")} &rarr;
-                    </span>
-                  </a>
+                    {/* アクセス */}
+                    <p className="text-[10px] text-white/40 truncate mb-1.5">
+                      {hotel.access || hotel.nearestStation}
+                    </p>
+
+                    {/* 特徴タグ */}
+                    {features.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {features.map((f) => (
+                          <span
+                            key={f}
+                            className="text-[10px] text-white/40 font-bold bg-white/5 border border-white/10 px-1.5 py-0.5"
+                          >
+                            {f}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 楽天トラベルで予約ボタン */}
+                    <a
+                      href={hotel.bookingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer nofollow"
+                      className="block bg-red-500/10 border border-red-500/30 px-2 py-1.5 text-center
+                                 hover:bg-red-500/20 transition-colors"
+                    >
+                      <span className="text-[10px] font-black text-red-400">
+                        {t("bookOnRakuten")} &rarr;
+                      </span>
+                    </a>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+
+          {/* エリア検索 + Powered by */}
+          <div className="flex items-center justify-between mt-2">
+            <a
+              href={rakutenSearchUrl(keyword)}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="text-[10px] font-bold text-white/30 hover:text-red-400 transition-colors"
+            >
+              {t("searchOnRakuten")} &rarr;
+            </a>
+            <p className="text-[9px] text-white/20">{t("poweredByRakuten")}</p>
+          </div>
+        </>
       )}
 
-      {/* 楽天トラベルが取得できなかった場合のフォールバック */}
-      {hotels.length === 0 && (
+      {/* 楽天から取得0件の場合 */}
+      {!loading && hotels.length === 0 && (
         <div className="bg-white/5 border-2 border-white/10 p-4 text-center">
           <p className="text-xs text-white/40 font-bold mb-2">
             {keyword} {t("nearbyHotels")}
@@ -235,22 +242,7 @@ export default function HotelSuggestions({
         </div>
       )}
 
-      {/* エリア検索リンク + Powered by */}
-      {hotels.length > 0 && (
-        <div className="flex items-center justify-between mt-2">
-          <a
-            href={rakutenSearchUrl(keyword)}
-            target="_blank"
-            rel="noopener noreferrer nofollow"
-            className="text-[10px] font-bold text-white/30 hover:text-red-400 transition-colors"
-          >
-            {t("searchOnRakuten")} &rarr;
-          </a>
-          <p className="text-[9px] text-white/20">{t("poweredByRakuten")}</p>
-        </div>
-      )}
-
-      {/* A8 hotel affiliate links — 他の予約サイト */}
+      {/* A8 hotel affiliate — 他の予約サイト */}
       <div className="mt-4 bg-white/[0.03] border border-white/10 p-3 relative">
         <p className="text-[11px] text-white/50 font-black mb-2.5 flex items-center gap-1.5">
           <IconHotel className="w-4 h-4 opacity-60" />

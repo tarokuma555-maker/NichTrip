@@ -3,10 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 const RAKUTEN_API_URL =
   "https://openapi.rakuten.co.jp/engine/api/Travel/SimpleHotelSearch/20170426";
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips-7bd7.vercel.app";
+
 /**
  * Convert WGS84 decimal degrees to Rakuten Travel coordinate format.
- * Rakuten uses Japan Geodetic Datum in DMS (millisecond-level):
- *   degrees * 3600 + minutes * 60 + seconds
+ * Rakuten uses: degrees * 3600 + minutes * 60 + seconds
  */
 function toRakutenCoord(decimal: number): string {
   const degrees = Math.floor(decimal);
@@ -54,7 +56,8 @@ export async function GET(req: NextRequest) {
   try {
     const res = await fetch(`${RAKUTEN_API_URL}?${params.toString()}`, {
       headers: {
-        Referer: process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips-7bd7.vercel.app/",
+        Origin: SITE_URL,
+        Referer: `${SITE_URL}/`,
       },
       next: { revalidate: 3600 },
     });
@@ -77,11 +80,6 @@ export async function GET(req: NextRequest) {
       const rating = hotelArr?.[1]?.hotelRatingInfo ?? {};
 
       const hotelNo = Number(basic.hotelNo) || 0;
-      // API返却のアフィリエイトURL（ホテル固有）を優先、なければ直接リンク
-      const bookingUrl =
-        (basic.planListUrl as string) ||
-        (basic.hotelInformationUrl as string) ||
-        `https://hotel.travel.rakuten.co.jp/hotelinfo/plan/${hotelNo}`;
 
       return {
         id: hotelNo,
@@ -93,8 +91,9 @@ export async function GET(req: NextRequest) {
         nearestStation: basic.nearestStation ?? "",
         imageUrl: basic.hotelImageUrl ?? null,
         thumbnailUrl: basic.hotelThumbnailUrl ?? null,
-        bookingUrl,
-        infoUrl: (basic.hotelInformationUrl as string) ?? "",
+        // 直接のホテルページURL（hb.afl 400エラー回避）
+        bookingUrl: `https://hotel.travel.rakuten.co.jp/hotelinfo/plan/${hotelNo}`,
+        infoUrl: `https://hotel.travel.rakuten.co.jp/hotelinfo/${hotelNo}/`,
         reviewCount: basic.reviewCount ?? 0,
         reviewAverage: basic.reviewAverage ?? null,
         rating: {
