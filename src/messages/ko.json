@@ -167,7 +167,11 @@
     "viewProPlan": "Pro 플랜 보기",
     "compareRates": "요금 비교",
     "book": "예약",
-    "otherSites": "다른 사이트에서 검색"
+    "otherSites": "다른 사이트에서 검색",
+    "bookOnRakuten": "라쿠텐 트래블에서 예약",
+    "nearbyHotels": "주변 호텔",
+    "searchOnRakuten": "라쿠텐 트래블에서 검색",
+    "poweredByRakuten": "Powered by 라쿠텐 트래블"
   },
   "Transport": {
     "recommendedWay": "추천 이동 방법",

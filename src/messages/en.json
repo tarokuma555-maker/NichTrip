@@ -167,7 +167,11 @@
     "viewProPlan": "View Pro Plan",
     "compareRates": "Compare Rates",
     "book": "Book",
-    "otherSites": "Search on other sites"
+    "otherSites": "Search on other sites",
+    "bookOnRakuten": "Book on Rakuten Travel",
+    "nearbyHotels": "Nearby Hotels",
+    "searchOnRakuten": "Search on Rakuten Travel",
+    "poweredByRakuten": "Powered by Rakuten Travel"
   },
   "Transport": {
     "recommendedWay": "Getting There",

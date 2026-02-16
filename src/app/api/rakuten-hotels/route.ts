@@ -28,11 +28,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "lat and lng are required" }, { status: 400 });
   }
 
-  const accessKey = process.env.RAKUTEN_ACCESS_KEY;
   const appId = process.env.RAKUTEN_APP_ID;
   const affiliateId = process.env.RAKUTEN_AFFILIATE_ID;
 
-  if (!accessKey || !appId) {
+  if (!appId) {
     return NextResponse.json({ error: "Rakuten API not configured" }, { status: 500 });
   }
 
@@ -41,7 +40,6 @@ export async function GET(req: NextRequest) {
 
   const params = new URLSearchParams({
     format: "json",
-    accessKey,
     applicationId: appId,
     ...(affiliateId && { affiliateId }),
     latitude: rakutenLat,
@@ -53,10 +51,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const res = await fetch(`${RAKUTEN_API_URL}?${params.toString()}`, {
-      headers: {
-        Origin: "https://anime-trips-7bd7.vercel.app",
-      },
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: 3600 },
     });
 
     if (!res.ok) {

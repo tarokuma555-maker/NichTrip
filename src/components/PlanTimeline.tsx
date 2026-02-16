@@ -12,7 +12,7 @@ import ProBanner from "./ProBanner";
 import { getWorkVisual, hasPoster } from "@/lib/work-visuals";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { getRandomHotelAffiliates, getRandomRentalCarAffiliates, getBusAffiliate, getRandomTourAffiliates } from "@/lib/a8-affiliates";
+import { getRandomRentalCarAffiliates, getBusAffiliate, getRandomTourAffiliates } from "@/lib/a8-affiliates";
 import A8ImpressionPixel from "@/components/A8ImpressionPixel";
 import TravelBanner from "@/components/ads/TravelBanner";
 
@@ -549,7 +549,6 @@ function MetaBadge({ icon, text }: { icon: React.ReactNode; text: string }) {
 function TravelAds({ departure, destination }: { departure?: string; destination: string }) {
   const t = useTranslations("TravelAds");
 
-  const a8Hotel = useMemo(() => getRandomHotelAffiliates(1)[0], []);
   const a8Rental = useMemo(() => getRandomRentalCarAffiliates(1)[0], []);
   const a8Bus = useMemo(() => getBusAffiliate(), []);
   const a8Tour = useMemo(() => getRandomTourAffiliates(1)[0], []);
@@ -559,9 +558,8 @@ function TravelAds({ departure, destination }: { departure?: string; destination
       icon: <IconHotel className="w-5 h-5" />,
       title: t("hotelTitle"),
       desc: t("hotelDesc", { destination }),
-      url: a8Hotel.linkUrl,
-      impUrl: a8Hotel.impTagUrl,
-      cta: `${t("hotelCta")}（${a8Hotel.name}）`,
+      url: `https://travel.rakuten.co.jp/yado/?f_area=${encodeURIComponent(destination)}`,
+      cta: t("hotelCta"),
       color: "text-red-400 border-red-500/30 hover:bg-red-500/10",
     },
     {

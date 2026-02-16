@@ -1,12 +1,21 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import type { HotelItem } from "@/lib/types";
-import { useAuth } from "@/components/AuthProvider";
+import { useTranslations } from "next-intl";
 import { getRandomHotelAffiliates } from "@/lib/a8-affiliates";
 import A8ImpressionPixel from "@/components/A8ImpressionPixel";
 import { IconHotel } from "@/components/ads/CategoryIcons";
+
+type RakutenHotel = {
+  id: number;
+  name: string;
+  minPrice: number | null;
+  access: string;
+  nearestStation: string;
+  imageUrl: string | null;
+  bookingUrl: string;
+  reviewAverage: number | null;
+};
 
 function HotelIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
@@ -20,11 +29,18 @@ function HotelIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
+function StarIcon() {
+  return (
+    <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+    </svg>
+  );
+}
+
 export default function HotelSuggestions({
   keyword,
   lat,
   lng,
-  budget,
 }: {
   keyword: string;
   lat?: number;
@@ -33,33 +49,24 @@ export default function HotelSuggestions({
 }) {
   const t = useTranslations("Hotel");
   const tDesc = useTranslations("AffiliateDesc");
-  const locale = useLocale();
-  const { isPro } = useAuth();
-  const [hotels, setHotels] = useState<HotelItem[]>([]);
+  const [hotels, setHotels] = useState<RakutenHotel[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const a8Hotels = useMemo(() => getRandomHotelAffiliates(4), []);
 
   useEffect(() => {
-    if (!keyword && !lat) {
+    if (!lat || !lng) {
       setLoading(false);
       return;
     }
 
-    const params = new URLSearchParams();
-    if (keyword) params.set("keyword", keyword);
-    if (lat) params.set("lat", String(lat));
-    if (lng) params.set("lng", String(lng));
-    if (budget) params.set("budget", budget);
-    params.set("locale", locale);
-
-    fetch(`/api/affiliate/hotels?${params}`)
+    fetch(`/api/rakuten-hotels?lat=${lat}&lng=${lng}&radius=3&hits=5`)
       .then((res) => {
         if (!res.ok) throw new Error();
         return res.json();
       })
       .then((data) => {
-        setHotels(data.hotels ?? []);
+        if (Array.isArray(data.hotels)) setHotels(data.hotels);
       })
       .catch(() => {
         setError(true);
@@ -67,9 +74,9 @@ export default function HotelSuggestions({
       .finally(() => {
         setLoading(false);
       });
-  }, [keyword, lat, lng, budget, locale]);
+  }, [lat, lng]);
 
-  if (error || (!loading && hotels.length === 0)) return null;
+  if (error && a8Hotels.length === 0) return null;
 
   if (loading) {
     return (
@@ -96,112 +103,105 @@ export default function HotelSuggestions({
     );
   }
 
-  // アフィリエイトリンクがない場合（全件fallback）はPro限定
-  const hasAffiliate = hotels.some((h) => h.source === "booking" || h.source === "rakuten");
-  if (!hasAffiliate && !isPro) {
-    return (
-      <div>
-        <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
-          <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
-          {t("recommended")}
-        </h4>
-        <div className="bg-white/5 border-2 border-white/10 p-4 text-center">
-          <p className="text-xs text-white/40 font-bold mb-2">
-            {t("countHotels", { count: hotels.length })}
-          </p>
-          <p className="text-[11px] text-white/30 mb-3">
-            {t("proRequired")}
-          </p>
-          <a
-            href="/pricing"
-            className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-3 py-1.5 hover:bg-red-500/10 transition-colors"
-          >
-            {t("viewProPlan")} <span className="text-[10px]">&rarr;</span>
-          </a>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div>
       <h4 className="text-sm font-black text-white mb-3 flex items-center gap-1.5">
         <span className="text-white/60"><HotelIcon className="w-4 h-4" /></span>
         {t("recommended")}
       </h4>
-      <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
-        {hotels.map((hotel, idx) => (
-          <div
-            key={idx}
-            className="w-52 sm:w-60 shrink-0 bg-white/5 border-2 border-white/10 overflow-hidden"
-          >
-            {/* サムネイル */}
-            {hotel.imageUrl ? (
-              <div className="h-28 overflow-hidden border-b-2 border-white/10">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={hotel.imageUrl}
-                  alt={hotel.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ) : (
-              <div className="h-28 bg-white/5 border-b-2 border-white/10 flex items-center justify-center">
-                <span className="text-white/20"><HotelIcon className="w-10 h-10" /></span>
-              </div>
-            )}
 
-            {/* 情報 */}
-            <div className="p-3">
-              <h5 className="text-xs font-black text-white leading-snug line-clamp-2 mb-1.5">
-                {hotel.name}
-              </h5>
-
-              <div className="flex items-center gap-2 mb-2">
-                {hotel.rating && (
-                  <span className="text-[11px] text-yellow-400 font-bold">
-                    ★ {hotel.rating}
-                  </span>
+      {/* 楽天トラベルホテルカード（プライマリ） */}
+      {hotels.length > 0 && (
+        <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
+          {hotels.map((hotel) => (
+            <a
+              key={hotel.id}
+              href={hotel.bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer nofollow"
+              className="w-52 sm:w-60 shrink-0 bg-white/5 border-2 border-white/10 overflow-hidden
+                         hover:border-red-500/30 hover:-translate-y-0.5
+                         shadow-[2px_2px_0_rgba(0,0,0,0.3)] hover:shadow-[3px_3px_0_rgba(229,62,62,0.2)]
+                         transition-all duration-200 block"
+            >
+              {/* サムネイル */}
+              <div className="relative h-28 bg-black/40 overflow-hidden">
+                {hotel.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={hotel.imageUrl}
+                    alt={hotel.name}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-white/20">
+                    <HotelIcon className="w-10 h-10" />
+                  </div>
                 )}
-                <span className="text-sm font-black text-red-400">
-                  {hotel.priceDisplay}
-                </span>
+                {/* Price badge */}
+                {hotel.minPrice && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-2 py-1.5">
+                    <p className="text-xs font-black text-white">
+                      ¥{hotel.minPrice.toLocaleString()}
+                      <span className="text-[10px] text-white/50 font-bold">〜</span>
+                    </p>
+                  </div>
+                )}
+                {/* Review badge */}
+                {hotel.reviewAverage && hotel.reviewAverage > 0 && (
+                  <div className="absolute top-1.5 right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 flex items-center gap-0.5">
+                    <StarIcon />
+                    {hotel.reviewAverage.toFixed(1)}
+                  </div>
+                )}
               </div>
 
-              {/* 特徴タグ */}
-              {hotel.features.length > 0 && (
-                <div className="flex flex-wrap gap-1 mb-2">
-                  {hotel.features.map((f, fi) => (
-                    <span
-                      key={fi}
-                      className="text-[10px] text-white/40 font-bold bg-white/5 border border-white/10 px-1.5 py-0.5"
-                    >
-                      {f}
-                    </span>
-                  ))}
+              {/* 情報 */}
+              <div className="p-3">
+                <h5 className="text-xs font-black text-white leading-snug line-clamp-2 mb-1">
+                  {hotel.name}
+                </h5>
+                <p className="text-[10px] text-white/40 truncate mb-2">
+                  {hotel.access || hotel.nearestStation}
+                </p>
+                {/* 予約ボタン */}
+                <div className="bg-red-500/10 border border-red-500/30 px-2 py-1.5 text-center">
+                  <span className="text-[10px] font-black text-red-400">
+                    {t("bookOnRakuten")} &rarr;
+                  </span>
                 </div>
-              )}
-
-              {/* 予約ボタン — A8アフィリエイト優先 */}
-              <div className="flex gap-1.5 flex-wrap relative">
-                <a
-                  href={a8Hotels[idx % a8Hotels.length]?.linkUrl || hotel.bookingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer nofollow"
-                  className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-2.5 py-1
-                             hover:bg-red-500/10 transition-colors"
-                >
-                  {t("compareRates")}（{a8Hotels[idx % a8Hotels.length]?.name}）
-                  <span className="text-[10px]">&rarr;</span>
-                </a>
-                <A8ImpressionPixel url={a8Hotels[idx % a8Hotels.length]?.impTagUrl} />
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
+            </a>
+          ))}
+        </div>
+      )}
 
-      {/* A8 hotel affiliate links — 料金比較セクション */}
+      {/* 楽天トラベルが取得できなかった場合のフォールバック */}
+      {hotels.length === 0 && (
+        <div className="bg-white/5 border-2 border-white/10 p-4 text-center">
+          <p className="text-xs text-white/40 font-bold mb-2">
+            {keyword} {t("nearbyHotels")}
+          </p>
+          <a
+            href={`https://travel.rakuten.co.jp/yado/?f_area=${encodeURIComponent(keyword)}`}
+            target="_blank"
+            rel="noopener noreferrer nofollow"
+            className="inline-flex items-center gap-1 text-[11px] font-black text-red-400 border-2 border-red-500/30 px-3 py-1.5 hover:bg-red-500/10 transition-colors"
+          >
+            {t("searchOnRakuten")} <span className="text-[10px]">&rarr;</span>
+          </a>
+        </div>
+      )}
+
+      {hotels.length > 0 && (
+        <p className="text-[9px] text-white/20 mt-2 text-right">{t("poweredByRakuten")}</p>
+      )}
+
+      {/* A8 hotel affiliate links — 他の予約サイト */}
       <div className="mt-4 bg-white/[0.03] border border-white/10 p-3 relative">
         <p className="text-[11px] text-white/50 font-black mb-2.5 flex items-center gap-1.5">
           <IconHotel className="w-4 h-4 opacity-60" />

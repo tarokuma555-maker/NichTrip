@@ -167,7 +167,11 @@
     "viewProPlan": "查看Pro计划",
     "compareRates": "比较价格",
     "book": "预订",
-    "otherSites": "在其他网站搜索"
+    "otherSites": "在其他网站搜索",
+    "bookOnRakuten": "在乐天旅行预订",
+    "nearbyHotels": "附近酒店",
+    "searchOnRakuten": "在乐天旅行搜索",
+    "poweredByRakuten": "Powered by 乐天旅行"
   },
   "Transport": {
     "recommendedWay": "推荐出行方式",

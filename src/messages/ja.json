@@ -167,7 +167,11 @@
     "viewProPlan": "Proプランを見る",
     "compareRates": "料金を比較する",
     "book": "予約する",
-    "otherSites": "他の予約サイトで探す"
+    "otherSites": "他の予約サイトで探す",
+    "bookOnRakuten": "楽天トラベルで予約",
+    "nearbyHotels": "周辺のホテル",
+    "searchOnRakuten": "楽天トラベルで検索",
+    "poweredByRakuten": "Powered by 楽天トラベル"
   },
   "Transport": {
     "recommendedWay": "おすすめの行き方",
