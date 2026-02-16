@@ -80,6 +80,7 @@ export async function GET(req: NextRequest) {
       const rating = hotelArr?.[1]?.hotelRatingInfo ?? {};
 
       const hotelNo = Number(basic.hotelNo) || 0;
+      const directUrl = `https://hotel.travel.rakuten.co.jp/hotelinfo/plan/${hotelNo}`;
 
       return {
         id: hotelNo,
@@ -91,9 +92,9 @@ export async function GET(req: NextRequest) {
         nearestStation: basic.nearestStation ?? "",
         imageUrl: basic.hotelImageUrl ?? null,
         thumbnailUrl: basic.hotelThumbnailUrl ?? null,
-        // 直接のホテルページURL（hb.afl 400エラー回避）
-        bookingUrl: `https://hotel.travel.rakuten.co.jp/hotelinfo/plan/${hotelNo}`,
-        infoUrl: `https://hotel.travel.rakuten.co.jp/hotelinfo/${hotelNo}/`,
+        // affiliateId付きならAPIが返すアフィリエイトURL、なければ直接URL
+        bookingUrl: (basic.planListUrl as string) || directUrl,
+        infoUrl: (basic.hotelInformationUrl as string) || directUrl,
         reviewCount: basic.reviewCount ?? 0,
         reviewAverage: basic.reviewAverage ?? null,
         rating: {
