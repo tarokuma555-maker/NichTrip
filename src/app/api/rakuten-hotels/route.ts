@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { rakutenHotelUrl } from "@/lib/rakuten-affiliate";
 
 const RAKUTEN_API_URL =
   "https://openapi.rakuten.co.jp/engine/api/Travel/SimpleHotelSearch/20170426";
@@ -29,6 +28,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "lat and lng are required" }, { status: 400 });
   }
 
+  const accessKey = process.env.RAKUTEN_ACCESS_KEY;
   const appId = process.env.RAKUTEN_APP_ID;
   const affiliateId = process.env.RAKUTEN_AFFILIATE_ID;
 
@@ -42,6 +42,7 @@ export async function GET(req: NextRequest) {
   const params = new URLSearchParams({
     format: "json",
     applicationId: appId,
+    ...(accessKey && { accessKey }),
     ...(affiliateId && { affiliateId }),
     latitude: rakutenLat,
     longitude: rakutenLng,
@@ -52,6 +53,9 @@ export async function GET(req: NextRequest) {
 
   try {
     const res = await fetch(`${RAKUTEN_API_URL}?${params.toString()}`, {
+      headers: {
+        Referer: process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips-7bd7.vercel.app/",
+      },
       next: { revalidate: 3600 },
     });
 
@@ -73,7 +77,11 @@ export async function GET(req: NextRequest) {
       const rating = hotelArr?.[1]?.hotelRatingInfo ?? {};
 
       const hotelNo = Number(basic.hotelNo) || 0;
-      const bookingUrl = rakutenHotelUrl(hotelNo);
+      // API返却のアフィリエイトURL（ホテル固有）を優先、なければ直接リンク
+      const bookingUrl =
+        (basic.planListUrl as string) ||
+        (basic.hotelInformationUrl as string) ||
+        `https://hotel.travel.rakuten.co.jp/hotelinfo/plan/${hotelNo}`;
 
       return {
         id: hotelNo,
@@ -86,7 +94,7 @@ export async function GET(req: NextRequest) {
         imageUrl: basic.hotelImageUrl ?? null,
         thumbnailUrl: basic.hotelThumbnailUrl ?? null,
         bookingUrl,
-        infoUrl: basic.hotelInformationUrl ?? "",
+        infoUrl: (basic.hotelInformationUrl as string) ?? "",
         reviewCount: basic.reviewCount ?? 0,
         reviewAverage: basic.reviewAverage ?? null,
         rating: {
