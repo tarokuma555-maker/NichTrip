@@ -771,9 +771,17 @@ function CTASection() {
         </button>
 
         {/* フッター */}
-        <p className="text-[9px] sm:text-[10px] text-white/15 font-bold tracking-[0.2em] mt-12 sm:mt-16">
-          &copy; 2025 AnimeTrips
-        </p>
+        <div className="mt-12 sm:mt-16 flex flex-col items-center gap-2">
+          <Link
+            href="/legal/tokushoho"
+            className="text-[9px] sm:text-[10px] text-white/20 hover:text-white/40 transition-colors"
+          >
+            特定商取引法に基づく表記
+          </Link>
+          <p className="text-[9px] sm:text-[10px] text-white/15 font-bold tracking-[0.2em]">
+            &copy; 2025 AnimeTrips
+          </p>
+        </div>
       </div>
     </section>
   );
