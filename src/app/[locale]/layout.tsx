@@ -6,6 +6,7 @@ import localFont from "next/font/local";
 import { routing } from "@/i18n/routing";
 import { AuthProvider } from "@/components/AuthProvider";
 import BottomNav from "@/components/BottomNav";
+import SiteFooter from "@/components/SiteFooter";
 import "../globals.css";
 
 const geistSans = localFont({
@@ -58,6 +59,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             {children}
+            <SiteFooter />
             <BottomNav />
           </AuthProvider>
         </NextIntlClientProvider>

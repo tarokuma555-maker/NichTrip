@@ -11,10 +11,16 @@ type Row =
   | { label: string; type: "custom" };
 
 const ROWS: Row[] = [
-  { label: "販売事業者", value: "請求があった場合は遅滞なく開示いたします" },
-  { label: "運営責任者", value: "請求があった場合は遅滞なく開示いたします" },
-  { label: "所在地", value: "請求があった場合は遅滞なく開示いたします" },
-  { label: "電話番号", value: "請求があった場合は遅滞なく開示いたします" },
+  { label: "販売事業者", value: "大熊太郎" },
+  { label: "運営責任者", value: "大熊太郎" },
+  {
+    label: "所在地",
+    value: "〒104-0052 東京都中央区月島3-16-9-302 リノスタイル月島 302",
+  },
+  {
+    label: "電話番号",
+    value: "請求があった場合は遅滞なく開示いたします",
+  },
   { label: "メールアドレス", type: "email", value: EMAIL },
   { label: "販売URL", type: "link", value: SITE_URL },
   {
@@ -24,23 +30,24 @@ const ROWS: Row[] = [
   },
   {
     label: "商品代金以外の必要料金",
-    value: "なし（追加手数料、送料等は発生しません）",
+    value:
+      "なし（追加手数料、送料等は発生しません。ただし、サービスのご利用に必要なインターネット接続料金・通信料金はお客様のご負担となります。）",
   },
   {
-    label: "決済方法",
+    label: "支払方法",
     value:
       "クレジットカード（Visa、Mastercard、JCB、American Express）、Apple Pay",
   },
   {
-    label: "決済時期",
+    label: "支払時期",
     value:
       "クレジットカード決済およびApple Payは購入手続き完了時に即時決済されます。月額プランの場合、毎月の更新日に自動決済されます。",
   },
   {
-    label: "商品の提供時期",
+    label: "サービス提供時期",
     value: "決済完了後、直ちにサービスをご利用いただけます。",
   },
-  { label: "返品・交換について", type: "custom" },
+  { label: "返品・キャンセルについて", type: "custom" },
   {
     label: "動作環境",
     value:
