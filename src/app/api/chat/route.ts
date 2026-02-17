@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
       const { data: { user } } = await supabase.auth.getUser();
       userId = user?.id ?? null;
       if (userId) {
-        pro = await isProUser(userId);
+        pro = await isProUser(userId, user?.email);
       }
     } catch {
       // Auth未設定

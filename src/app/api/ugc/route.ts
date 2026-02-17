@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       .eq('work_title', workTitle);
 
     // レビュー一覧（Free=5件, Pro=全件）
-    const pro = user ? await isProUser(user.id) : false;
+    const pro = user ? await isProUser(user.id, user?.email) : false;
     const limit = pro ? 100 : FREE_REVIEW_LIMIT;
 
     const { data: reviews } = await supabase

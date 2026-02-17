@@ -71,11 +71,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const checkProStatus = useCallback(
-    async (userId: string) => {
+    async (userId: string, email?: string | null) => {
       // 開発者オーバーライド
       const devOverride = checkDevOverride();
       if (devOverride === "force_pro") { setIsPro(true); return; }
       if (devOverride === "force_free") { setIsPro(false); return; }
+
+      // 管理者メールは即Pro（サーバー不要）
+      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
+      if (adminEmail && email === adminEmail) {
+        setIsPro(true);
+        return;
+      }
 
       // まずDBを確認（高速）
       try {
@@ -93,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // DB確認失敗 → Stripe verifyにフォールバック
       }
 
-      // DBに無い or DB確認失敗 → Stripeに直接確認（管理者チェックも含む）
+      // DBに無い or DB確認失敗 → Stripeに直接確認
       try {
         const res = await fetch("/api/stripe/verify", { method: "POST" });
         const result = await res.json();
@@ -115,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else if (devOverride === "force_free") {
         setIsPro(false);
       } else if (s?.user) {
-        checkProStatus(s.user.id);
+        checkProStatus(s.user.id, s.user.email);
       }
       setLoading(false);
     });
@@ -126,7 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
-        checkProStatus(s.user.id);
+        checkProStatus(s.user.id, s.user.email);
       } else {
         setIsPro(false);
       }
@@ -197,7 +204,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [supabase]);
 
   const refreshPro = useCallback(async () => {
-    if (user) await checkProStatus(user.id);
+    if (user) await checkProStatus(user.id, user.email);
   }, [user, checkProStatus]);
 
   return (

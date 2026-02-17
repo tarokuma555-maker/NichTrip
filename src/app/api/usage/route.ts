@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     const sessionId = request.cookies.get('anon_session_id')?.value ?? '';
-    const pro = user ? await isProUser(user.id) : false;
+    const pro = user ? await isProUser(user.id, user.email) : false;
     const usage = await checkUsageLimit(user?.id ?? null, sessionId, pro);
 
     return NextResponse.json({

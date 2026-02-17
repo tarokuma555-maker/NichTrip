@@ -32,16 +32,10 @@ export async function getSubscription(userId: string) {
   return data;
 }
 
-export async function isProUser(userId: string): Promise<boolean> {
+export async function isProUser(userId: string, email?: string | null): Promise<boolean> {
   // 管理者は常にPro
   const adminEmail = process.env.ADMIN_EMAIL;
-  if (adminEmail) {
-    const supabase = getSupabaseAdmin();
-    if (supabase) {
-      const { data: profile } = await supabase.auth.admin.getUserById(userId);
-      if (profile?.user?.email === adminEmail) return true;
-    }
-  }
+  if (adminEmail && email === adminEmail) return true;
 
   const sub = await getSubscription(userId);
   return sub?.status === 'active' || sub?.status === 'trialing';
