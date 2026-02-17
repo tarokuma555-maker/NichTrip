@@ -76,8 +76,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const devOverride = checkDevOverride();
       if (devOverride === "force_pro") { setIsPro(true); return; }
       if (devOverride === "force_free") { setIsPro(false); return; }
+
+      // まずDBを確認（高速）
       try {
-        // まずDBを確認（高速）
         const { data } = await supabase
           .from("subscriptions")
           .select("status")
@@ -88,14 +89,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setIsPro(true);
           return;
         }
-        // DBに無ければStripeに直接確認（Webhook未到達のリカバリ）
-        try {
-          const res = await fetch("/api/stripe/verify", { method: "POST" });
-          const result = await res.json();
-          setIsPro(!!result.isPro);
-        } catch {
-          setIsPro(false);
-        }
+      } catch {
+        // DB確認失敗 → Stripe verifyにフォールバック
+      }
+
+      // DBに無い or DB確認失敗 → Stripeに直接確認（管理者チェックも含む）
+      try {
+        const res = await fetch("/api/stripe/verify", { method: "POST" });
+        const result = await res.json();
+        setIsPro(!!result.isPro);
       } catch {
         setIsPro(false);
       }

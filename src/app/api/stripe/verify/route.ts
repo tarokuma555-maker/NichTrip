@@ -19,6 +19,12 @@ export async function POST() {
       return NextResponse.json({ isPro: false }, { status: 401 });
     }
 
+    // 管理者は常にPro
+    const adminEmail = process.env.ADMIN_EMAIL;
+    if (adminEmail && user.email === adminEmail) {
+      return NextResponse.json({ isPro: true });
+    }
+
     let stripe;
     try {
       stripe = getStripe();

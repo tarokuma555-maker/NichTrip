@@ -33,6 +33,16 @@ export async function getSubscription(userId: string) {
 }
 
 export async function isProUser(userId: string): Promise<boolean> {
+  // 管理者は常にPro
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (adminEmail) {
+    const supabase = getSupabaseAdmin();
+    if (supabase) {
+      const { data: profile } = await supabase.auth.admin.getUserById(userId);
+      if (profile?.user?.email === adminEmail) return true;
+    }
+  }
+
   const sub = await getSubscription(userId);
   return sub?.status === 'active' || sub?.status === 'trialing';
 }
