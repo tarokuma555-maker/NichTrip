@@ -1,34 +1,104 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
-const ROWS = [
-  { label: "販売事業者", value: "個人事業主" },
-  { label: "運営責任者", value: "奥間太郎" },
-  { label: "所在地", value: "沖縄県中頭郡北谷町北谷2-16-2-805" },
+const EMAIL = "tokyo.trips.anime1993@gmail.com";
+const SITE_URL = "https://anime-trips-7bd7.vercel.app";
+
+type Row =
+  | { label: string; value: string; type?: undefined }
+  | { label: string; type: "email"; value: string }
+  | { label: string; type: "link"; value: string }
+  | { label: string; type: "custom" };
+
+const ROWS: Row[] = [
+  { label: "販売事業者", value: "請求があった場合は遅滞なく開示いたします" },
+  { label: "運営責任者", value: "請求があった場合は遅滞なく開示いたします" },
+  { label: "所在地", value: "請求があった場合は遅滞なく開示いたします" },
+  { label: "電話番号", value: "請求があった場合は遅滞なく開示いたします" },
+  { label: "メールアドレス", type: "email", value: EMAIL },
+  { label: "販売URL", type: "link", value: SITE_URL },
   {
-    label: "連絡先",
-    // TODO: 独自ドメインメール取得後に差し替え
-    value: "support@animetrips.jp",
-    isEmail: true,
-  },
-  { label: "販売価格", value: "各プラン詳細ページに記載" },
-  {
-    label: "支払方法",
-    value: "クレジットカード（Stripe経由）",
-  },
-  { label: "支払時期", value: "購入手続き完了時に即時決済" },
-  { label: "商品の引渡し時期", value: "決済完了後、即時にサービスをご利用いただけます" },
-  {
-    label: "返品・キャンセル",
+    label: "販売価格",
     value:
-      "デジタルコンテンツの性質上、購入後の返品・返金は原則としてお受けしておりません。ただし、サービスに重大な不具合がある場合は個別にご対応いたします。",
+      "AnimeTrips Pro プラン：月額480円（税込）※4ヶ月目以降は月額980円（税込）。詳細は各プランページに記載しています。",
   },
+  {
+    label: "商品代金以外の必要料金",
+    value: "なし（追加手数料、送料等は発生しません）",
+  },
+  {
+    label: "決済方法",
+    value:
+      "クレジットカード（Visa、Mastercard、JCB、American Express）、Apple Pay",
+  },
+  {
+    label: "決済時期",
+    value:
+      "クレジットカード決済およびApple Payは購入手続き完了時に即時決済されます。月額プランの場合、毎月の更新日に自動決済されます。",
+  },
+  {
+    label: "商品の提供時期",
+    value: "決済完了後、直ちにサービスをご利用いただけます。",
+  },
+  { label: "返品・交換について", type: "custom" },
   {
     label: "動作環境",
     value:
-      "最新版の Chrome / Safari / Firefox / Edge。インターネット接続が必要です。",
+      "最新版のウェブブラウザ（Google Chrome、Safari、Firefox、Microsoft Edge）。スマートフォン・タブレット・PCに対応。インターネット接続が必要です。",
   },
-] as const;
+];
+
+function RowCell({ row }: { row: Row }) {
+  if (row.type === "email") {
+    return (
+      <a href={`mailto:${row.value}`} className="text-red-400 hover:underline">
+        {row.value}
+      </a>
+    );
+  }
+  if (row.type === "link") {
+    return (
+      <a
+        href={row.value}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-red-400 hover:underline break-all"
+      >
+        {row.value}
+      </a>
+    );
+  }
+  if (row.type === "custom") {
+    return (
+      <div className="space-y-3">
+        <div>
+          <p className="font-bold text-white/70 mb-1">
+            ＜お客様都合による解約・返品＞
+          </p>
+          <p>
+            月額プランはいつでも解約が可能です。解約した場合、現在の請求期間の終了まではサービスをご利用いただけます。日割り返金は行っておりません。
+          </p>
+        </div>
+        <div>
+          <p className="font-bold text-white/70 mb-1">
+            ＜サービスの不具合による返金＞
+          </p>
+          <p>
+            サービスに重大な不具合が発生し、正常にご利用いただけない場合は、メール（
+            <a
+              href={`mailto:${EMAIL}`}
+              className="text-red-400 hover:underline"
+            >
+              {EMAIL}
+            </a>
+            ）にてお問い合わせください。状況を確認の上、返金対応いたします。
+          </p>
+        </div>
+      </div>
+    );
+  }
+  return <>{row.value}</>;
+}
 
 export default function TokushohoPage() {
   const t = useTranslations("Common");
@@ -70,24 +140,12 @@ export default function TokushohoPage() {
 
         <div className="border border-white/10 divide-y divide-white/10">
           {ROWS.map((row) => (
-            <div
-              key={row.label}
-              className="flex flex-col sm:flex-row"
-            >
-              <div className="sm:w-44 shrink-0 bg-white/5 px-4 py-3 text-xs font-bold text-white/60">
+            <div key={row.label} className="flex flex-col sm:flex-row">
+              <div className="sm:w-48 shrink-0 bg-white/5 px-4 py-3 text-xs font-bold text-white/60">
                 {row.label}
               </div>
               <div className="px-4 py-3 text-xs text-white/80 leading-relaxed">
-                {"isEmail" in row && row.isEmail ? (
-                  <a
-                    href={`mailto:${row.value}`}
-                    className="text-red-400 hover:underline"
-                  >
-                    {row.value}
-                  </a>
-                ) : (
-                  row.value
-                )}
+                <RowCell row={row} />
               </div>
             </div>
           ))}
