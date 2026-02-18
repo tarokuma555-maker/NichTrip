@@ -480,5 +480,15 @@
     "relatedWorks": "同地区的作品",
     "adTitle": "预订旅行",
     "backToList": "返回作品列表"
+  },
+  "Blog": {
+    "blogLabel": "博客",
+    "blogTitle": "圣地巡礼博客",
+    "postsCount": "共{count}篇文章",
+    "filterAll": "全部",
+    "noPosts": "没有文章",
+    "backToList": "返回博客列表",
+    "home": "首页",
+    "updated": "更新"
   }
 }

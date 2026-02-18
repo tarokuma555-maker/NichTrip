@@ -480,5 +480,15 @@
     "relatedWorks": "같은 지역의 작품",
     "adTitle": "여행 예약은 여기서",
     "backToList": "작품 목록으로 돌아가기"
+  },
+  "Blog": {
+    "blogLabel": "블로그",
+    "blogTitle": "성지순례 블로그",
+    "postsCount": "총 {count}개의 글",
+    "filterAll": "전체",
+    "noPosts": "글이 없습니다",
+    "backToList": "블로그 목록으로",
+    "home": "홈",
+    "updated": "업데이트"
   }
 }

@@ -480,5 +480,15 @@
     "relatedWorks": "Related Works in Same Area",
     "adTitle": "Book Your Trip",
     "backToList": "Back to All Works"
+  },
+  "Blog": {
+    "blogLabel": "Blog",
+    "blogTitle": "Anime Pilgrimage Blog",
+    "postsCount": "{count} articles",
+    "filterAll": "All",
+    "noPosts": "No articles found",
+    "backToList": "Back to blog",
+    "home": "Home",
+    "updated": "Updated"
   }
 }

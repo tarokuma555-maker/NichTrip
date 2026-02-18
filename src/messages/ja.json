@@ -480,5 +480,15 @@
     "relatedWorks": "同じエリアの作品",
     "adTitle": "旅行の予約はこちら",
     "backToList": "作品一覧に戻る"
+  },
+  "Blog": {
+    "blogLabel": "ブログ",
+    "blogTitle": "聖地巡礼ブログ",
+    "postsCount": "全{count}件の記事",
+    "filterAll": "すべて",
+    "noPosts": "記事がありません",
+    "backToList": "ブログ一覧に戻る",
+    "home": "ホーム",
+    "updated": "更新"
   }
 }
