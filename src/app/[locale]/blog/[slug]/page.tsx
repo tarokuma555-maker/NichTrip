@@ -65,16 +65,64 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+/* ================================================================
+   目次（TOC）用ヘルパー
+   ================================================================ */
+type TocItem = { id: string; text: string; level: 2 | 3 };
+
+function extractToc(source: string): TocItem[] {
+  const lines = source.split("\n");
+  const toc: TocItem[] = [];
+  for (const line of lines) {
+    const m2 = line.match(/^## (.+)/);
+    if (m2) {
+      const text = m2[1].trim();
+      toc.push({ id: slugify(text), text, level: 2 });
+      continue;
+    }
+    const m3 = line.match(/^### (.+)/);
+    if (m3) {
+      const text = m3[1].trim();
+      toc.push({ id: slugify(text), text, level: 3 });
+    }
+  }
+  return toc;
+}
+
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\u3000-\u9fff\u30a0-\u30ff\u3040-\u309f\uac00-\ud7af\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 80);
+}
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
+function headingId(props: any): string {
+  const text =
+    typeof props.children === "string"
+      ? props.children
+      : Array.isArray(props.children)
+        ? props.children.map((c: any) => (typeof c === "string" ? c : "")).join("")
+        : "";
+  return slugify(text);
+}
+
 const mdxComponents = {
   h2: (props: any) => (
     <h2
-      className="text-lg sm:text-xl font-black text-white mt-10 mb-3 border-l-4 border-red-500 pl-3"
+      id={headingId(props)}
+      className="text-lg sm:text-xl font-black text-white mt-10 mb-3 border-l-4 border-red-500 pl-3 scroll-mt-20"
       {...props}
     />
   ),
   h3: (props: any) => (
-    <h3 className="text-base font-bold text-white mt-6 mb-2" {...props} />
+    <h3
+      id={headingId(props)}
+      className="text-base font-bold text-white mt-6 mb-2 scroll-mt-20"
+      {...props}
+    />
   ),
   p: (props: any) => (
     <p
@@ -139,6 +187,7 @@ export default async function BlogDetailPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "Blog" });
 
   const source = getPostSource(slug);
+  const toc = extractToc(source);
   const { content } = await compileMDX({
     source,
     options: { parseFrontmatter: true },
@@ -256,6 +305,31 @@ export default async function BlogDetailPage({ params }: Props) {
               <span>{post.author}</span>
             </div>
           </header>
+
+          {/* 目次 */}
+          {toc.length > 0 && (
+            <nav className="mb-8 border border-white/10 bg-white/[0.02] p-4 sm:p-5">
+              <p className="text-xs font-black text-white/50 uppercase tracking-widest mb-3">
+                {t("toc")}
+              </p>
+              <ol className="space-y-1.5">
+                {toc.map((item) => (
+                  <li key={item.id}>
+                    <a
+                      href={`#${item.id}`}
+                      className={`block text-sm hover:text-red-400 transition-colors ${
+                        item.level === 3
+                          ? "pl-4 text-white/40 hover:text-red-400/80"
+                          : "text-white/60 font-medium"
+                      }`}
+                    >
+                      {item.text}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
 
           {/* 本文 */}
           <div>{content}</div>

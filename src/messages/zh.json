@@ -491,6 +491,7 @@
     "noPosts": "没有文章",
     "backToList": "返回博客列表",
     "home": "首页",
-    "updated": "更新"
+    "updated": "更新",
+    "toc": "目录"
   }
 }

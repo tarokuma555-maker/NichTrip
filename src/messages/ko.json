@@ -491,6 +491,7 @@
     "noPosts": "글이 없습니다",
     "backToList": "블로그 목록으로",
     "home": "홈",
-    "updated": "업데이트"
+    "updated": "업데이트",
+    "toc": "목차"
   }
 }

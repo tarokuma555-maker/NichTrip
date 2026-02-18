@@ -491,6 +491,7 @@
     "noPosts": "No articles found",
     "backToList": "Back to blog",
     "home": "Home",
-    "updated": "Updated"
+    "updated": "Updated",
+    "toc": "Table of Contents"
   }
 }
