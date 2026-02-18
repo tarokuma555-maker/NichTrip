@@ -28,7 +28,7 @@ export async function generateMetadata({
     title: t("title"),
     description: t("description"),
     verification: {
-      google: "Wvh9ZL0i3orqi-wHYz66vLCym3LIWfcMn3WdbWHbkTE",
+      google: "sxSHZJYJdGnJhPy4w5qFm7rXmGOM-LI4cCjvDHqR0jk",
     },
   };
 }
