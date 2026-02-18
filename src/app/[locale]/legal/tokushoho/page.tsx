@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 const EMAIL = "tokyo.trips.anime1993@gmail.com";
-const SITE_URL = "https://anime-trips-7bd7.vercel.app";
+const SITE_URL = "https://anime-trips.com";
 
 type Row =
   | { label: string; value: string; type?: undefined }

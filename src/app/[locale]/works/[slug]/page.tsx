@@ -10,7 +10,7 @@ import {
 import TravelBanner from "@/components/ads/TravelBanner";
 import WorkDetailClient from "./WorkDetailClient";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips-7bd7.vercel.app";
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips.com";
 
 type Props = {
   params: { locale: string; slug: string };

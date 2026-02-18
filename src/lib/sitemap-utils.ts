@@ -1,6 +1,6 @@
 import { getAllSlugs } from "@/lib/works-data";
 
-export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips-7bd7.vercel.app";
+export const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips.com";
 export const LOCALES = ["ja", "en", "zh", "ko"] as const;
 
 export function localeUrl(path: string, locale: string): string {

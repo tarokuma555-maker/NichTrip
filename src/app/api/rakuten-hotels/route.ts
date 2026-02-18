@@ -4,7 +4,7 @@ const RAKUTEN_API_URL =
   "https://openapi.rakuten.co.jp/engine/api/Travel/SimpleHotelSearch/20170426";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips-7bd7.vercel.app";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips.com";
 
 /**
  * Convert WGS84 decimal degrees to Rakuten Travel coordinate format.

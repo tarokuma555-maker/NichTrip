@@ -25,6 +25,7 @@ export async function generateMetadata({
 }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "Metadata" });
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips.com"),
     title: t("title"),
     description: t("description"),
     verification: {

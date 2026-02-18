@@ -15,7 +15,7 @@ type Props = {
 /* ============================================================
    定数
    ============================================================ */
-const SITE_URL = "https://nichtrip.vercel.app";
+const SITE_URL = "https://anime-trips.com";
 
 const DAY_COLORS = [
   "#E53E3E",

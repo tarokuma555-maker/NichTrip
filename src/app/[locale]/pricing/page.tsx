@@ -1,9 +1,31 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 import PricingContent from "./PricingContent";
 import UserMenu from "@/components/UserMenu";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips.com";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const { locale } = params;
+  const localeUrl = (loc: string) =>
+    loc === "ja" ? `${BASE_URL}/pricing` : `${BASE_URL}/${loc}/pricing`;
+  return {
+    alternates: {
+      canonical: localeUrl(locale),
+      languages: Object.fromEntries(
+        routing.locales.map((loc) => [loc, localeUrl(loc)])
+      ),
+    },
+  };
+}
 
 export default function PricingPage() {
   const t = useTranslations("Common");
