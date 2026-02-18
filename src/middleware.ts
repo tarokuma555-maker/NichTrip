@@ -1,11 +1,23 @@
-import { type NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from '@/i18n/routing';
 
+const CANONICAL_HOST = 'anime-trips.com';
+
 const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
+  // 0) vercel.app → 独自ドメインへ永続リダイレクト (308)
+  const host = request.headers.get('host') ?? '';
+  if (host.endsWith('.vercel.app')) {
+    const url = new URL(request.url);
+    url.hostname = CANONICAL_HOST;
+    url.port = '';
+    url.protocol = 'https:';
+    return NextResponse.redirect(url.toString(), 308);
+  }
+
   // 1) Run next-intl middleware first (handles locale detection & redirect)
   const intlResponse = intlMiddleware(request);
 
