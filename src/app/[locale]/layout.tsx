@@ -34,6 +34,7 @@ export async function generateMetadata({
 
   return {
     metadataBase: new URL(baseUrl),
+    manifest: "/manifest.json",
     title,
     description,
     verification: {
@@ -62,6 +63,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: "#e53e3e",
 };
 
 export default async function LocaleLayout({
@@ -74,10 +76,31 @@ export default async function LocaleLayout({
   }
 
   const messages = await getMessages();
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips.com";
+
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "AnimeTrips",
+    url: baseUrl,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${baseUrl}/works?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
 
   return (
     <html lang={locale}>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"

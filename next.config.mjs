@@ -16,6 +16,10 @@ const nextConfig = {
         hostname: "s4.anilist.co",
         pathname: "/file/anilistcdn/**",
       },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
     ],
   },
 
