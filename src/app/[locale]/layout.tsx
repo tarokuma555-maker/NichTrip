@@ -24,12 +24,32 @@ export async function generateMetadata({
   params: { locale },
 }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "Metadata" });
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips.com";
+  const title = t("title");
+  const description = t("description");
+  const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(title)}`;
+
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips.com"),
-    title: t("title"),
-    description: t("description"),
+    metadataBase: new URL(baseUrl),
+    title,
+    description,
     verification: {
       google: "sxSHZJYJdGnJhPy4w5qFm7rXmGOM-LI4cCjvDHqR0jk",
+    },
+    openGraph: {
+      title,
+      description,
+      url: baseUrl,
+      siteName: "AnimeTrips",
+      images: [{ url: ogImage, width: 1200, height: 630 }],
+      locale,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
     },
   };
 }

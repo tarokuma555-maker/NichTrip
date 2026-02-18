@@ -54,6 +54,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale,
       type: "website",
     },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [`${BASE_URL}/api/og?type=blog&title=${encodeURIComponent(t("blogTitle"))}`],
+    },
   };
 }
 
