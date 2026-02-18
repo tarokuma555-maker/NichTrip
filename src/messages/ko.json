@@ -80,7 +80,9 @@
     "perMonth": "/월",
     "adHotelNearby": "성지 근처 호텔 찾기",
     "adTravelPrep": "여행 준비를 더 편리하게",
-    "adTourPackage": "패키지 투어로 저렴하게 순례"
+    "adTourPackage": "패키지 투어로 저렴하게 순례",
+    "blogSectionDesc": "성지순례 최신 정보, 추천 루트, 여행 팁",
+    "blogViewAll": "모든 기사 보기"
   },
   "ConditionForm": {
     "newPlan": "새로 만들기",

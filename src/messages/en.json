@@ -80,7 +80,9 @@
     "perMonth": "/mo",
     "adHotelNearby": "Find hotels near sacred spots",
     "adTravelPrep": "Make trip planning easier",
-    "adTourPackage": "Save with tour packages"
+    "adTourPackage": "Save with tour packages",
+    "blogSectionDesc": "Latest pilgrimage tips, recommended routes & travel guides",
+    "blogViewAll": "View All Articles"
   },
   "ConditionForm": {
     "newPlan": "New Plan",

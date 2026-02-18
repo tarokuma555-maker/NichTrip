@@ -80,7 +80,9 @@
     "perMonth": "/月",
     "adHotelNearby": "搜索圣地附近的酒店",
     "adTravelPrep": "让旅行准备更方便",
-    "adTourPackage": "跟团游更划算"
+    "adTourPackage": "跟团游更划算",
+    "blogSectionDesc": "圣地巡礼的最新信息、推荐路线和旅行贴士",
+    "blogViewAll": "查看所有文章"
   },
   "ConditionForm": {
     "newPlan": "新建",

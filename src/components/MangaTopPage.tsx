@@ -23,6 +23,14 @@ type Work = {
   spotCount: number;
 };
 
+type BlogPostSummary = {
+  slug: string;
+  title: string;
+  publishedAt: string;
+  excerpt: string;
+  tags: string[];
+};
+
 
 /* ================================================================
    SVG 装飾
@@ -1014,14 +1022,130 @@ function PlanComparisonSection() {
 }
 
 /* ================================================================
+   Section: BLOG
+   ================================================================ */
+function BlogSection({ posts }: { posts: BlogPostSummary[] }) {
+  const t = useTranslations("TopPage");
+
+  return (
+    <section className="blog-section relative bg-[#0a0a0a] py-20 sm:py-32 overflow-hidden">
+      <div className="absolute inset-0 halftone opacity-[0.02]" />
+      <div className="absolute top-0 left-0 right-0 h-4 stripe-diagonal-bold" />
+
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
+        {/* ヘッダー */}
+        <div className="mb-8 sm:mb-12">
+          <div className="flex items-end gap-4 mb-2">
+            <h2 className="blog-heading text-4xl sm:text-8xl font-black text-white manga-shadow-red leading-none">
+              BLOG
+            </h2>
+            <span className="text-red-500 text-lg sm:text-3xl font-black mb-1 sm:mb-2">
+              ARTICLES
+            </span>
+          </div>
+          <div className="h-1 w-24 sm:w-32 bg-red-500" />
+          <p className="mt-3 text-white/40 text-xs sm:text-sm font-medium tracking-wider">
+            {t("blogSectionDesc")}
+          </p>
+        </div>
+
+        {/* ブログカード */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+          {posts.map((post, i) => (
+            <Link
+              key={post.slug}
+              href={`/blog/${post.slug}`}
+              className="blog-card group relative overflow-hidden
+                         bg-[#111] border-2 border-white/10
+                         shadow-[4px_4px_0px_0px_rgba(229,62,62,0.3)]
+                         hover:border-red-500/40 hover:shadow-[6px_6px_0px_0px_rgba(229,62,62,0.4)]
+                         hover:-translate-y-1
+                         transition-all duration-200"
+            >
+              {/* 番号バッジ */}
+              <div className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-black px-2 py-1">
+                {String(i + 1).padStart(2, "0")}
+              </div>
+
+              <div className="p-5 sm:p-6">
+                {/* タグ */}
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  {post.tags.slice(0, 2).map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[9px] font-black px-1.5 py-0.5 bg-red-500/10 text-red-400/70 border border-red-500/20"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* タイトル */}
+                <h3 className="text-sm sm:text-base font-black text-white group-hover:text-red-400 transition-colors leading-tight mb-2 line-clamp-2">
+                  {post.title}
+                </h3>
+
+                {/* 要約 */}
+                <p className="text-[11px] text-white/35 line-clamp-2 mb-3">
+                  {post.excerpt}
+                </p>
+
+                {/* 日付 + 矢印 */}
+                <div className="flex items-center justify-between">
+                  <time
+                    dateTime={post.publishedAt}
+                    className="text-[10px] text-white/20 font-bold"
+                  >
+                    {new Date(post.publishedAt).toLocaleDateString("ja-JP")}
+                  </time>
+                  <svg
+                    className="w-4 h-4 text-white/15 group-hover:text-red-500/60 transition-colors"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={3}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* ストライプ装飾 */}
+              <div className="absolute inset-0 stripe-diagonal opacity-[0.03] pointer-events-none" />
+            </Link>
+          ))}
+        </div>
+
+        {/* 全記事一覧リンク */}
+        <div className="text-center mt-8 sm:mt-12">
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 text-sm font-black text-white/40
+                       border-2 border-white/10 px-6 py-3
+                       hover:border-red-500/30 hover:text-red-400 transition-colors"
+          >
+            {t("blogViewAll")}
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================
    メインコンポーネント
    ================================================================ */
 export default function MangaTopPage({
   posterWorks,
   titleOnlyWorks,
+  recentPosts = [],
 }: {
   posterWorks: Work[];
   titleOnlyWorks: Work[];
+  recentPosts?: BlogPostSummary[];
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("TopPage");
@@ -1089,6 +1213,33 @@ export default function MangaTopPage({
         ease: "power2.out",
       });
 
+      // Blog
+      gsap.from(".blog-heading", {
+        scrollTrigger: {
+          trigger: ".blog-section",
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+        x: -100,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.out",
+      });
+      gsap.utils.toArray<HTMLElement>(".blog-card").forEach((card, i) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+          y: 60,
+          opacity: 0,
+          duration: 0.7,
+          delay: i * 0.12,
+          ease: "power2.out",
+        });
+      });
+
       // CTA — no GSAP animation (always visible)
     }, containerRef);
 
@@ -1113,6 +1264,7 @@ export default function MangaTopPage({
       <PosterGallerySection works={posterWorks} />
       <TravelBanner variant="horizontal" category="tour" title={t("adTourPackage")} />
       <TitleListSection works={titleOnlyWorks} />
+      {recentPosts.length > 0 && <BlogSection posts={recentPosts} />}
       <CTASection />
     </div>
   );

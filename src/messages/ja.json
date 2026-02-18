@@ -80,7 +80,9 @@
     "perMonth": "/月",
     "adHotelNearby": "聖地の近くのホテルを探す",
     "adTravelPrep": "旅の準備をもっと便利に",
-    "adTourPackage": "パッケージツアーでお得に巡礼"
+    "adTourPackage": "パッケージツアーでお得に巡礼",
+    "blogSectionDesc": "聖地巡礼の最新情報・おすすめルート・旅のヒント",
+    "blogViewAll": "すべての記事を見る"
   },
   "ConditionForm": {
     "newPlan": "新規作成",

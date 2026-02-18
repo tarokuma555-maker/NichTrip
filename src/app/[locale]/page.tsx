@@ -1,5 +1,6 @@
 import MangaTopPage from "@/components/MangaTopPage";
 import { getAllWorks } from "@/lib/works-data";
+import { getRecentPosts } from "@/lib/blog-data";
 
 // 人気Top10（ポスター付きカード表示）
 const FEATURED_TITLES = new Set([
@@ -27,11 +28,20 @@ const allWorks = getAllWorks().map((w) => ({
 const posterWorks = allWorks.filter((w) => FEATURED_TITLES.has(w.title));
 const titleOnlyWorks = allWorks.filter((w) => !FEATURED_TITLES.has(w.title));
 
+const recentPosts = getRecentPosts(3).map((p) => ({
+  slug: p.slug,
+  title: p.title,
+  publishedAt: p.publishedAt,
+  excerpt: p.excerpt,
+  tags: p.tags,
+}));
+
 export default function Home() {
   return (
     <MangaTopPage
       posterWorks={posterWorks}
       titleOnlyWorks={titleOnlyWorks}
+      recentPosts={recentPosts}
     />
   );
 }
