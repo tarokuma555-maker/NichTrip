@@ -14,19 +14,62 @@ export type BlogPost = {
 };
 
 const BLOG_DIR = path.join(process.cwd(), "content", "blog");
+const DEFAULT_LOCALE = "ja";
 
-const allPosts: BlogPost[] = [];
-const slugToPost = new Map<string, BlogPost>();
+// Cache: locale -> sorted posts array
+const postsByLocale = new Map<string, BlogPost[]>();
+// Cache: locale -> (slug -> post)
+const slugToPostByLocale = new Map<string, Map<string, BlogPost>>();
 
-function loadPosts() {
-  if (allPosts.length > 0) return;
-  if (!fs.existsSync(BLOG_DIR)) return;
+/**
+ * Returns the file path for a given slug and locale.
+ * Falls back to the default locale ("ja") if the requested locale file doesn't exist.
+ */
+function resolvePostPath(slug: string, locale: string): string | null {
+  const localePath = path.join(BLOG_DIR, locale, `${slug}.mdx`);
+  if (fs.existsSync(localePath)) return localePath;
 
-  const files = fs.readdirSync(BLOG_DIR).filter((f) => f.endsWith(".mdx"));
+  if (locale !== DEFAULT_LOCALE) {
+    const fallbackPath = path.join(BLOG_DIR, DEFAULT_LOCALE, `${slug}.mdx`);
+    if (fs.existsSync(fallbackPath)) return fallbackPath;
+  }
 
-  for (const file of files) {
-    const slug = file.replace(/\.mdx$/, "");
-    const raw = fs.readFileSync(path.join(BLOG_DIR, file), "utf-8");
+  return null;
+}
+
+function loadPostsForLocale(locale: string): void {
+  if (postsByLocale.has(locale)) return;
+
+  const jaDir = path.join(BLOG_DIR, DEFAULT_LOCALE);
+  if (!fs.existsSync(jaDir)) {
+    postsByLocale.set(locale, []);
+    slugToPostByLocale.set(locale, new Map());
+    return;
+  }
+
+  // Start with all slugs from the default locale (ja) to ensure all posts are available
+  const jaSlugs = fs
+    .readdirSync(jaDir)
+    .filter((f) => f.endsWith(".mdx"))
+    .map((f) => f.replace(/\.mdx$/, ""));
+
+  // If the requested locale directory exists, add any slugs that only exist there
+  const localeDir = path.join(BLOG_DIR, locale);
+  const allSlugs = new Set(jaSlugs);
+  if (locale !== DEFAULT_LOCALE && fs.existsSync(localeDir)) {
+    fs.readdirSync(localeDir)
+      .filter((f) => f.endsWith(".mdx"))
+      .forEach((f) => allSlugs.add(f.replace(/\.mdx$/, "")));
+  }
+
+  const posts: BlogPost[] = [];
+  const slugMap = new Map<string, BlogPost>();
+
+  for (const slug of Array.from(allSlugs)) {
+    const filePath = resolvePostPath(slug, locale);
+    if (!filePath) continue;
+
+    const raw = fs.readFileSync(filePath, "utf-8");
     const { data: fm } = matter(raw);
 
     const post: BlogPost = {
@@ -40,32 +83,60 @@ function loadPosts() {
       author: fm.author ?? "AnimeTrips編集部",
     };
 
-    allPosts.push(post);
-    slugToPost.set(slug, post);
+    posts.push(post);
+    slugMap.set(slug, post);
   }
 
-  allPosts.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+  posts.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+
+  postsByLocale.set(locale, posts);
+  slugToPostByLocale.set(locale, slugMap);
 }
 
-loadPosts();
-
-export function getAllPosts(): BlogPost[] {
-  return allPosts;
+export function getAllPosts(locale: string = DEFAULT_LOCALE): BlogPost[] {
+  loadPostsForLocale(locale);
+  return postsByLocale.get(locale) ?? [];
 }
 
-export function getPostBySlug(slug: string): BlogPost | undefined {
-  return slugToPost.get(slug);
+export function getPostBySlug(
+  slug: string,
+  locale: string = DEFAULT_LOCALE,
+): BlogPost | undefined {
+  loadPostsForLocale(locale);
+  return slugToPostByLocale.get(locale)?.get(slug);
 }
 
 export function getAllBlogSlugs(): string[] {
-  return allPosts.map((p) => p.slug);
+  return getAllPosts(DEFAULT_LOCALE).map((p) => p.slug);
 }
 
-export function getRecentPosts(limit = 3): BlogPost[] {
-  return allPosts.slice(0, limit);
+export function getRecentPosts(
+  limit = 3,
+  locale: string = DEFAULT_LOCALE,
+): BlogPost[] {
+  return getAllPosts(locale).slice(0, limit);
 }
 
-export function getPostSource(slug: string): string {
-  const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
+export function getPostSource(
+  slug: string,
+  locale: string = DEFAULT_LOCALE,
+): string {
+  const filePath = resolvePostPath(slug, locale);
+  if (!filePath) {
+    throw new Error(`Blog post not found: ${slug} (locale: ${locale})`);
+  }
   return fs.readFileSync(filePath, "utf-8");
+}
+
+export function getAllTags(locale: string = DEFAULT_LOCALE): string[] {
+  const tagSet = new Set<string>();
+  getAllPosts(locale).forEach((p) => p.tags.forEach((tag) => tagSet.add(tag)));
+  return Array.from(tagSet).sort();
+}
+
+export function getPostsByTag(
+  tag: string,
+  locale: string = DEFAULT_LOCALE,
+): BlogPost[] {
+  return getAllPosts(locale).filter((p) => p.tags.includes(tag));
 }

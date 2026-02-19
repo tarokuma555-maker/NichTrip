@@ -82,7 +82,18 @@
     "adTravelPrep": "让旅行准备更方便",
     "adTourPackage": "跟团游更划算",
     "blogSectionDesc": "圣地巡礼的最新信息、推荐路线和旅行贴士",
-    "blogViewAll": "查看所有文章"
+    "blogViewAll": "查看所有文章",
+    "faqTitle": "常见问题",
+    "faqQ1": "AnimeTrips是什么？",
+    "faqA1": "AnimeTrips是一项通过AI自动生成动漫圣地巡礼旅行计划的服务。只需选择喜欢的动漫，即可为您推荐巡访圣地的最佳路线。",
+    "faqQ2": "可以免费使用吗？",
+    "faqA2": "基本功能免费使用。Pro计划可以进行更详细的行程规划。",
+    "faqQ3": "支持哪些动漫作品？",
+    "faqA3": "收录了200多部热门动漫作品的圣地信息。数据库未收录的作品也支持自动搜索。",
+    "faqQ4": "如何制作旅行计划？",
+    "faqA4": "只需选择作品并输入出发地、天数和预算，AI将自动生成最佳圣地巡礼路线。",
+    "faqQ5": "可以从海外使用吗？",
+    "faqA5": "可以。支持日语、英语、中文、韩语4种语言。您可以从世界各地规划日本旅行计划。"
   },
   "ConditionForm": {
     "newPlan": "新建",
@@ -275,6 +286,10 @@
     "faqA3": "这是Pro专属功能，可以选择最多3部动漫作品，生成地理优化路线来巡访各作品的圣地。",
     "faqQ4": "支持哪些支付方式？",
     "faqA4": "支持信用卡（Visa、Mastercard、JCB、American Express），通过Stripe安全支付系统处理。",
+    "faqQ5": "Pro计划的费用是多少？",
+    "faqA5": "前3个月每月480日元，第4个月起每月980日元。可以随时取消。",
+    "faqQ6": "免费计划和Pro计划有什么区别？",
+    "faqA6": "免费计划每月可生成3次计划，仅限1部作品。Pro计划提供无限次计划生成、最多3部作品混合巡礼、无限聊天、全部评价浏览、无广告等功能。",
     "adTravelDeals": "旅行预订更优惠",
     "adHotelSearch": "搜索圣地巡礼住宿"
   },
@@ -457,6 +472,8 @@
     "ko": "한국어"
   },
   "Works": {
+    "home": "首页",
+    "worksLabel": "作品列表",
     "title": "全部动漫作品",
     "metaDesc": "AnimeTrips收录的全部{count}部作品的圣地巡礼指南。",
     "searchPlaceholder": "按作品名搜索...",
@@ -467,6 +484,8 @@
     "totalWorks": "共{count}部作品"
   },
   "WorkDetail": {
+    "home": "首页",
+    "worksLabel": "作品列表",
     "pilgrimageGuide": "圣地巡礼指南",
     "spotsCount": "{count}处圣地",
     "createPlan": "创建巡礼计划",
@@ -492,6 +511,8 @@
     "backToList": "返回博客列表",
     "home": "首页",
     "updated": "更新",
-    "toc": "目录"
+    "toc": "目录",
+    "tagPageTitle": "「{tag}」相关文章",
+    "tagPageCount": "共{count}篇文章"
   }
 }

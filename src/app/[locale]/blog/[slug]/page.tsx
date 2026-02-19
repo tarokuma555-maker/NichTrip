@@ -22,7 +22,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = params;
-  const post = getPostBySlug(slug);
+  const post = getPostBySlug(slug, locale);
   if (!post) return {};
 
   const title = `${post.title} | AnimeTrips`;
@@ -181,18 +181,44 @@ const mdxComponents = {
 
 export default async function BlogDetailPage({ params }: Props) {
   const { locale, slug } = params;
-  const post = getPostBySlug(slug);
+  const post = getPostBySlug(slug, locale);
   if (!post) notFound();
 
   const t = await getTranslations({ locale, namespace: "Blog" });
 
-  const source = getPostSource(slug);
+  const source = getPostSource(slug, locale);
   const toc = extractToc(source);
   const { content } = await compileMDX({
     source,
     options: { parseFrontmatter: true },
     components: mdxComponents,
   });
+
+  const localePath = locale === "ja" ? "" : `/${locale}`;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: t("home"),
+        item: `${BASE_URL}${localePath}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: t("blogLabel"),
+        item: `${BASE_URL}${localePath}/blog`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: post.title,
+        item: `${BASE_URL}${localePath}/blog/${slug}`,
+      },
+    ],
+  };
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -221,6 +247,10 @@ export default async function BlogDetailPage({ params }: Props) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -278,12 +308,13 @@ export default async function BlogDetailPage({ params }: Props) {
           <header className="mb-8">
             <div className="flex flex-wrap gap-2 mb-3">
               {post.tags.map((tag) => (
-                <span
+                <Link
                   key={tag}
-                  className="text-[10px] font-bold px-2 py-0.5 bg-red-500/15 border border-red-500/30 text-red-400"
+                  href={`/blog/tag/${tag}`}
+                  className="text-[10px] font-bold px-2 py-0.5 bg-red-500/15 border border-red-500/30 text-red-400 hover:bg-red-500/25 transition-colors"
                 >
                   {tag}
-                </span>
+                </Link>
               ))}
             </div>
 

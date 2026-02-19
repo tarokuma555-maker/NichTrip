@@ -62,7 +62,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function WorksPage() {
+export default async function WorksPage({ params }: Props) {
+  const { locale } = params;
+  const t = await getTranslations({ locale, namespace: "Works" });
+
   const works = getAllWorks().map((w) => ({
     slug: w.slug,
     title: w.title,
@@ -72,10 +75,36 @@ export default function WorksPage() {
     spotCount: w.spots.length,
   }));
 
+  const localePath = locale === "ja" ? "" : `/${locale}`;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: t("home"),
+        item: `${BASE_URL}${localePath}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: t("worksLabel"),
+        item: `${BASE_URL}${localePath}/works`,
+      },
+    ],
+  };
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
-      <WorksGrid works={works} />
-      <TravelBanner variant="horizontal" category="mixed" />
-    </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <div className="min-h-screen bg-[#0a0a0a]">
+        <WorksGrid works={works} />
+        <TravelBanner variant="horizontal" category="mixed" />
+      </div>
+    </>
   );
 }

@@ -7,8 +7,7 @@ import type { BlogPost } from "@/lib/blog-data";
 
 function BlogCard({ post }: { post: BlogPost }) {
   return (
-    <Link
-      href={`/blog/${post.slug}`}
+    <div
       className="group block border-2 border-white/10 bg-white/[0.03] p-4
                  hover:border-red-500/30 hover:-translate-y-0.5
                  shadow-[2px_2px_0_rgba(0,0,0,0.3)] hover:shadow-[3px_3px_0_rgba(229,62,62,0.2)]
@@ -16,31 +15,35 @@ function BlogCard({ post }: { post: BlogPost }) {
     >
       <div className="flex flex-wrap gap-1.5 mb-2">
         {post.tags.slice(0, 3).map((tag) => (
-          <span
+          <Link
             key={tag}
-            className="text-[9px] font-bold px-1.5 py-0.5 bg-red-500/10 text-red-400/70"
+            href={`/blog/tag/${tag}`}
+            className="text-[9px] font-bold px-1.5 py-0.5 bg-red-500/10 text-red-400/70 hover:bg-red-500/20 transition-colors"
+            onClick={(e) => e.stopPropagation()}
           >
             {tag}
-          </span>
+          </Link>
         ))}
       </div>
 
-      <h2 className="text-sm sm:text-base font-black text-white group-hover:text-red-400 transition-colors mb-1.5 line-clamp-2">
-        {post.title}
-      </h2>
+      <Link href={`/blog/${post.slug}`} className="block">
+        <h2 className="text-sm sm:text-base font-black text-white group-hover:text-red-400 transition-colors mb-1.5 line-clamp-2">
+          {post.title}
+        </h2>
 
-      <p className="text-[11px] sm:text-xs text-white/40 line-clamp-2 mb-2">
-        {post.excerpt}
-      </p>
+        <p className="text-[11px] sm:text-xs text-white/40 line-clamp-2 mb-2">
+          {post.excerpt}
+        </p>
 
-      <div className="flex items-center gap-2 text-[10px] text-white/25">
-        <time dateTime={post.publishedAt}>
-          {new Date(post.publishedAt).toLocaleDateString("ja-JP")}
-        </time>
-        <span>|</span>
-        <span>{post.author}</span>
-      </div>
-    </Link>
+        <div className="flex items-center gap-2 text-[10px] text-white/25">
+          <time dateTime={post.publishedAt}>
+            {new Date(post.publishedAt).toLocaleDateString("ja-JP")}
+          </time>
+          <span>|</span>
+          <span>{post.author}</span>
+        </div>
+      </Link>
+    </div>
   );
 }
 
@@ -85,17 +88,22 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
             {t("filterAll")}
           </button>
           {allTags.map((tag) => (
-            <button
+            <Link
               key={tag}
-              onClick={() => setSelectedTag(tag)}
+              href={`/blog/tag/${tag}`}
               className={`text-[11px] font-bold px-2.5 py-1 border transition-colors ${
                 selectedTag === tag
                   ? "bg-red-500/20 border-red-500/40 text-red-400"
                   : "bg-white/5 border-white/10 text-white/40 hover:text-white/60"
               }`}
+              onClick={(e) => {
+                e.preventDefault();
+                setSelectedTag(selectedTag === tag ? null : tag);
+              }}
+              onAuxClick={() => {}}
             >
               {tag}
-            </button>
+            </Link>
           ))}
         </div>
       )}

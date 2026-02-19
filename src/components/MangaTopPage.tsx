@@ -1136,6 +1136,83 @@ function BlogSection({ posts }: { posts: BlogPostSummary[] }) {
 }
 
 /* ================================================================
+   Section: FAQ
+   ================================================================ */
+function FAQSection() {
+  const t = useTranslations("TopPage");
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const faqItems = [
+    { q: t("faqQ1"), a: t("faqA1") },
+    { q: t("faqQ2"), a: t("faqA2") },
+    { q: t("faqQ3"), a: t("faqA3") },
+    { q: t("faqQ4"), a: t("faqA4") },
+    { q: t("faqQ5"), a: t("faqA5") },
+  ];
+
+  return (
+    <section className="faq-section relative bg-[#0a0a0a] py-20 sm:py-32 overflow-hidden">
+      <div className="absolute inset-0 halftone opacity-[0.02]" />
+
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6">
+        {/* ヘッダー */}
+        <div className="mb-8 sm:mb-12">
+          <div className="flex items-end gap-4 mb-2">
+            <h2 className="faq-heading text-4xl sm:text-7xl font-black text-white manga-shadow-red leading-none">
+              FAQ
+            </h2>
+          </div>
+          <div className="h-1 w-24 sm:w-32 bg-red-500" />
+          <p className="mt-3 text-white/40 text-xs sm:text-sm font-medium tracking-wider">
+            {t("faqTitle")}
+          </p>
+        </div>
+
+        {/* FAQ アコーディオン */}
+        <div className="space-y-3">
+          {faqItems.map((item, i) => {
+            const isOpen = openIndex === i;
+            return (
+              <div
+                key={i}
+                className="faq-item border-2 border-white/10 hover:border-red-500/30 transition-colors"
+              >
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : i)}
+                  className="w-full flex items-center justify-between p-4 sm:p-5 text-left"
+                >
+                  <span className="text-sm sm:text-base font-black text-white pr-4">
+                    Q. {item.q}
+                  </span>
+                  <svg
+                    className={`w-4 h-4 shrink-0 text-red-500 transition-transform duration-200 ${
+                      isOpen ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isOpen && (
+                  <div className="px-4 sm:px-5 pb-4 sm:pb-5">
+                    <p className="text-sm text-white/50 leading-relaxed">
+                      A. {item.a}
+                    </p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ================================================================
    メインコンポーネント
    ================================================================ */
 export default function MangaTopPage({
@@ -1265,6 +1342,7 @@ export default function MangaTopPage({
       <TravelBanner variant="horizontal" category="tour" title={t("adTourPackage")} />
       <TitleListSection works={titleOnlyWorks} />
       {recentPosts.length > 0 && <BlogSection posts={recentPosts} />}
+      <FAQSection />
       <CTASection />
     </div>
   );

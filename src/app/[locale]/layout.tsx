@@ -55,6 +55,11 @@ export async function generateMetadata({
       description,
       images: [ogImage],
     },
+    alternates: {
+      types: {
+        "application/rss+xml": "/feed.xml",
+      },
+    },
   };
 }
 

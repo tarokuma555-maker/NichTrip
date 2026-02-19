@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import PricingContent from "./PricingContent";
@@ -27,10 +27,44 @@ export async function generateMetadata({
   };
 }
 
-export default function PricingPage() {
-  const t = useTranslations("Common");
+export default async function PricingPage({
+  params,
+}: {
+  params: { locale: string };
+}) {
+  const { locale } = params;
+  const t = await getTranslations({ locale, namespace: "Common" });
+  const tPricing = await getTranslations({ locale, namespace: "Pricing" });
+
+  const faqItems = [
+    { q: tPricing("faqQ1"), a: tPricing("faqA1") },
+    { q: tPricing("faqQ2"), a: tPricing("faqA2") },
+    { q: tPricing("faqQ3"), a: tPricing("faqA3") },
+    { q: tPricing("faqQ4"), a: tPricing("faqA4") },
+    { q: tPricing("faqQ5"), a: tPricing("faqA5") },
+    { q: tPricing("faqQ6"), a: tPricing("faqA6") },
+  ];
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+
       {/* ヘッダー */}
       <header className="bg-black/80 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-5 h-14 flex items-center">

@@ -82,7 +82,18 @@
     "adTravelPrep": "Make trip planning easier",
     "adTourPackage": "Save with tour packages",
     "blogSectionDesc": "Latest pilgrimage tips, recommended routes & travel guides",
-    "blogViewAll": "View All Articles"
+    "blogViewAll": "View All Articles",
+    "faqTitle": "FAQ",
+    "faqQ1": "What is AnimeTrips?",
+    "faqA1": "AnimeTrips is a service that uses AI to automatically generate travel plans for anime pilgrimage trips. Simply choose your favorite anime and we'll suggest the optimal route to visit sacred spots.",
+    "faqQ2": "Is it free to use?",
+    "faqA2": "Basic features are free. The Pro plan offers more detailed planning capabilities.",
+    "faqQ3": "Which anime works are supported?",
+    "faqA3": "We cover sacred spot information for over 200 popular anime works. Works not in the database are also supported through auto-search.",
+    "faqQ4": "How do I create a travel plan?",
+    "faqA4": "Just select a work and enter your departure point, number of days, and budget. AI will automatically generate the optimal pilgrimage route.",
+    "faqQ5": "Can I use it from overseas?",
+    "faqA5": "Yes. We support 4 languages: Japanese, English, Chinese, and Korean. You can plan your trip to Japan from anywhere in the world."
   },
   "ConditionForm": {
     "newPlan": "New Plan",
@@ -275,6 +286,10 @@
     "faqA3": "A Pro-exclusive feature that lets you select up to 3 anime works and generate a geographically optimized route visiting sacred spots from each work.",
     "faqQ4": "What payment methods are accepted?",
     "faqA4": "We accept credit cards (Visa, Mastercard, JCB, American Express) via Stripe's secure payment system.",
+    "faqQ5": "How much does the Pro plan cost?",
+    "faqA5": "The first 3 months are 480 yen/month, then 980 yen/month from month 4. You can cancel anytime.",
+    "faqQ6": "What is the difference between the Free and Pro plans?",
+    "faqA6": "The Free plan allows 3 plan generations per month with 1 work only. The Pro plan offers unlimited plan generation, up to 3 mixed works, unlimited chat, full review access, ad-free experience, and more.",
     "adTravelDeals": "Save more on travel bookings",
     "adHotelSearch": "Find accommodation for your pilgrimage"
   },
@@ -457,6 +472,8 @@
     "ko": "한국어"
   },
   "Works": {
+    "home": "Home",
+    "worksLabel": "Works",
     "title": "All Anime Works",
     "metaDesc": "Pilgrimage guide for all {count} anime works featured on AnimeTrips.",
     "searchPlaceholder": "Search by title...",
@@ -467,6 +484,8 @@
     "totalWorks": "{count} Works"
   },
   "WorkDetail": {
+    "home": "Home",
+    "worksLabel": "Works",
     "pilgrimageGuide": "Pilgrimage Guide",
     "spotsCount": "{count} Sacred Spots",
     "createPlan": "Create Pilgrimage Plan",
@@ -492,6 +511,8 @@
     "backToList": "Back to blog",
     "home": "Home",
     "updated": "Updated",
-    "toc": "Table of Contents"
+    "toc": "Table of Contents",
+    "tagPageTitle": "Articles tagged '{tag}'",
+    "tagPageCount": "{count} articles"
   }
 }

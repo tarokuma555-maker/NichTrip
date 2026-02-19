@@ -78,10 +78,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default function WorkDetailPage({ params }: Props) {
-  const { slug } = params;
+export default async function WorkDetailPage({ params }: Props) {
+  const { locale, slug } = params;
   const work = getWorkBySlug(slug);
   if (!work) notFound();
+
+  const t = await getTranslations({ locale, namespace: "WorkDetail" });
 
   const related = getRelatedWorks(work, 8).map((w) => ({
     slug: w.slug,
@@ -91,6 +93,32 @@ export default function WorkDetailPage({ params }: Props) {
     genre: w.genre,
     spotCount: w.spots.length,
   }));
+
+  const localePath = locale === "ja" ? "" : `/${locale}`;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: t("home"),
+        item: `${BASE_URL}${localePath}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: t("worksLabel"),
+        item: `${BASE_URL}${localePath}/works`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: work.title,
+        item: `${BASE_URL}${localePath}/works/${slug}`,
+      },
+    ],
+  };
 
   // JSON-LD structured data
   const jsonLd = {
@@ -120,6 +148,10 @@ export default function WorkDetailPage({ params }: Props) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

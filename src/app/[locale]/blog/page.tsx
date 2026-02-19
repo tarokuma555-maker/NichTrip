@@ -15,7 +15,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = params;
   const t = await getTranslations({ locale, namespace: "Blog" });
-  const posts = getAllPosts();
+  const posts = getAllPosts(locale);
 
   const title =
     locale === "ja"
@@ -66,10 +66,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPage({ params }: Props) {
   const { locale } = params;
   const t = await getTranslations({ locale, namespace: "Common" });
-  const posts = getAllPosts();
+  const tBlog = await getTranslations({ locale, namespace: "Blog" });
+  const posts = getAllPosts(locale);
+
+  const localePath = locale === "ja" ? "" : `/${locale}`;
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: tBlog("home"),
+        item: `${BASE_URL}${localePath}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: tBlog("blogLabel"),
+        item: `${BASE_URL}${localePath}/blog`,
+      },
+    ],
+  };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <div className="min-h-screen bg-[#0a0a0a]">
       <header className="bg-black/80 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-5 h-14 flex items-center">
           <Link
@@ -99,5 +125,6 @@ export default async function BlogPage({ params }: Props) {
 
       <BlogList posts={posts} />
     </div>
+    </>
   );
 }
