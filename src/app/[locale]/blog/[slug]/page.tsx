@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { routing } from "@/i18n/routing";
-import { getAllPosts, getPostBySlug, getPostSource } from "@/lib/blog-data";
+import { getAllPosts, getPostBySlug, getPostSource, getRelatedPosts } from "@/lib/blog-data";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { Link } from "@/i18n/navigation";
 
@@ -63,6 +63,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [ogImageUrl],
     },
   };
+}
+
+/* ================================================================
+   読了時間推定
+   ================================================================ */
+function estimateReadingTime(source: string, locale: string): number {
+  // Remove frontmatter
+  const body = source.replace(/^---[\s\S]*?---/, "").trim();
+  // Remove markdown syntax (headers, links, images, code blocks, etc.)
+  const cleaned = body
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/`[^`]+`/g, "")
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[([^\]]*)\]\(.*?\)/g, "$1")
+    .replace(/#{1,6}\s/g, "")
+    .replace(/[*_~>|=-]/g, "")
+    .trim();
+
+  if (locale === "en") {
+    const words = cleaned.split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.round(words / 225));
+  }
+  // Japanese, Chinese, Korean: character-based (~450 chars/min)
+  const chars = cleaned.replace(/\s+/g, "").length;
+  return Math.max(1, Math.round(chars / 450));
 }
 
 /* ================================================================
@@ -188,6 +213,8 @@ export default async function BlogDetailPage({ params }: Props) {
 
   const source = getPostSource(slug, locale);
   const toc = extractToc(source);
+  const readingTime = estimateReadingTime(source, locale);
+  const relatedPosts = getRelatedPosts(slug, post.tags, 3, locale);
   const { content } = await compileMDX({
     source,
     options: { parseFrontmatter: true },
@@ -333,6 +360,8 @@ export default async function BlogDetailPage({ params }: Props) {
                 </span>
               )}
               <span>|</span>
+              <span>{t("readingTime", { min: readingTime })}</span>
+              <span>|</span>
               <span>{post.author}</span>
             </div>
           </header>
@@ -365,8 +394,45 @@ export default async function BlogDetailPage({ params }: Props) {
           {/* 本文 */}
           <div>{content}</div>
 
+          {/* 関連記事 */}
+          {relatedPosts.length > 0 && (
+            <section className="mt-12 pt-6 border-t border-white/10">
+              <h2 className="text-base font-black text-white mb-4">
+                {t("relatedPosts")}
+              </h2>
+              <div className="grid gap-3">
+                {relatedPosts.map((rp) => (
+                  <Link
+                    key={rp.slug}
+                    href={`/blog/${rp.slug}`}
+                    className="block border border-white/10 bg-white/[0.02] p-4 hover:bg-white/[0.05] transition-colors"
+                  >
+                    <p className="text-sm font-bold text-white/90 leading-snug mb-2">
+                      {rp.title}
+                    </p>
+                    <div className="flex items-center gap-3 text-[10px] text-white/30 mb-2">
+                      <time dateTime={rp.publishedAt}>
+                        {new Date(rp.publishedAt).toLocaleDateString("ja-JP")}
+                      </time>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {rp.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-[9px] font-bold px-1.5 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400/70"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* 記事下部 */}
-          <div className="mt-12 pt-6 border-t border-white/10">
+          <div className="mt-8 pt-6 border-t border-white/10">
             <Link
               href="/blog"
               className="text-sm font-bold text-red-400 hover:text-red-300 transition-colors"

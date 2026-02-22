@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - AnimeTrips</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #0a0a0a;
+      color: #e5e5e5;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 1.5rem;
+    }
+    .container {
+      max-width: 400px;
+    }
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.7;
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: #f5f5f5;
+    }
+    p {
+      font-size: 1rem;
+      color: #a3a3a3;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .retry-btn {
+      display: inline-block;
+      background-color: #e53e3e;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+    .retry-btn:hover {
+      background-color: #c53030;
+    }
+    .retry-btn:active {
+      background-color: #9b2c2c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">&#x1F4F6;</div>
+    <h1>オフラインです / You are offline</h1>
+    <p>
+      インターネット接続を確認して、もう一度お試しください。<br>
+      Please check your connection and try again.
+    </p>
+    <button class="retry-btn" onclick="window.location.reload()">
+      Retry / 再試行
+    </button>
+  </div>
+</body>
+</html>

@@ -513,6 +513,9 @@
     "updated": "업데이트",
     "toc": "목차",
     "tagPageTitle": "'{tag}' 관련 글",
-    "tagPageCount": "{count}개의 글"
+    "tagPageCount": "{count}개의 글",
+    "readingTime": "{min}분 소요",
+    "relatedPosts": "관련 글",
+    "searchPlaceholder": "글 검색..."
   }
 }

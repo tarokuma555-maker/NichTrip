@@ -140,3 +140,29 @@ export function getPostsByTag(
 ): BlogPost[] {
   return getAllPosts(locale).filter((p) => p.tags.includes(tag));
 }
+
+export function getRelatedPosts(
+  slug: string,
+  tags: string[],
+  limit: number = 3,
+  locale: string = DEFAULT_LOCALE,
+): BlogPost[] {
+  if (tags.length === 0) return [];
+
+  const tagSet = new Set(tags);
+  const posts = getAllPosts(locale).filter((p) => p.slug !== slug);
+
+  const scored = posts
+    .map((p) => {
+      const sharedCount = p.tags.filter((t) => tagSet.has(t)).length;
+      return { post: p, sharedCount };
+    })
+    .filter((item) => item.sharedCount > 0);
+
+  scored.sort((a, b) => {
+    if (b.sharedCount !== a.sharedCount) return b.sharedCount - a.sharedCount;
+    return b.post.publishedAt.localeCompare(a.post.publishedAt);
+  });
+
+  return scored.slice(0, limit).map((item) => item.post);
+}

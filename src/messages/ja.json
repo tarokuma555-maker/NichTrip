@@ -513,6 +513,9 @@
     "updated": "更新",
     "toc": "目次",
     "tagPageTitle": "「{tag}」の記事一覧",
-    "tagPageCount": "{count}件の記事"
+    "tagPageCount": "{count}件の記事",
+    "readingTime": "{min}分で読める",
+    "relatedPosts": "関連記事",
+    "searchPlaceholder": "記事を検索..."
   }
 }

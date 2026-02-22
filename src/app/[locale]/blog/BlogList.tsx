@@ -50,6 +50,7 @@ function BlogCard({ post }: { post: BlogPost }) {
 export default function BlogList({ posts }: { posts: BlogPost[] }) {
   const t = useTranslations("Blog");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
@@ -58,9 +59,25 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
   }, [posts]);
 
   const filtered = useMemo(() => {
-    if (!selectedTag) return posts;
-    return posts.filter((p) => p.tags.includes(selectedTag));
-  }, [posts, selectedTag]);
+    let result = posts;
+
+    // Filter by search query (title and excerpt, case-insensitive)
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.excerpt.toLowerCase().includes(q)
+      );
+    }
+
+    // Filter by tag
+    if (selectedTag) {
+      result = result.filter((p) => p.tags.includes(selectedTag));
+    }
+
+    return result;
+  }, [posts, selectedTag, searchQuery]);
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-5 py-8 pb-24">
@@ -72,6 +89,32 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
         <p className="text-xs text-white/30 font-bold">
           {t("postsCount", { count: posts.length })}
         </p>
+      </div>
+
+      {/* 検索 */}
+      <div className="relative mb-4">
+        <svg
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+          />
+        </svg>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder={t("searchPlaceholder")}
+          className="w-full pl-9 pr-3 py-2 text-sm bg-white/[0.03] border-2 border-white/10
+                     text-white placeholder:text-white/25 focus:border-red-500/40 focus:outline-none
+                     transition-colors"
+        />
       </div>
 
       {/* タグフィルター */}

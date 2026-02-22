@@ -513,6 +513,9 @@
     "updated": "更新",
     "toc": "目录",
     "tagPageTitle": "「{tag}」相关文章",
-    "tagPageCount": "共{count}篇文章"
+    "tagPageCount": "共{count}篇文章",
+    "readingTime": "{min}分钟阅读",
+    "relatedPosts": "相关文章",
+    "searchPlaceholder": "搜索文章..."
   }
 }

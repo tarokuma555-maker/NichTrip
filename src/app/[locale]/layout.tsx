@@ -8,6 +8,7 @@ import { routing } from "@/i18n/routing";
 import { AuthProvider } from "@/components/AuthProvider";
 import BottomNav from "@/components/BottomNav";
 import SiteFooter from "@/components/SiteFooter";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import "../globals.css";
 
 const GA_ID = "G-3MF57D8HTJ";
@@ -128,6 +129,7 @@ export default async function LocaleLayout({
             <SiteFooter />
             <BottomNav />
           </AuthProvider>
+          <ServiceWorkerRegister />
         </NextIntlClientProvider>
       </body>
     </html>

@@ -513,6 +513,9 @@
     "updated": "Updated",
     "toc": "Table of Contents",
     "tagPageTitle": "Articles tagged '{tag}'",
-    "tagPageCount": "{count} articles"
+    "tagPageCount": "{count} articles",
+    "readingTime": "{min} min read",
+    "relatedPosts": "Related Posts",
+    "searchPlaceholder": "Search articles..."
   }
 }
