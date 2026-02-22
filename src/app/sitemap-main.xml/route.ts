@@ -1,5 +1,5 @@
 import { LOCALES, localeUrl, buildUrlEntry, wrapUrlset, xmlResponse } from "@/lib/sitemap-utils";
-import { getAllBlogSlugs } from "@/lib/blog-data";
+import { getAllBlogSlugs, getAllTags } from "@/lib/blog-data";
 
 export const dynamic = "force-static";
 
@@ -37,6 +37,14 @@ export function GET(): Response {
   for (const slug of blogSlugs) {
     for (const locale of LOCALES) {
       entries.push(buildUrlEntry(localeUrl(`/blog/${slug}`, locale), now, "monthly", 0.7));
+    }
+  }
+
+  // Blog tag pages
+  const tags = getAllTags();
+  for (const tag of tags) {
+    for (const locale of LOCALES) {
+      entries.push(buildUrlEntry(localeUrl(`/blog/tag/${encodeURIComponent(tag)}`, locale), now, "weekly", 0.5));
     }
   }
 
