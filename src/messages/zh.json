@@ -500,7 +500,8 @@
     "routeCtaButton": "创建计划",
     "relatedWorks": "同地区的作品",
     "adTitle": "预订旅行",
-    "backToList": "返回作品列表"
+    "backToList": "返回作品列表",
+    "relatedBlog": "相关博客文章"
   },
   "Blog": {
     "blogLabel": "博客",
@@ -516,6 +517,14 @@
     "tagPageCount": "共{count}篇文章",
     "readingTime": "{min}分钟阅读",
     "relatedPosts": "相关文章",
-    "searchPlaceholder": "搜索文章..."
+    "searchPlaceholder": "搜索文章...",
+    "showMore": "显示更多",
+    "showingCount": "显示{shown}/{total}",
+    "exploreWorks": "在AnimeTrips探索更多动漫圣地巡礼景点",
+    "newsletterTitle": "通过邮件接收最新文章",
+    "newsletterPlaceholder": "电子邮件地址",
+    "newsletterButton": "订阅",
+    "newsletterSuccess": "订阅成功！",
+    "newsletterError": "发生错误"
   }
 }

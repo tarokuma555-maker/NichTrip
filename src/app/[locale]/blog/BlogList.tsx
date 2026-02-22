@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import type { BlogPost } from "@/lib/blog-data";
+import NewsletterSignup from "@/components/NewsletterSignup";
+
+const POSTS_PER_PAGE = 12;
 
 function BlogCard({ post }: { post: BlogPost }) {
   return (
@@ -51,6 +54,7 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
   const t = useTranslations("Blog");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(POSTS_PER_PAGE);
 
   const allTags = useMemo(() => {
     const tagSet = new Set<string>();
@@ -78,6 +82,18 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
 
     return result;
   }, [posts, selectedTag, searchQuery]);
+
+  // Reset pagination when search query or tag filter changes
+  useEffect(() => {
+    setVisibleCount(POSTS_PER_PAGE);
+  }, [searchQuery, selectedTag]);
+
+  const visiblePosts = useMemo(
+    () => filtered.slice(0, visibleCount),
+    [filtered, visibleCount]
+  );
+
+  const hasMore = visibleCount < filtered.length;
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-5 py-8 pb-24">
@@ -153,7 +169,7 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
 
       {/* 記事リスト */}
       <div className="space-y-4">
-        {filtered.map((post) => (
+        {visiblePosts.map((post) => (
           <BlogCard key={post.slug} post={post} />
         ))}
       </div>
@@ -163,6 +179,35 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
           {t("noPosts")}
         </p>
       )}
+
+      {/* ページネーション */}
+      {filtered.length > 0 && (
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <p className="text-[11px] text-white/30 font-bold">
+            {t("showingCount", {
+              shown: visiblePosts.length,
+              total: filtered.length,
+            })}
+          </p>
+          {hasMore && (
+            <button
+              onClick={() =>
+                setVisibleCount((prev) => prev + POSTS_PER_PAGE)
+              }
+              className="px-6 py-2 text-sm font-bold border-2 border-white/10 bg-white/[0.03]
+                         text-white/60 hover:text-white hover:border-red-500/30 hover:bg-red-500/5
+                         transition-all duration-200"
+            >
+              {t("showMore")}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* ニュースレター登録 */}
+      <div className="mt-10">
+        <NewsletterSignup />
+      </div>
     </div>
   );
 }

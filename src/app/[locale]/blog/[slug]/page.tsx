@@ -5,6 +5,7 @@ import { routing } from "@/i18n/routing";
 import { getAllPosts, getPostBySlug, getPostSource, getRelatedPosts } from "@/lib/blog-data";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { Link } from "@/i18n/navigation";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://anime-trips.com";
@@ -430,6 +431,33 @@ export default async function BlogDetailPage({ params }: Props) {
               </div>
             </section>
           )}
+
+          {/* ニュースレター登録 */}
+          <div className="mt-10">
+            <NewsletterSignup />
+          </div>
+
+          {/* 作品ページへの誘導CTA */}
+          <div className="mt-10 border border-white/10 bg-white/[0.02] p-5 sm:p-6 text-center">
+            <p className="text-xs text-white/40 mb-3">
+              {t("exploreWorks")}
+            </p>
+            <Link
+              href="/works"
+              className="inline-flex items-center gap-2 text-sm font-black text-red-400
+                         border-2 border-red-500/30 px-5 py-2.5
+                         hover:bg-red-500/10 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+              </svg>
+              AnimeTrips Works
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
 
           {/* 記事下部 */}
           <div className="mt-8 pt-6 border-t border-white/10">

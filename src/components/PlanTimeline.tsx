@@ -1,12 +1,22 @@
 "use client";
 
 import { useState, useMemo, useRef } from "react";
+import dynamic from "next/dynamic";
 import type { GeneratedPlan, PlanSpot } from "@/lib/types";
 import SpotCard from "./SpotCard";
-import MapView, { type MapSpot } from "./MapView";
+import type { MapSpot } from "./MapView";
 import ShareButton from "./ShareButton";
 import TransportOptions from "./TransportOptions";
 import HotelSuggestions from "./HotelSuggestions";
+
+const MapView = dynamic(() => import("./MapView"), {
+  loading: () => (
+    <div className="w-full h-80 sm:h-[420px] rounded-2xl bg-white/5 animate-pulse flex items-center justify-center border border-white/10">
+      <span className="text-white/30 text-sm">Loading map...</span>
+    </div>
+  ),
+  ssr: false,
+});
 import { useAuth } from "@/components/AuthProvider";
 import ProBanner from "./ProBanner";
 import { getWorkVisual, hasPoster } from "@/lib/work-visuals";

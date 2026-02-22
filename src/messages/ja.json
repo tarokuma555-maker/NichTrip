@@ -500,7 +500,8 @@
     "routeCtaButton": "プランを作成する",
     "relatedWorks": "同じエリアの作品",
     "adTitle": "旅行の予約はこちら",
-    "backToList": "作品一覧に戻る"
+    "backToList": "作品一覧に戻る",
+    "relatedBlog": "この作品に関連するブログ記事"
   },
   "Blog": {
     "blogLabel": "ブログ",
@@ -516,6 +517,14 @@
     "tagPageCount": "{count}件の記事",
     "readingTime": "{min}分で読める",
     "relatedPosts": "関連記事",
-    "searchPlaceholder": "記事を検索..."
+    "searchPlaceholder": "記事を検索...",
+    "showMore": "もっと見る",
+    "showingCount": "{shown}件 / {total}件",
+    "exploreWorks": "AnimeTripsでもっとアニメ聖地巡礼スポットを探す",
+    "newsletterTitle": "最新記事をメールで受け取る",
+    "newsletterPlaceholder": "メールアドレス",
+    "newsletterButton": "登録する",
+    "newsletterSuccess": "登録しました！",
+    "newsletterError": "エラーが発生しました"
   }
 }

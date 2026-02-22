@@ -117,6 +117,7 @@ export default function SpotCard({
                   alt={spot.name}
                   className="w-full h-full object-cover"
                   loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2">
                   <p className="text-[10px] text-white/50 font-bold">Street View</p>

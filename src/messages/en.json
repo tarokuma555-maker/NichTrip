@@ -500,7 +500,8 @@
     "routeCtaButton": "Create Plan",
     "relatedWorks": "Related Works in Same Area",
     "adTitle": "Book Your Trip",
-    "backToList": "Back to All Works"
+    "backToList": "Back to All Works",
+    "relatedBlog": "Related Blog Posts"
   },
   "Blog": {
     "blogLabel": "Blog",
@@ -516,6 +517,14 @@
     "tagPageCount": "{count} articles",
     "readingTime": "{min} min read",
     "relatedPosts": "Related Posts",
-    "searchPlaceholder": "Search articles..."
+    "searchPlaceholder": "Search articles...",
+    "showMore": "Show More",
+    "showingCount": "{shown} of {total}",
+    "exploreWorks": "Find more anime pilgrimage spots on AnimeTrips",
+    "newsletterTitle": "Get the latest posts by email",
+    "newsletterPlaceholder": "Email address",
+    "newsletterButton": "Subscribe",
+    "newsletterSuccess": "Subscribed!",
+    "newsletterError": "Something went wrong"
   }
 }

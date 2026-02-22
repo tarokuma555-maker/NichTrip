@@ -258,10 +258,13 @@ function ReviewCard({ review }: { review: SpotReview }) {
 
       {review.photo_url && (
         <div className="w-full h-32 bg-black/40 border-2 border-white/10 overflow-hidden mb-1.5">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={review.photo_url}
             alt=""
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </div>
       )}
@@ -412,10 +415,12 @@ function ReviewFormModal({
             </label>
             {photoUrl ? (
               <div className="relative w-full h-32 bg-black/40 border-2 border-white/10 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={photoUrl}
                   alt=""
                   className="w-full h-full object-cover"
+                  decoding="async"
                 />
                 <button
                   type="button"

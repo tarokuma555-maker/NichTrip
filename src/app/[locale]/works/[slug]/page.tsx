@@ -7,6 +7,8 @@ import {
   getWorkBySlug,
   getRelatedWorks,
 } from "@/lib/works-data";
+import { getPostsForWork } from "@/lib/blog-data";
+import { Link } from "@/i18n/navigation";
 import TravelBanner from "@/components/ads/TravelBanner";
 import WorkDetailClient from "./WorkDetailClient";
 
@@ -85,6 +87,8 @@ export default async function WorkDetailPage({ params }: Props) {
 
   const t = await getTranslations({ locale, namespace: "WorkDetail" });
 
+  const relatedBlogPosts = getPostsForWork(work.title, work.title_en, 3, locale);
+
   const related = getRelatedWorks(work, 8).map((w) => ({
     slug: w.slug,
     title: w.title,
@@ -158,6 +162,43 @@ export default async function WorkDetailPage({ params }: Props) {
       />
       <div className="min-h-screen bg-[#0a0a0a]">
         <WorkDetailClient work={work} related={related} />
+
+        {/* Related blog posts */}
+        {relatedBlogPosts.length > 0 && (
+          <section className="max-w-3xl mx-auto px-4 sm:px-5 pb-8">
+            <h2 className="text-sm font-black text-white/60 mb-4">
+              {t("relatedBlog")}
+            </h2>
+            <div className="grid gap-3">
+              {relatedBlogPosts.map((post) => (
+                <Link
+                  key={post.slug}
+                  href={`/blog/${post.slug}`}
+                  className="block border border-white/10 bg-white/[0.02] p-4 hover:bg-white/[0.05] transition-colors"
+                >
+                  <p className="text-sm font-bold text-white/90 leading-snug mb-2">
+                    {post.title}
+                  </p>
+                  <div className="flex items-center gap-3 text-[10px] text-white/30 mb-2">
+                    <time dateTime={post.publishedAt}>
+                      {new Date(post.publishedAt).toLocaleDateString("ja-JP")}
+                    </time>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-[9px] font-bold px-1.5 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400/70"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Ad section */}
         <TravelBanner variant="card" category="hotel" maxItems={3} />

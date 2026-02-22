@@ -500,7 +500,8 @@
     "routeCtaButton": "플랜 만들기",
     "relatedWorks": "같은 지역의 작품",
     "adTitle": "여행 예약은 여기서",
-    "backToList": "작품 목록으로 돌아가기"
+    "backToList": "작품 목록으로 돌아가기",
+    "relatedBlog": "관련 블로그 글"
   },
   "Blog": {
     "blogLabel": "블로그",
@@ -516,6 +517,14 @@
     "tagPageCount": "{count}개의 글",
     "readingTime": "{min}분 소요",
     "relatedPosts": "관련 글",
-    "searchPlaceholder": "글 검색..."
+    "searchPlaceholder": "글 검색...",
+    "showMore": "더 보기",
+    "showingCount": "{shown}/{total}개",
+    "exploreWorks": "AnimeTrips에서 더 많은 애니메이션 성지순례 스팟을 찾아보세요",
+    "newsletterTitle": "최신 글을 이메일로 받기",
+    "newsletterPlaceholder": "이메일 주소",
+    "newsletterButton": "구독하기",
+    "newsletterSuccess": "구독 완료!",
+    "newsletterError": "오류가 발생했습니다"
   }
 }

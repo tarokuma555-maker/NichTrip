@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getWorkVisual } from "@/lib/work-visuals";
@@ -168,11 +169,12 @@ function WorkCard({ work }: { work: WorkItem }) {
       {/* Image / Gradient */}
       <div className="relative h-40 sm:h-48 overflow-hidden">
         {visual.image && !imgError ? (
-          <img
+          <Image
             src={visual.image}
             alt={work.title}
-            className="absolute inset-0 w-full h-full object-cover
-                       group-hover:scale-105 transition-transform duration-300"
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
             loading="lazy"
             onError={() => setImgError(true)}
           />

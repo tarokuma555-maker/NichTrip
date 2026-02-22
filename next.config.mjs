@@ -23,7 +23,7 @@ const nextConfig = {
     ],
   },
 
-  // セキュリティヘッダー
+  // セキュリティヘッダー + 静的アセットキャッシュ
   async headers() {
     return [
       {
@@ -38,6 +38,19 @@ const nextConfig = {
         source: "/api/:path*",
         headers: [
           { key: "Cache-Control", value: "no-store, max-age=0" },
+        ],
+      },
+      {
+        // Cache static images, fonts, and other assets for 1 year
+        source: "/images/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        source: "/fonts/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
     ];

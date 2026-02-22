@@ -166,3 +166,49 @@ export function getRelatedPosts(
 
   return scored.slice(0, limit).map((item) => item.post);
 }
+
+/**
+ * Returns blog posts related to a specific anime work.
+ * Matches by work title, English title, or genre against post tags and title.
+ */
+export function getPostsForWork(
+  workTitle: string,
+  workTitleEn: string,
+  limit: number = 3,
+  locale: string = DEFAULT_LOCALE,
+): BlogPost[] {
+  const keywords = [
+    workTitle.toLowerCase(),
+    workTitleEn.toLowerCase(),
+  ];
+
+  const posts = getAllPosts(locale);
+
+  const scored = posts
+    .map((p) => {
+      let score = 0;
+      const titleLower = p.title.toLowerCase();
+      const tagsLower = p.tags.map((t) => t.toLowerCase());
+
+      for (const kw of keywords) {
+        if (!kw) continue;
+        // Check if post tags contain the keyword
+        if (tagsLower.some((tag) => tag === kw || tag.includes(kw) || kw.includes(tag))) {
+          score += 3;
+        }
+        // Check if post title mentions the keyword
+        if (titleLower.includes(kw)) {
+          score += 2;
+        }
+      }
+      return { post: p, score };
+    })
+    .filter((item) => item.score > 0);
+
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return b.post.publishedAt.localeCompare(a.post.publishedAt);
+  });
+
+  return scored.slice(0, limit).map((item) => item.post);
+}

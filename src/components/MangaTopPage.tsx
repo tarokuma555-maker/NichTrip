@@ -2,8 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import { getWorkVisual } from "@/lib/work-visuals";
 import { useAuth } from "@/components/AuthProvider";
 import { useTranslations } from "next-intl";
@@ -11,8 +10,6 @@ import { Link } from "@/i18n/navigation";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import UserMenu from "@/components/UserMenu";
 import TravelBanner from "@/components/ads/TravelBanner";
-
-gsap.registerPlugin(ScrollTrigger);
 
 type Work = {
   slug: string;
@@ -365,10 +362,12 @@ function PosterCard({ work }: { work: Work }) {
 
         {/* ポスター画像 */}
         {visual.image && !imgError && (
-          <img
+          <Image
             src={visual.image}
             alt={work.title}
-            className="absolute inset-0 w-full h-full object-cover object-center"
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+            className="object-cover object-center"
             loading="lazy"
             onError={() => setImgError(true)}
           />
@@ -1228,99 +1227,115 @@ export default function MangaTopPage({
   const t = useTranslations("TopPage");
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Hero
-      const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      heroTl
-        .from(".hero-badge", { y: 30, opacity: 0, duration: 0.6 })
-        .from(
-          ".hero-title span",
-          { y: 80, opacity: 0, stagger: 0.15, duration: 0.8 },
-          "-=0.3"
-        )
-        .from(
-          ".hero-bubble",
-          { y: 30, opacity: 0, scale: 0.9, duration: 0.5 },
-          "-=0.3"
-        )
-        .from(
-          ".hero-cta",
-          { y: 20, opacity: 0, duration: 0.4 },
-          "-=0.2"
-        )
-        .from(".hero-scroll", { opacity: 0, duration: 0.5 }, "-=0.2");
+    let ctx: { revert: () => void } | undefined;
 
-      // About
-      gsap.from(".about-heading", {
-        scrollTrigger: {
-          trigger: ".about-section",
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-        x: -80,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-      gsap.utils.toArray<HTMLElement>(".about-card").forEach((card, i) => {
-        gsap.from(card, {
+    async function initAnimations() {
+      const [gsapModule, scrollTriggerModule] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+      ]);
+      const gsap = gsapModule.default;
+      const { ScrollTrigger } = scrollTriggerModule;
+      gsap.registerPlugin(ScrollTrigger);
+
+      ctx = gsap.context(() => {
+        // Hero
+        const heroTl = gsap.timeline({ defaults: { ease: "power3.out" } });
+        heroTl
+          .from(".hero-badge", { y: 30, opacity: 0, duration: 0.6 })
+          .from(
+            ".hero-title span",
+            { y: 80, opacity: 0, stagger: 0.15, duration: 0.8 },
+            "-=0.3"
+          )
+          .from(
+            ".hero-bubble",
+            { y: 30, opacity: 0, scale: 0.9, duration: 0.5 },
+            "-=0.3"
+          )
+          .from(
+            ".hero-cta",
+            { y: 20, opacity: 0, duration: 0.4 },
+            "-=0.2"
+          )
+          .from(".hero-scroll", { opacity: 0, duration: 0.5 }, "-=0.2");
+
+        // About
+        gsap.from(".about-heading", {
           scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
+            trigger: ".about-section",
+            start: "top 80%",
             toggleActions: "play none none reverse",
           },
-          y: 60,
+          x: -80,
           opacity: 0,
-          duration: 0.7,
-          delay: i * 0.12,
+          duration: 0.8,
           ease: "power2.out",
         });
-      });
+        gsap.utils.toArray<HTMLElement>(".about-card").forEach((card, i) => {
+          gsap.from(card, {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            y: 60,
+            opacity: 0,
+            duration: 0.7,
+            delay: i * 0.12,
+            ease: "power2.out",
+          });
+        });
 
-      // All Works list
-      gsap.from(".allworks-heading", {
-        scrollTrigger: {
-          trigger: ".allworks-section",
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-        x: -100,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-
-      // Blog
-      gsap.from(".blog-heading", {
-        scrollTrigger: {
-          trigger: ".blog-section",
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-        x: -100,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power2.out",
-      });
-      gsap.utils.toArray<HTMLElement>(".blog-card").forEach((card, i) => {
-        gsap.from(card, {
+        // All Works list
+        gsap.from(".allworks-heading", {
           scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
+            trigger: ".allworks-section",
+            start: "top 80%",
             toggleActions: "play none none reverse",
           },
-          y: 60,
+          x: -100,
           opacity: 0,
-          duration: 0.7,
-          delay: i * 0.12,
+          duration: 0.8,
           ease: "power2.out",
         });
-      });
 
-      // CTA — no GSAP animation (always visible)
-    }, containerRef);
+        // Blog
+        gsap.from(".blog-heading", {
+          scrollTrigger: {
+            trigger: ".blog-section",
+            start: "top 80%",
+            toggleActions: "play none none reverse",
+          },
+          x: -100,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.out",
+        });
+        gsap.utils.toArray<HTMLElement>(".blog-card").forEach((card, i) => {
+          gsap.from(card, {
+            scrollTrigger: {
+              trigger: card,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            y: 60,
+            opacity: 0,
+            duration: 0.7,
+            delay: i * 0.12,
+            ease: "power2.out",
+          });
+        });
 
-    return () => ctx.revert();
+        // CTA -- no GSAP animation (always visible)
+      }, containerRef);
+    }
+
+    initAnimations();
+
+    return () => {
+      ctx?.revert();
+    };
   }, []);
 
   return (

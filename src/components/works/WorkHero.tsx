@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { getWorkVisual } from "@/lib/work-visuals";
@@ -27,11 +28,13 @@ export default function WorkHero({ work }: WorkHeroProps) {
       {/* ---------- Background ---------- */}
       {hasImage ? (
         <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={visual.image}
             alt={work.title}
-            className="absolute inset-0 w-full h-full object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
             onError={() => setImgError(true)}
           />
           {/* Dark overlay on image */}
