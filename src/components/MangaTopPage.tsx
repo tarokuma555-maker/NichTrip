@@ -533,6 +533,15 @@ function TitleListSection({ works }: { works: Work[] }) {
     "1990s": false,
   });
 
+  // 折りたたみ状態が変わったらScrollTriggerの位置を再計算
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+      ScrollTrigger.refresh();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [expanded]);
+
   const filtered = works.filter((w) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
