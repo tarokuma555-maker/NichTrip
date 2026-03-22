@@ -1,0 +1,78 @@
+name: Daily Blog Post
+
+on:
+  schedule:
+    # 毎日 AM 6:00 JST (UTC 21:00 前日)
+    - cron: '0 21 * * *'
+  workflow_dispatch: # 手動実行も可能
+
+jobs:
+  generate-blog:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate blog post
+        id: generate
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/generate-blog.js
+
+      - name: Check if topics exhausted
+        if: steps.generate.outputs.no_topics == 'true'
+        env:
+          LINE_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+        run: |
+          if [ -n "$LINE_TOKEN" ]; then
+            curl -s -X POST https://notify-api.line.me/api/notify \
+              -H "Authorization: Bearer ${LINE_TOKEN}" \
+              -d "message=⚠️ AnimeTripsブログのネタが尽きました！topics.jsonに新しいトピックを追加してください。"
+          fi
+
+      - name: Commit and push
+        if: steps.generate.outputs.no_topics != 'true'
+        run: |
+          git config user.name "AnimeTrips Bot"
+          git config user.email "bot@animetrips.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "📝 Auto-generate blog post $(date +%Y-%m-%d)"
+          git push
+
+      # LINE通知（note用コンテンツの準備完了を通知）
+      - name: Notify via LINE
+        if: steps.generate.outputs.no_topics != 'true' && success()
+        env:
+          LINE_TOKEN: ${{ secrets.LINE_NOTIFY_TOKEN }}
+        run: |
+          if [ -z "$LINE_TOKEN" ]; then
+            echo "LINE_NOTIFY_TOKEN not set, skipping notification"
+            exit 0
+          fi
+
+          # 最新のnote-draftファイル名を取得
+          LATEST=$(ls -t blog/note-drafts/*.md 2>/dev/null | head -1)
+          if [ -z "$LATEST" ]; then
+            echo "No note draft found, skipping notification"
+            exit 0
+          fi
+          TITLE=$(head -1 "$LATEST" | sed 's/^# //')
+
+          curl -s -X POST https://notify-api.line.me/api/notify \
+            -H "Authorization: Bearer ${LINE_TOKEN}" \
+            -d "message=📝 今日のブログ記事が生成されました！
+
+【記事タイトル】
+${TITLE}
+
+【やること】
+1. Geminiで画像生成（プロンプトはリポジトリの blog/image-prompts/ を確認）
+2. noteに要約版を投稿（blog/note-drafts/ を確認）
+
+リポジトリ: https://github.com/${{ github.repository }}"
