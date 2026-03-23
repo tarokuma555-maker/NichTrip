@@ -77,15 +77,12 @@ jobs:
           fi
           TITLE=$(head -1 "$LATEST" | sed 's/^# //')
 
+          MSG="📝 今日のブログ記事が生成されました！
+          【記事タイトル】${TITLE}
+          【やること】
+          1. Geminiで画像生成（プロンプトはリポジトリの blog/image-prompts/ を確認）
+          2. noteに要約版を投稿（blog/note-drafts/ を確認）
+          リポジトリ: https://github.com/${{ github.repository }}"
           curl -s -X POST https://notify-api.line.me/api/notify \
             -H "Authorization: Bearer ${LINE_TOKEN}" \
-            -d "message=📝 今日のブログ記事が生成されました！
-
-【記事タイトル】
-${TITLE}
-
-【やること】
-1. Geminiで画像生成（プロンプトはリポジトリの blog/image-prompts/ を確認）
-2. noteに要約版を投稿（blog/note-drafts/ を確認）
-
-リポジトリ: https://github.com/${{ github.repository }}"
+            --data-urlencode "message=${MSG}"
