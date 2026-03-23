@@ -23,7 +23,7 @@
     },
     {
       "id": 2,
-      "status": "pending",
+      "status": "published",
       "theme": "D",
       "title_hint": "聖地巡礼初心者ガイド！失敗しないための7つのコツ",
       "work_name": null,
@@ -34,7 +34,8 @@
         "聖地巡礼 コツ",
         "アニメ 聖地巡礼 やり方"
       ],
-      "season_tip": null
+      "season_tip": null,
+      "published_at": "2026-03-23T01:25:25.693Z"
     },
     {
       "id": 3,
