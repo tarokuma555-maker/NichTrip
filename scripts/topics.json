@@ -81,7 +81,7 @@
     },
     {
       "id": 5,
-      "status": "pending",
+      "status": "published",
       "theme": "C",
       "title_hint": "AnimeTrips完全ガイド！アニメ聖地巡礼が10倍楽しくなる使い方",
       "work_name": null,
@@ -92,7 +92,8 @@
         "アニメ 聖地巡礼 アプリ",
         "聖地巡礼 マップ"
       ],
-      "season_tip": null
+      "season_tip": null,
+      "published_at": "2026-03-25T01:55:30.317Z"
     },
     {
       "id": 6,
