@@ -118,7 +118,7 @@
     },
     {
       "id": 7,
-      "status": "pending",
+      "status": "published",
       "theme": "D",
       "title_hint": "聖地巡礼の持ち物チェックリスト20選！これだけ持っていけば安心",
       "work_name": null,
@@ -129,7 +129,8 @@
         "聖地巡礼 準備",
         "アニメ旅行 持ち物"
       ],
-      "season_tip": null
+      "season_tip": null,
+      "published_at": "2026-03-27T02:03:16.039Z"
     },
     {
       "id": 8,
