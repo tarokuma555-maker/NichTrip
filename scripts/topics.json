@@ -134,7 +134,7 @@
     },
     {
       "id": 8,
-      "status": "pending",
+      "status": "published",
       "theme": "A",
       "title_hint": "「鬼滅の刃」聖地巡礼！竈門神社〜東京1泊2日モデルコース",
       "work_name": "鬼滅の刃",
@@ -150,7 +150,8 @@
         "竈門神社",
         "鬼滅 聖地"
       ],
-      "season_tip": "福岡は秋の紅葉時期がベスト"
+      "season_tip": "福岡は秋の紅葉時期がベスト",
+      "published_at": "2026-03-28T01:54:25.034Z"
     },
     {
       "id": 9,
