@@ -192,7 +192,7 @@
     },
     {
       "id": 11,
-      "status": "pending",
+      "status": "published",
       "theme": "B",
       "title_hint": "「推しの子」聖地巡礼スポット8選！宮崎から東京まで",
       "work_name": "推しの子",
@@ -208,7 +208,8 @@
         "推しの子 聖地",
         "推しの子 宮崎"
       ],
-      "season_tip": "年間通じて可"
+      "season_tip": "年間通じて可",
+      "published_at": "2026-03-31T02:04:02.801Z"
     },
     {
       "id": 12,
