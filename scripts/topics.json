@@ -213,7 +213,7 @@
     },
     {
       "id": 12,
-      "status": "pending",
+      "status": "published",
       "theme": "A",
       "title_hint": "「ハイキュー!!」聖地巡礼！仙台を巡る1日モデルコース",
       "work_name": "ハイキュー!!",
@@ -229,7 +229,8 @@
         "ハイキュー 仙台",
         "ハイキュー 聖地"
       ],
-      "season_tip": "春〜秋がおすすめ"
+      "season_tip": "春〜秋がおすすめ",
+      "published_at": "2026-04-01T02:12:18.334Z"
     },
     {
       "id": 13,
