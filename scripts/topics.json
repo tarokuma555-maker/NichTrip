@@ -234,7 +234,7 @@
     },
     {
       "id": 13,
-      "status": "pending",
+      "status": "published",
       "theme": "D",
       "title_hint": "一人でも楽しめる！ソロ聖地巡礼のすすめ",
       "work_name": null,
@@ -245,7 +245,8 @@
         "ソロ聖地巡礼",
         "一人旅 アニメ"
       ],
-      "season_tip": null
+      "season_tip": null,
+      "published_at": "2026-04-02T02:00:17.328Z"
     },
     {
       "id": 14,
