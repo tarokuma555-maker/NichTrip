@@ -250,7 +250,7 @@
     },
     {
       "id": 14,
-      "status": "pending",
+      "status": "published",
       "theme": "C",
       "title_hint": "AnimeTrips Proで何ができる？無料版との違いを徹底解説",
       "work_name": null,
@@ -261,7 +261,8 @@
         "聖地巡礼 アプリ 有料",
         "AnimeTrips 料金"
       ],
-      "season_tip": null
+      "season_tip": null,
+      "published_at": "2026-04-03T02:01:38.953Z"
     },
     {
       "id": 15,
