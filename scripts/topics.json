@@ -287,7 +287,7 @@
     },
     {
       "id": 16,
-      "status": "pending",
+      "status": "published",
       "theme": "D",
       "title_hint": "聖地巡礼の写真撮影テクニック！アニメシーンとの比較画像を上手に撮る方法",
       "work_name": null,
@@ -298,7 +298,8 @@
         "聖地巡礼 撮影",
         "アニメ 比較画像"
       ],
-      "season_tip": null
+      "season_tip": null,
+      "published_at": "2026-04-05T02:07:42.662Z"
     },
     {
       "id": 17,
