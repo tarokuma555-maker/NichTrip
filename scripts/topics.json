@@ -303,7 +303,7 @@
     },
     {
       "id": 17,
-      "status": "pending",
+      "status": "published",
       "theme": "A",
       "title_hint": "「SPY×FAMILY」の世界を感じる！東京の洋風建築巡り半日コース",
       "work_name": "SPY×FAMILY",
@@ -319,7 +319,8 @@
         "SPY FAMILY 聖地",
         "東京 洋風建築"
       ],
-      "season_tip": "年間通じて可"
+      "season_tip": "年間通じて可",
+      "published_at": "2026-04-06T02:08:32.527Z"
     },
     {
       "id": 18,
