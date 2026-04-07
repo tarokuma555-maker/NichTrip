@@ -324,7 +324,7 @@
     },
     {
       "id": 18,
-      "status": "pending",
+      "status": "published",
       "theme": "B",
       "title_hint": "2024-2025年放送アニメの聖地巡礼スポットまとめ",
       "work_name": "複数作品",
@@ -335,7 +335,8 @@
         "新作アニメ 聖地",
         "最新 聖地巡礼"
       ],
-      "season_tip": null
+      "season_tip": null,
+      "published_at": "2026-04-07T02:05:20.529Z"
     },
     {
       "id": 19,
