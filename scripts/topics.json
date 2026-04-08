@@ -340,7 +340,7 @@
     },
     {
       "id": 19,
-      "status": "pending",
+      "status": "published",
       "theme": "C",
       "title_hint": "AnimeTripsの多言語機能で海外の友達と聖地巡礼を共有しよう",
       "work_name": null,
@@ -351,7 +351,8 @@
         "聖地巡礼 外国人",
         "anime pilgrimage app"
       ],
-      "season_tip": null
+      "season_tip": null,
+      "published_at": "2026-04-08T02:05:30.497Z"
     },
     {
       "id": 20,
