@@ -356,7 +356,7 @@
     },
     {
       "id": 20,
-      "status": "pending",
+      "status": "published",
       "theme": "D",
       "title_hint": "雨の日でも楽しめる！屋内聖地巡礼スポット特集",
       "work_name": null,
@@ -367,7 +367,8 @@
         "屋内 聖地巡礼",
         "雨の日 アニメスポット"
       ],
-      "season_tip": "梅雨時期に特に需要が高い"
+      "season_tip": "梅雨時期に特に需要が高い",
+      "published_at": "2026-04-09T01:57:40.388Z"
     }
   ]
 }
